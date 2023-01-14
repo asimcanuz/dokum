@@ -20,16 +20,16 @@ app.use(express.static(path.join(__dirname, "public")));
 require("./routes/auth.routes")(app);
 require("./routes/user.routes")(app);
 
-// db.sequelize
-//   .sync({ force: true })
-//   .then(() => {
-//     console.log("Synced db.");
-//     initDB();
-//   })
-//   .catch((err) => {
-//     console.log("Failed to sync db: " + err.message);
-//   });
-db.sequelize.sync();
+db.sequelize
+  .sync({ force: true })
+  .then(() => {
+    console.log("Synced db.");
+    initDB();
+  })
+  .catch((err) => {
+    console.log("Failed to sync db: " + err.message);
+  });
+// db.sequelize.sync();
 
 function initDB() {
   Role.create({
@@ -43,6 +43,12 @@ function initDB() {
   Role.create({
     id: 3,
     name: "admin",
+  });
+  User.create({
+    username: "admin",
+    email: "admin@mail.com",
+    password: bcrypt.hashSync("admin", 8),
+    roleId: 3,
   });
 }
 

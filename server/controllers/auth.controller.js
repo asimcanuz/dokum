@@ -8,46 +8,32 @@ const Op = db.Sequelize.Op;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
-exports.signup = (req, res) => {
-  const { username, password } = req.body;
+exports.signup = async (req, res) => {
+  const { username, password, role, email } = req.body;
 
   const cryptedPass = bcrypt.hashSync(password, 8);
 
-  // Save User to Database
+  const roleId = await Role.findOne({
+    where: {
+      name: role,
+    },
+  }).then((role) => role.id);
+
   User.create({
     username,
     password: cryptedPass,
+    email,
+    roleId,
   })
     .then((user) => {
-      if (req.body.roles) {
-        Role.findAll({
-          where: {
-            name: {
-              [Op.or]: req.body.roles,
-            },
-          },
-        }).then((roles) => {
-          user.setRoles(roles).then(() => {
-            res
-              .status(200)
-              .send({ message: "User was registered successfully!" });
-          });
-        });
-      } else {
-        // user role = 1
-        user.setRoles([1]).then(() => {
-          res
-            .status(200)
-            .send({ message: "User was registered successfully!" });
-        });
-      }
+      res.status(200).send({ message: "User was registered successfully!" });
     })
     .catch((err) => {
       res.status(500).send({ message: err.message });
     });
 };
 
-exports.signin = (req, res) => {
+exports.signin = async (req, res) => {
   const { username, password } = req.body;
 
   User.findOne({
@@ -73,16 +59,19 @@ exports.signin = (req, res) => {
         expiresIn: 86400, // 24 hours
       });
 
-      var authorities = [];
-      user.getRoles().then((roles) => {
-        for (let i = 0; i < roles.length; i++) {
-          authorities.push("ROLE_" + roles[i].name.toUpperCase());
+      Role.findOne({
+        where: {
+          id: user.roleId,
+        },
+      }).then((role) => {
+        if (!role) {
+          res.status(400).send({ message: "Role is not defined!" });
         }
         res.status(200).send({
           id: user.userId,
           username: user.username,
           email: user.email,
-          roles: authorities,
+          role: role.name.toUpperCase(),
           accessToken: token,
         });
       });
