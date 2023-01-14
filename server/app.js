@@ -20,7 +20,13 @@ app.use(express.static(path.join(__dirname, "public")));
 require("./routes/auth.routes")(app);
 require("./routes/user.routes")(app);
 
+<<<<<<< HEAD
 // for production delete force true and response
+=======
+console.log("test");
+
+const db = require("./models");
+>>>>>>> bddeb462be4490850916a0241ee39f18ccda5cc9
 db.sequelize
   .sync({ force: true })
   .then(() => {

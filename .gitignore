@@ -44,7 +44,8 @@ bower_components
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-
+#IDE - Visual Studio 
+.vs
 # misc
 .sass-cache
 connect.lock
