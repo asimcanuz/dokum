@@ -18,6 +18,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
+console.log("test");
+
 const db = require("./models");
 db.sequelize
   .sync()
