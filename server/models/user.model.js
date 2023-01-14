@@ -1,31 +1,26 @@
 module.exports = (sequelize, Sequelize) => {
-  const User = sequelize.define("Users", {
-    UserId: {
+  const User = sequelize.define("users", {
+    userId: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      autoIncrement: false,
+      autoIncrement: true,
       primaryKey: true,
     },
-    Username: {
+    username: {
       type: Sequelize.STRING,
     },
-    UserRoleId: {
-      type: Sequelize.INTEGER,
-    },
-    Password: {
+    password: {
       type: Sequelize.STRING,
     },
-    UserSettingId: {
-      type: Sequelize.STRING,
-    },
-    IsActive: {
+    isActive: {
       type: Sequelize.BOOLEAN,
     },
-    Email: {
+    email: {
       type: Sequelize.STRING,
     },
-    AuthToken: {
+    refreshToken: {
       type: Sequelize.STRING,
     },
   });
+  return User;
 };

@@ -5,7 +5,7 @@ module.exports = {
   HOST: "localhost",
   DATABASE: "dokum",
   USER: "root",
-  PASSWORD: "***",
+  PASSWORD: "130119",
   dialect: "mysql",
   pool: {
     max: 5,
