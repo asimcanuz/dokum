@@ -28,13 +28,17 @@ exports.signup = (req, res) => {
           },
         }).then((roles) => {
           user.setRoles(roles).then(() => {
-            res.send({ message: "User was registered successfully!" });
+            res
+              .status(200)
+              .send({ message: "User was registered successfully!" });
           });
         });
       } else {
         // user role = 1
         user.setRoles([1]).then(() => {
-          res.send({ message: "User was registered successfully!" });
+          res
+            .status(200)
+            .send({ message: "User was registered successfully!" });
         });
       }
     })
@@ -65,7 +69,7 @@ exports.signin = (req, res) => {
         });
       }
 
-      var token = jwt.sign({ id: user.id }, config.secret, {
+      var token = jwt.sign({ id: user.userId }, config.secret, {
         expiresIn: 86400, // 24 hours
       });
 
@@ -75,7 +79,7 @@ exports.signin = (req, res) => {
           authorities.push("ROLE_" + roles[i].name.toUpperCase());
         }
         res.status(200).send({
-          id: user.id,
+          id: user.userId,
           username: user.username,
           email: user.email,
           roles: authorities,

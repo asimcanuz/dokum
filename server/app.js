@@ -20,17 +20,16 @@ app.use(express.static(path.join(__dirname, "public")));
 require("./routes/auth.routes")(app);
 require("./routes/user.routes")(app);
 
-console.log("test");
-
-db.sequelize
-  .sync({ force: true })
-  .then(() => {
-    console.log("Synced db.");
-    initDB();
-  })
-  .catch((err) => {
-    console.log("Failed to sync db: " + err.message);
-  });
+// db.sequelize
+//   .sync({ force: true })
+//   .then(() => {
+//     console.log("Synced db.");
+//     initDB();
+//   })
+//   .catch((err) => {
+//     console.log("Failed to sync db: " + err.message);
+//   });
+db.sequelize.sync();
 
 function initDB() {
   Role.create({

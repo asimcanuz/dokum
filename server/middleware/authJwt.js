@@ -5,7 +5,6 @@ const User = db.user;
 
 verifyToken = (req, res, next) => {
   let token = req.headers["x-access-token"];
-
   if (!token) {
     return res.status(403).send({
       message: "No token provided!",
@@ -42,8 +41,11 @@ isAdmin = (req, res, next) => {
 };
 
 isSuperuser = (req, res, next) => {
+  console.log(req.userId);
   User.findByPk(req.userId).then((user) => {
     user.getRoles().then((roles) => {
+      console.log(roles);
+
       for (let i = 0; i < roles.length; i++) {
         if (roles[i].name === "superuser") {
           next();
