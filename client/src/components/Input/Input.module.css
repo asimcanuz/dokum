@@ -1,0 +1,26 @@
+.inputs {
+  @apply block w-full 
+  px-4 py-2 m-0
+  text-xl font-normal text-slate-500
+   bg-slate-50 dark:bg-slate-500 bg-clip-padding 
+   border border-solid border-gray-300 rounded 
+   transition ease-in-out 
+  focus:text-slate-500 focus:bg-slate-50  focus:outline-none focus:ring focus:ring-blue-300;
+}
+
+:global(.dark) .inputs {
+  @apply bg-slate-800 text-slate-400 border-slate-500 focus:text-slate-400
+  focus:ring-1 focus:ring-blue-300;
+}
+
+.checkboxInput {
+  @apply h-4 w-4 
+   border border-gray-300 rounded-sm 
+   bg-white checked:bg-blue-600 checked:border-blue-600 
+    focus:outline-none transition duration-200
+     mt-1 align-top bg-no-repeat bg-center bg-contain 
+     float-left mr-2 cursor-pointer;
+}
+:global(.dark) .checkboxInput {
+  @apply checked:bg-blue-900 checked:border-blue-900;
+}

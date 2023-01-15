@@ -1,23 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useThemeContext } from "./context/ThemeContext";
+import LoginPage from "./pages/Login";
 
 function App() {
+  const { handleThemeSwitch } = useThemeContext();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <button
+        className="bg-green-200 p-4 rounded-3xl"
+        onClick={handleThemeSwitch}
+      >
+        Dark Mode
+      </button>
+      <section className="antialiased h-screen bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 flex items-center justify-center ">
+        <LoginPage />
+      </section>
+
+      {/* <HomePage /> */}
     </div>
   );
 }
