@@ -3,22 +3,36 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var bcrypt = require("bcryptjs");
+var cors = require("cors");
 
 const db = require("./models");
+const credentials = require("./middleware/credentials");
+const corsOptions = require("./config/corsOptions");
+const verifyJWT = require("./middleware/verifyJWT");
+require("dotenv").config();
+
 const Role = db.role;
 const User = db.user;
 
 var app = express();
 
 app.use(logger("dev"));
-app.use(express.json());
+app.use(credentials);
+app.use(cors(corsOptions));
+
 app.use(express.urlencoded({ extended: false }));
+
+app.use(express.json());
 app.use(cookieParser());
+
 app.use(express.static(path.join(__dirname, "public")));
 
 // routes
-require("./routes/auth.routes")(app);
-require("./routes/user.routes")(app);
+app.use("/api/auth", require("./routes/auth.routes"));
+app.use("/api/refresh", require("./routes/refresh.routes"));
+app.use(verifyJWT);
+app.use("/api/test", require("./routes/user.routes"));
+app.use("/api/posts", require("./routes/posts.routes"));
 
 db.sequelize
   .sync({ force: true })
@@ -45,9 +59,9 @@ function initDB() {
     name: "admin",
   });
   User.create({
-    username: "admin",
-    email: "admin@mail.com",
-    password: bcrypt.hashSync("admin", 8),
+    username: "adminDNE",
+    email: "adminDNE@mail.com",
+    password: bcrypt.hashSync(process.env.ADMINPASS, 8),
     roleId: 3,
   });
 }

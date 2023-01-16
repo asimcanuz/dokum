@@ -1,18 +1,20 @@
 import React from "react";
-import { useThemeContext } from "../../context/ThemeContext";
-
+import { Link } from "react-router-dom";
+import Button from "../../components/Button";
 function HomePage() {
-  const { handleThemeSwitch } = useThemeContext();
   return (
-    <div>
-      <div className="h-screen bg-white dark:bg-black flex justify-center items-center">
-        <button
-          className="bg-green-200 p-4 rounded-3xl"
-          onClick={handleThemeSwitch}
-        >
-          Dark Mode
-        </button>
-      </div>
+    <div className="h-screen bg-white dark:bg-black flex justify-center items-center">
+      <ul>
+        <li>
+          <Link to="/admin">Admin Page</Link>
+        </li>
+        <li>
+          <Link to="/super">Super Page </Link>
+        </li>
+        <li>
+          <Link to="/user">User Page </Link>
+        </li>
+      </ul>
     </div>
   );
 }

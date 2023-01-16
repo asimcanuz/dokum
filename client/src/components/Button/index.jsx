@@ -1,9 +1,26 @@
 import cn from "classnames";
-import styles from "./index.module.css";
+import styles from "./Button.module.css";
+import PropTypes from "prop-types";
 
-export default function Button({ appearance, children, ...props }) {
+export default function Button({
+  appearance,
+  variant,
+  size,
+  block,
+  children,
+  ...props
+}) {
   return (
-    <button className={cn(styles.base, styles?.[appearance])} {...props}>
+    <button
+      className={cn(
+        styles.base,
+        styles?.[appearance]
+        // styles?.[variant],
+        // styles?.[size],
+        // block ? styles?.block : null
+      )}
+      {...props}
+    >
       {children}
     </button>
   );
