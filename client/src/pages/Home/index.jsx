@@ -1,9 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Button from "../../components/Button";
 function HomePage() {
   return (
-    <div className="h-screen bg-white dark:bg-black flex justify-center items-center">
+    <div className=" bg-white dark:bg-black flex justify-center items-center">
       <ul>
         <li>
           <Link to="/admin">Admin Page</Link>

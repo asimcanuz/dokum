@@ -64,6 +64,18 @@ function initDB() {
     password: bcrypt.hashSync(process.env.ADMINPASS, 8),
     roleId: 3,
   });
+  User.create({
+    username: "user",
+    email: "user@mail.com",
+    password: bcrypt.hashSync(process.env.ADMINPASS, 8),
+    roleId: 1,
+  });
+  User.create({
+    username: "superuser",
+    email: "superuser@mail.com",
+    password: bcrypt.hashSync(process.env.ADMINPASS, 8),
+    roleId: 2,
+  });
 }
 
 module.exports = app;

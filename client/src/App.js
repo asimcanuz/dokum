@@ -14,14 +14,18 @@ import useLogout from "./hooks/useLogout";
 import PersistLogin from "./utils/PersistLogin";
 import ThemeSwitcher from "./components/ThemeSwitcher";
 import useAuth from "./hooks/useAuth";
+import Sidebar from "./components/Sidebar";
+import { useState } from "react";
+import AccountsPage from "./pages/Accounts/AccountsPage";
 
 function App() {
   return (
-    <section>
+    <section className="app">
       <Routes>
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<Layout />}>
           {/* public routes */}
-          <Route path="login" element={<LoginPage />} />
+
           <Route path="unauthorized" element={<Unauthorized />} />
           {/* protected page */}
           <Route element={<PersistLogin />}>
@@ -44,12 +48,31 @@ function App() {
               <Route path="admin" element={<AdminPage />} />
             </Route>
             <Route
-              element={<RequireAuth allowedRoles={[Shared.Roles.super]} />}
+              element={
+                <RequireAuth
+                  allowedRoles={[Shared.Roles.admin, Shared.Roles.super]}
+                />
+              }
             >
               <Route path="super" element={<SuperPage />} />
             </Route>
-            <Route element={<RequireAuth allowedRoles={[Shared.Roles.user]} />}>
+            <Route
+              element={
+                <RequireAuth
+                  allowedRoles={[Shared.Roles.admin, Shared.Roles.user]}
+                />
+              }
+            >
               <Route path="user" element={<UserPage />} />
+            </Route>
+            <Route
+              element={
+                <RequireAuth
+                  allowedRoles={[Shared.Roles.admin, Shared.Roles.super]}
+                />
+              }
+            >
+              <Route path="accounts" element={<AccountsPage />} />
             </Route>
           </Route>
           {/* catch all */}
@@ -61,38 +84,20 @@ function App() {
 }
 
 function Layout() {
-  const navigate = useNavigate();
-  const logout = useLogout();
-  const { auth } = useAuth();
+  const [sidebarCollapse, setSidebarCollapse] = useState(false);
 
-  const signOut = async () => {
-    await logout();
-    navigate("/login");
+  const handleSidebar = () => {
+    setSidebarCollapse(!sidebarCollapse);
   };
+
   return (
-    <div className="antialiased h-screen bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400  ">
-      {/* TOPBAR */}
-
-      <ul className="flex flex-row items-center justify-between px-12 py-6">
-        <ul className="flex flex-row gap-x-4">
-          <li>
-            <Link to="/">Home Page</Link>
-          </li>
-        </ul>
-        <ul className="flex flex-row items-center gap-x-4">
-          <li>
-            <ThemeSwitcher />
-          </li>
-
-          {auth.accessToken && (
-            <li>
-              <Button onClick={() => signOut()}>Logout</Button>
-            </li>
-          )}
-        </ul>
-      </ul>
-
-      <Outlet />
+    <div className="antialiased bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400">
+      <div className="flex flex-col md:flex-row">
+        <Sidebar collapse={sidebarCollapse} handleSidebar={handleSidebar} />
+        <div className="flex-1 px-12 py-11">
+          <Outlet />
+        </div>
+      </div>
     </div>
   );
 }

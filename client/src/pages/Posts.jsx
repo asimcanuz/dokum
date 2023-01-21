@@ -7,6 +7,8 @@ const Posts = () => {
   const [posts, setPosts] = useState([]);
   const axiosPrivate = useAxiosPrivate();
 
+  const [test, setTest] = useState();
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,15 +33,16 @@ const Posts = () => {
       getPosts();
     }
 
+    // iptal
     return () => {
       isMounted = false;
       isMounted && controller.abort();
       effectRun.current = true;
     };
   }, []);
-
   return (
     <article>
+      {test}
       <h2>Posts</h2>
       {posts?.length ? (
         <ul>

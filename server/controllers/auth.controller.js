@@ -109,18 +109,20 @@ exports.signin = async (req, res) => {
   }
 };
 
-exports.logout = async (req, res, next) => {
+exports.logout = async (req, res) => {
   const cookies = req.cookies;
+  console.log(cookies);
 
   if (!cookies?.jwt) return res.sendStatus(204);
   const refreshToken = cookies.jwt;
-
+  console.log(refreshToken);
   // found user
   const foundUser = await User.findOne({
     where: {
       refreshToken,
     },
   });
+  console.log(foundUser);
   // not found user
   if (!foundUser) {
     res.clearCookie("jwt", { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
