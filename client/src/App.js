@@ -17,19 +17,20 @@ import useAuth from "./hooks/useAuth";
 import Sidebar from "./components/Sidebar";
 import { useState } from "react";
 import AccountsPage from "./pages/Accounts/AccountsPage";
+import CustomersPage from "./pages/Customers/CustomersPage";
 
 function App() {
   return (
     <section className="app ">
       <ThemeSwitcher />
       <Routes>
+        {/* PUBLIC ROUTES */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<Layout />}>
-          {/* public routes */}
-
           <Route path="unauthorized" element={<Unauthorized />} />
-          {/* protected page */}
+          {/* PROTECTED ROUTES */}
           <Route element={<PersistLogin />}>
+            {/* HOME PAGE */}
             <Route
               element={
                 <RequireAuth
@@ -43,11 +44,14 @@ function App() {
             >
               <Route path="/" element={<HomePage />} />
             </Route>
+
+            {/* Admin Page */}
             <Route
               element={<RequireAuth allowedRoles={[Shared.Roles.admin]} />}
             >
               <Route path="admin" element={<AdminPage />} />
             </Route>
+            {/* SUPER PAGE */}
             <Route
               element={
                 <RequireAuth
@@ -57,6 +61,7 @@ function App() {
             >
               <Route path="super" element={<SuperPage />} />
             </Route>
+            {/* USER PAGE */}
             <Route
               element={
                 <RequireAuth
@@ -66,6 +71,8 @@ function App() {
             >
               <Route path="user" element={<UserPage />} />
             </Route>
+
+            {/* ACCOUNTS PAGE */}
             <Route
               element={
                 <RequireAuth
@@ -74,6 +81,20 @@ function App() {
               }
             >
               <Route path="accounts" element={<AccountsPage />} />
+            </Route>
+            {/* CUSTOMERS PAGE */}
+            <Route
+              element={
+                <RequireAuth
+                  allowedRoles={[
+                    Shared.Roles.admin,
+                    Shared.Roles.super,
+                    Shared.Roles.user,
+                  ]}
+                />
+              }
+            >
+              <Route path="customers" element={<CustomersPage />} />
             </Route>
           </Route>
           {/* catch all */}

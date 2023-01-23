@@ -9,7 +9,7 @@ import {
   AiOutlineUser,
   AiOutlineLogout,
 } from "react-icons/ai";
-import { MdOutlineAccountTree } from "react-icons/md";
+import { MdOutlineAccountTree, MdOutlinePeopleAlt } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Shared from "../../utils/Shared";
 
@@ -29,6 +29,14 @@ const Menus = [
     roles: [Shared.Roles.admin],
 
     icon: AiOutlineUser,
+  },
+  {
+    title: "Customers",
+    src: "Customers",
+    to: "/customers",
+    roles: [Shared.Roles.admin],
+
+    icon: MdOutlinePeopleAlt,
   },
   {
     title: "Tree",

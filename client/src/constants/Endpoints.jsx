@@ -6,4 +6,9 @@ export const Endpoints = {
   USER_UPDATE_URL: "api/users/update",
   USER_PASSWORD_UPDATE_URL: "api/users/passwordupdate",
   USER_ADD_NEW_URL: "api/users/addnew",
+
+  CUSTOMERS: {
+    GET_ALL: "api/customers",
+    ADD_NEW: "api/customers/addnew",
+  },
 };
