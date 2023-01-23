@@ -33,6 +33,7 @@ app.use("/api/refresh", require("./routes/refresh.routes"));
 app.use(verifyJWT);
 app.use("/api/users", require("./routes/user.routes"));
 app.use("/api/posts", require("./routes/posts.routes"));
+app.use("/api/customers", require("./routes/customer.routes"));
 
 db.sequelize
   .sync({ force: true })

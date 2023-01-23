@@ -15,7 +15,7 @@ module.exports = (sequelize, Sequelize) => {
     email: {
       type: Sequelize.STRING,
     },
-    telefon: {
+    phone: {
       type: Sequelize.STRING,
     },
     createdBy: {
