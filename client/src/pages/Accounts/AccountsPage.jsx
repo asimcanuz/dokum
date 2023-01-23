@@ -1,15 +1,14 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Header from "../../components/Header";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Endpoints } from "../../constants/Endpoints";
-import { useAsyncDebounce, useGlobalFilter, useTable } from "react-table";
+import { useGlobalFilter, useTable } from "react-table";
 import Button from "../../components/Button";
 import { ROLES } from "../../constants/RolesConstants";
 import AccountCreateAndUpdateModal from "./AccountCreateAndUpdateModal";
 import AccountPasswordUpdateModal from "./AccountPasswordUpdateModal";
 import { FaSort } from "react-icons/fa";
-import { matchSorter } from "match-sorter";
 import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
 import { AiOutlinePlus } from "react-icons/ai";
 
@@ -26,7 +25,6 @@ const initialState = {
 function AccountsPage() {
   const [users, setUsers] = useState([]);
   const axiosPrivate = useAxiosPrivate();
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -101,6 +99,7 @@ function AccountsPage() {
       {
         Header: "Aktif",
         accessor: "isActive",
+        width: 70,
         Cell: ({ value }) => (value ? "Aktif" : "Pasif"),
       },
       {
@@ -213,7 +212,15 @@ function AccountsPage() {
                 >
                   {row.cells.map((cell) => {
                     return (
-                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                      <td
+                        {...cell.getCellProps({
+                          style: {
+                            width: cell.column.width,
+                          },
+                        })}
+                      >
+                        {cell.render("Cell")}
+                      </td>
                     );
                   })}
                 </tr>

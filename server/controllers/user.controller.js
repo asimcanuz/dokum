@@ -37,6 +37,7 @@ exports.getAllUsers = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   const { email, isActive, username, roleId, userId } = req.body;
+
   if (!userId) res.status(401).send({ message: "User id not found!" });
 
   const user = await User.update(
@@ -77,7 +78,6 @@ exports.passwordUpdate = async (req, res) => {
 exports.addnew = async (req, res) => {
   const { email, isActive, username, roleId, password } = req.body;
   const cryptedPass = bcrypt.hashSync(password, 8);
-
   User.create({
     username,
     password: cryptedPass,
