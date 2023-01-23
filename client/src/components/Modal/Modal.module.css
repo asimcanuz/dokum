@@ -1,0 +1,32 @@
+.modalBody {
+  @apply justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50
+  bg-black bg-opacity-70 
+  outline-none
+   focus:outline-none;
+}
+
+.small {
+  @apply relative w-auto my-6 mx-auto max-w-sm;
+}
+.normal {
+  @apply relative w-auto my-6 mx-auto max-w-3xl;
+}
+.large {
+  @apply relative w-auto my-6 mx-auto max-w-6xl;
+}
+
+/* .modalHeader {
+}
+.modalBody {
+}
+
+.modalFooter {
+} */
+
+.modalContent {
+  @apply border-0 rounded-lg 
+  shadow-lg 
+  relative 
+  flex flex-col w-full 
+  outline-none focus:outline-none;
+}

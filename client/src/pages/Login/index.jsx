@@ -9,7 +9,8 @@ import useAuth from "../../hooks/useAuth";
 import axios from "../../api/axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-const LOGIN_URL = "/api/auth/signin";
+import { Endpoints } from "../../constants/Endpoints";
+import PasswordInput from "../../components/Input/PasswordInput";
 
 const LoginPage = () => {
   const { setAuth, persist, setPersist } = useAuth();
@@ -27,17 +28,14 @@ const LoginPage = () => {
       const loginValues = JSON.stringify(values, null, 2);
 
       try {
-        const response = await axios.post(LOGIN_URL, loginValues, {
+        const response = await axios.post(Endpoints.LOGIN_URL, loginValues, {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
         });
-        console.log(response.data);
         const { username, accessToken, email, role } = response?.data;
         setAuth({ username, email, role, accessToken });
         navigate(from, { replace: true });
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     },
   });
 
@@ -67,8 +65,8 @@ const LoginPage = () => {
                 formik.handleSubmit(e);
               }}
             >
-              <label htmlFor="username">Username</label>
               <div className="mb-6">
+                <label htmlFor="username">Username</label>
                 <Input
                   id={"username"}
                   name={"username"}
@@ -82,10 +80,9 @@ const LoginPage = () => {
 
               <div className="mb-6">
                 <label htmlFor="password">Password</label>
-                <Input
+                <PasswordInput
                   id={"password"}
                   name={"password"}
-                  type={"password"}
                   placeholder={"Password"}
                   onChange={formik.handleChange}
                   value={formik.values.password}

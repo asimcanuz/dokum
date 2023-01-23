@@ -7,8 +7,6 @@ const Posts = () => {
   const [posts, setPosts] = useState([]);
   const axiosPrivate = useAxiosPrivate();
 
-  const [test, setTest] = useState();
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -22,7 +20,6 @@ const Posts = () => {
         const response = await axiosPrivate.get(POSTS_URL, {
           signal: controller.signal,
         });
-        console.log(response);
         isMounted && setPosts(response.data.posts);
       } catch (err) {
         console.error(err);
@@ -42,7 +39,6 @@ const Posts = () => {
   }, []);
   return (
     <article>
-      {test}
       <h2>Posts</h2>
       {posts?.length ? (
         <ul>

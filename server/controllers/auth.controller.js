@@ -44,8 +44,7 @@ exports.signin = async (req, res) => {
   if (!foundUser) return res.status(401).send({ message: "User not found" });
 
   // match crypted password
-  const match = bcrypt.compare(password, foundUser.password);
-
+  const match = await bcrypt.compare(password, foundUser.password);
   if (match) {
     // get user role
     const role = await Role.findOne({
@@ -111,18 +110,15 @@ exports.signin = async (req, res) => {
 
 exports.logout = async (req, res) => {
   const cookies = req.cookies;
-  console.log(cookies);
 
   if (!cookies?.jwt) return res.sendStatus(204);
   const refreshToken = cookies.jwt;
-  console.log(refreshToken);
   // found user
   const foundUser = await User.findOne({
     where: {
       refreshToken,
     },
   });
-  console.log(foundUser);
   // not found user
   if (!foundUser) {
     res.clearCookie("jwt", { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });

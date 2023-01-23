@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 function HomePage() {
   return (
-    <div className=" bg-white dark:bg-black flex justify-center items-center">
+    <div className=" flex justify-center items-center">
       <ul>
         <li>
           <Link to="/admin">Admin Page</Link>

@@ -20,7 +20,8 @@ import AccountsPage from "./pages/Accounts/AccountsPage";
 
 function App() {
   return (
-    <section className="app">
+    <section className="app ">
+      <ThemeSwitcher />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<Layout />}>
@@ -91,9 +92,10 @@ function Layout() {
   };
 
   return (
-    <div className="antialiased bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400">
-      <div className="flex flex-col md:flex-row">
+    <div className="antialiased bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 min-h-screen">
+      <div className="flex flex-col md:flex-row ">
         <Sidebar collapse={sidebarCollapse} handleSidebar={handleSidebar} />
+
         <div className="flex-1 px-12 py-11">
           <Outlet />
         </div>

@@ -1,6 +1,5 @@
 import cn from "classnames";
 import styles from "./Button.module.css";
-import PropTypes from "prop-types";
 
 export default function Button({
   appearance,

@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/refresh", require("./routes/refresh.routes"));
 app.use(verifyJWT);
-app.use("/api/test", require("./routes/user.routes"));
+app.use("/api/users", require("./routes/user.routes"));
 app.use("/api/posts", require("./routes/posts.routes"));
 
 db.sequelize
@@ -63,18 +63,21 @@ function initDB() {
     email: "adminDNE@mail.com",
     password: bcrypt.hashSync(process.env.ADMINPASS, 8),
     roleId: 3,
+    isActive: 1,
   });
   User.create({
     username: "user",
     email: "user@mail.com",
     password: bcrypt.hashSync(process.env.ADMINPASS, 8),
     roleId: 1,
+    isActive: 1,
   });
   User.create({
     username: "superuser",
     email: "superuser@mail.com",
     password: bcrypt.hashSync(process.env.ADMINPASS, 8),
     roleId: 2,
+    isActive: 1,
   });
 }
 

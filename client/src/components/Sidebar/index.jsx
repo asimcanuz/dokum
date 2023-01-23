@@ -48,17 +48,15 @@ function Sidebar({ collapse, handleSidebar }) {
     navigate("/login");
   }
 
-  console.log(auth);
-
   return (
     <aside
       className={`w-full 
         ${
           collapse ? "md:w-72" : "md:w-24"
-        } bg-dark-purple  p-5  pt-8 relative duration-300 transition-all`}
+        } bg-transparent p-5  pt-8 relative duration-300 transition-all`}
     >
       <AiOutlineRight
-        className={`absolute cursor-pointer bottom-0 right-1/2 md:-right-3 md:top-11 w-7 h-7 text-white ${
+        className={`absolute cursor-pointer bottom-0 right-1/2 md:-right-3 md:top-11 w-7 h-7 text-slate-700 dark:text-white ${
           collapse ? "-rotate-90 md:rotate-180" : "rotate-90 md:rotate-0"
         } `}
         onClick={handleSidebar}
@@ -72,7 +70,7 @@ function Sidebar({ collapse, handleSidebar }) {
             alt="logo"
           />
           <h1
-            className={`text-white origin-left font-medium text-xl duration-200 ${
+            className={`text-slate-600 dark:text-white origin-left font-medium text-xl duration-200 ${
               !collapse && "rotate-0 md:scale-0"
             }`}
           >
@@ -89,17 +87,14 @@ function Sidebar({ collapse, handleSidebar }) {
                 key={index}
                 className={` ${
                   Menu.gap ? "mt-9" : "mt-2"
-                } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md`}
+                } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:text-white hover:bg-gray-300 hover:dark:bg-slate-700 rounded-md`}
               >
                 <li
-                  className={`
-              duration-200
-              ${!collapse ? "hidden" : "flex items-center duration-200"} 
-              md:flex md:items-center
-              rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-start gap-x-4 
-              ${index === 0 && "bg-light-white"} 
-              hover:animate-pulse
-                `}
+                  className={` w-full h-full
+                  duration-200
+                  ${!collapse ? "hidden" : "flex items-center duration-200"} 
+                  md:flex md:items-center
+                  rounded-md p-2 cursor-pointer text-slate-600 hover:text-white dark:text-gray-300 text-sm items-start gap-x-4`}
                   onClick={() => navigate(Menu.to)}
                 >
                   <div>{React.createElement(Menu?.icon, { size: "20" })}</div>{" "}
@@ -114,6 +109,7 @@ function Sidebar({ collapse, handleSidebar }) {
               </Link>
             )
         )}
+
         <li
           onClick={signOut}
           className={`
