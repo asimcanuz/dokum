@@ -28,12 +28,21 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 // routes
+//public routes for auth and refresh token
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/refresh", require("./routes/refresh.routes"));
 app.use(verifyJWT);
+//protected routes
 app.use("/api/users", require("./routes/user.routes"));
-app.use("/api/posts", require("./routes/posts.routes"));
 app.use("/api/customers", require("./routes/customer.routes"));
+app.use("/api/color", require("./routes/color.routes"));
+app.use("/api/creator", require("./routes/creator.routes"));
+app.use("/api/description", require("./routes/description.routes"));
+app.use("/api/option", require("./routes/option.routes"));
+app.use("/api/order", require("./routes/order.routes"));
+app.use("/api/thick", require("./routes/thick.routes"));
+app.use("/api/tree", require("./routes/tree.routes"));
+app.use("/api/wax", require("./routes/wax.routes"));
 
 db.sequelize
   .sync({ force: true })
