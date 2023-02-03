@@ -34,7 +34,7 @@ const Menus = [
     title: "Customers",
     src: "Customers",
     to: "/customers",
-    roles: [Shared.Roles.admin],
+    roles: [Shared.Roles.admin, Shared.Roles.super, Shared.Roles.user],
 
     icon: MdOutlinePeopleAlt,
   },
@@ -93,9 +93,12 @@ function Sidebar({ collapse, handleSidebar }) {
               <Link
                 to={Menu?.to}
                 key={index}
-                className={` ${
-                  Menu.gap ? "mt-9" : "mt-2"
-                } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:text-white hover:bg-gray-300 hover:dark:bg-slate-700 rounded-md`}
+                className={` ${Menu.gap ? "mt-9" : "mt-2"} ${
+                  !collapse
+                    ? "hidden md:flex"
+                    : "flex items-center duration-200"
+                } 
+                  group flex items-center text-sm  gap-3.5 font-medium p-2 hover:text-white hover:bg-gray-300 hover:dark:bg-slate-700 rounded-md`}
               >
                 <li
                   className={` w-full h-full

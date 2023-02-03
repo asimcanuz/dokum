@@ -10,5 +10,7 @@ export const Endpoints = {
   CUSTOMERS: {
     GET_ALL: "api/customers",
     ADD_NEW: "api/customers/addnew",
+    UPDATE: "api/customers/update",
+    DELETE: "api/customers/delete",
   },
 };

@@ -1,0 +1,23 @@
+.base {
+  @apply rounded-lg py-5 px-6 text-sm text-center mb-3 w-min h-min;
+}
+.primary {
+  @apply bg-blue-800 text-blue-100;
+}
+
+.secondary {
+  @apply bg-purple-800 text-purple-100;
+}
+.success {
+  @apply bg-green-800 text-green-100;
+}
+.danger {
+  @apply bg-red-800 text-red-100;
+}
+.warning {
+  @apply bg-orange-800 text-orange-100;
+}
+
+/* :global(.dark) .primary {
+  @apply checked:bg-blue-900 checked:border-blue-900;
+} */

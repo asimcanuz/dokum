@@ -28,7 +28,7 @@ const handleRefreshToken = async (req, res) => {
       return res.sendStatus(403);
     const role = decoded.role;
     const username = decoded.username;
-
+    const id = decoded.id;
     const accessToken = jwt.sign(
       {
         username: decoded.username,
@@ -40,7 +40,7 @@ const handleRefreshToken = async (req, res) => {
       }
     );
 
-    res.json({ role, username, accessToken });
+    res.json({ role, username, id, accessToken });
   });
 };
 

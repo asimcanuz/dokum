@@ -46,3 +46,50 @@ exports.addNewCustomer = async (req, res) => {
       res.status(500).send({ message: err.message });
     });
 };
+
+exports.updateCustomer = async (req, res) => {
+  const {
+    customerId,
+    accountNumber,
+    customerName,
+    email,
+    phone,
+    isActive,
+    createdBy,
+    updatedBy,
+  } = req.body;
+  if (!customerId) res.status(401).send({ message: "Customer id not found!" });
+
+  const customer = await Customer.update(
+    {
+      accountNumber,
+      customerName,
+      email,
+      phone,
+      isActive,
+      createdBy,
+      updatedBy,
+    },
+    {
+      where: { customerId },
+    }
+  );
+  if (!customer) {
+    res.status(403).send({ message: "Customer update error" });
+  }
+  res.status(200).send({ customer });
+};
+
+exports.deleteCustomer = async (req, res) => {
+  console.log(req.body);
+  const { customerId } = req.body;
+  if (!customerId) res.status(401).send({ message: "Customer id not found!" });
+
+  Customer.destroy({
+    where: { customerId },
+  })
+    .then((customer) =>
+      res.status(200).send({ message: "User deleted successfull", customer })
+    )
+    .catch((err) => res.status(500).send({ message: err.message }));
+};

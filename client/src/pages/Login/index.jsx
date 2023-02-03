@@ -32,8 +32,8 @@ const LoginPage = () => {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
         });
-        const { username, accessToken, email, role } = response?.data;
-        setAuth({ username, email, role, accessToken });
+        const { username, accessToken, email, role, id } = response?.data;
+        setAuth({ username, email, role, accessToken, id });
         navigate(from, { replace: true });
       } catch (error) {}
     },

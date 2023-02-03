@@ -13,7 +13,6 @@ import { ROLES } from "../../constants/RolesConstants";
 import { Endpoints } from "../../constants/Endpoints";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import PasswordInput from "../../components/Input/PasswordInput";
-import * as Yup from "yup";
 
 // const FormSchema = Yup.object().shape({
 //   password: Yup.string(),
@@ -22,6 +21,7 @@ import * as Yup from "yup";
 //     'Must match "password" field value'
 //   ),
 // });
+
 function AccountCreateAndUpdateModal({
   open,
   toggle,
@@ -82,7 +82,7 @@ function AccountCreateAndUpdateModal({
             setUsers([...users, newUser]);
           } else {
             const newUserList = [...users];
-            const _user = newUserList.find(
+            var _user = newUserList.find(
               (__user) => __user.userId === user.userId
             );
             _user.email = user.email;
