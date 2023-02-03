@@ -81,7 +81,6 @@ exports.updateCustomer = async (req, res) => {
 };
 
 exports.deleteCustomer = async (req, res) => {
-  console.log(req.body);
   const { customerId } = req.body;
   if (!customerId) res.status(401).send({ message: "Customer id not found!" });
 
