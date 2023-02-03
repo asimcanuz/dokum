@@ -1,5 +1,5 @@
 const db = require("../../models");
 
-function updateColor(params) {}
+function updateColor(req, res) {}
 
 module.exports = updateColor;
