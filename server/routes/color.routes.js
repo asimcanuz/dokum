@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get("/", getColors);
 router.post("/", addColor);
-router.update("/", updateColor);
+router.put("/", updateColor);
 router.delete("/", deleteColor);
 
 module.exports = router;
