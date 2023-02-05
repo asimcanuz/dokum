@@ -38,27 +38,28 @@ app.use(verifyJWT);
 //protected routes
 app.use("/api/users", require("./routes/user.routes"));
 app.use("/api/customers", require("./routes/customer.routes"));
+app.use("/api/order", require("./routes/order.routes"));
+
 app.use("/api/color", require("./routes/color.routes"));
 app.use("/api/creator", require("./routes/creator.routes"));
-
 app.use("/api/description", require("./routes/description.routes"));
 app.use("/api/option", require("./routes/option.routes"));
-app.use("/api/order", require("./routes/order.routes"));
 app.use("/api/thick", require("./routes/thick.routes"));
 app.use("/api/tree", require("./routes/tree.routes"));
 app.use("/api/wax", require("./routes/wax.routes"));
 app.use("/api/treeStatus", require("./routes/treeStatus.routes"));
+console.log(`NODE_ENV=${envConfig.NODE_ENV}`);
 
-db.sequelize
-  .sync({ force: true })
-  .then(() => {
-    console.log("Synced db.");
-    initDB();
-  })
-  .catch((err) => {
-    console.log("Failed to sync db: " + err.message);
-  });
-// db.sequelize.sync();
+// db.sequelize
+//   .sync({ force: true })
+//   .then(() => {
+//     console.log("Synced db.");
+//     initDB();
+//   })
+//   .catch((err) => {
+//     console.log("Failed to sync db: " + err.message);
+//   });
+db.sequelize.sync();
 
 function initDB() {
   Role.create({

@@ -5,8 +5,6 @@ dotenv.config({
   path: path.resolve("./env", `${process.env.NODE_ENV}.env`),
 });
 
-console.log(path.resolve("/env", `${process.env.NODE_ENV}.env`));
-
 module.exports = {
   NODE_ENV: process.env.NODE_ENV,
   ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
