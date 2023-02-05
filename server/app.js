@@ -45,6 +45,7 @@ app.use("/api/order", require("./routes/order.routes"));
 app.use("/api/thick", require("./routes/thick.routes"));
 app.use("/api/tree", require("./routes/tree.routes"));
 app.use("/api/wax", require("./routes/wax.routes"));
+app.use("/api/treeStatus", require("./routes/treeStatus.routes"));
 
 db.sequelize
   .sync({ force: true })
