@@ -1,5 +1,4 @@
 import React from "react";
-import Button from "../Button";
 import { useNavigate } from "react-router-dom";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
@@ -8,42 +7,58 @@ import {
   AiOutlineRight,
   AiOutlineUser,
   AiOutlineLogout,
+  AiOutlineSetting,
+  AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { MdOutlineAccountTree, MdOutlinePeopleAlt } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Shared from "../../utils/Shared";
+import { rolesDesc } from "../../constants/RolesConstants";
 
 const Menus = [
   {
-    title: "Home",
+    title: "Ana Sayfa",
     src: "Home",
     to: "/",
     icon: AiOutlineHome,
-    roles: [Shared.Roles.admin, Shared.Roles.super, Shared.Roles.user],
+    roles: rolesDesc.allOf,
   },
-
   {
-    title: "Accounts",
+    title: "Ağaç",
+    src: "Tree",
+    to: "/tree",
+    roles: rolesDesc.allOf,
+    icon: MdOutlineAccountTree,
+  },
+  {
+    title: "Siparişler",
+    src: "Orders",
+    to: "/orders",
+    roles: rolesDesc.allOf,
+    icon: AiOutlineShoppingCart,
+  },
+  {
+    title: "Hesaplar",
     src: "Accounts",
     to: "/accounts",
-    roles: [Shared.Roles.admin],
-
+    roles: rolesDesc.onlyAdmin,
     icon: AiOutlineUser,
+    gap: true,
   },
   {
-    title: "Customers",
+    title: "Müşteriler",
     src: "Customers",
     to: "/customers",
-    roles: [Shared.Roles.admin, Shared.Roles.super, Shared.Roles.user],
+    roles: rolesDesc.admin_super,
 
     icon: MdOutlinePeopleAlt,
   },
   {
-    title: "Tree",
-    src: "Tree",
-    to: "/tree",
-    roles: [Shared.Roles.admin, Shared.Roles.super, Shared.Roles.user],
-    icon: MdOutlineAccountTree,
+    title: "Konfigürasyonlar",
+    src: "configuration",
+    to: "/configurations",
+    roles: rolesDesc.admin_super,
+    icon: AiOutlineSetting,
   },
 ];
 function Sidebar({ collapse, handleSidebar }) {
@@ -58,13 +73,13 @@ function Sidebar({ collapse, handleSidebar }) {
 
   return (
     <aside
-      className={`w-full 
+      className={`w-full
         ${
           collapse ? "md:w-72" : "md:w-24"
         } bg-transparent p-5  pt-8 relative duration-300 transition-all`}
     >
       <AiOutlineRight
-        className={`absolute cursor-pointer bottom-0 right-1/2 md:-right-3 md:top-11 w-7 h-7 text-slate-700 dark:text-white ${
+        className={`absolute cursor-pointer -bottom-4 right-1/2 md:-right-4 md:top-11 md:bottom-0 w-8 h-8 text-slate-700 dark:text-white ${
           collapse ? "-rotate-90 md:rotate-180" : "rotate-90 md:rotate-0"
         } `}
         onClick={handleSidebar}
@@ -77,13 +92,6 @@ function Sidebar({ collapse, handleSidebar }) {
             className={`cursor-pointer duration-500 `}
             alt="logo"
           />
-          <h1
-            className={`text-slate-600 dark:text-white origin-left font-medium text-xl duration-200 ${
-              !collapse && "rotate-0 md:scale-0"
-            }`}
-          >
-            Mucevher Dokum
-          </h1>
         </div>
       </Link>
       <ul className="pt-6">
