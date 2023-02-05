@@ -5,6 +5,8 @@ const Role = db.role;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
+const envConfig = require("../config/env.config");
+
 exports.signup = async (req, res) => {
   const { username, password, role, email } = req.body;
 
@@ -59,7 +61,7 @@ exports.signin = async (req, res) => {
         id: foundUser.userId,
         role: role.name.toUpperCase(),
       },
-      process.env.ACCESS_TOKEN_SECRET,
+      envConfig.ACCESS_TOKEN_SECRET,
       {
         expiresIn: "30s",
       }
@@ -71,7 +73,7 @@ exports.signin = async (req, res) => {
         id: foundUser.userId,
         role: role.name.toUpperCase(),
       },
-      process.env.REFRESH_TOKEN_SECRET,
+      envConfig.REFRESH_TOKEN_SECRET,
       {
         expiresIn: "1d",
       }

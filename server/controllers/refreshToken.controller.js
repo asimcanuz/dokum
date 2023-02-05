@@ -1,8 +1,6 @@
 const db = require("../models");
-const config = require("../config/auth.config");
 const User = db.user;
-const Role = db.role;
-
+const envConfig = require("../config/env.config");
 const Op = db.Sequelize.Op;
 
 var jwt = require("jsonwebtoken");
@@ -23,7 +21,7 @@ const handleRefreshToken = async (req, res) => {
   if (!foundUser) return res.sendStatus(403);
 
   // evaluate jwt
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+  jwt.verify(refreshToken, envConfig.REFRESH_TOKEN_SECRET, (err, decoded) => {
     if (err || foundUser.username !== decoded.username)
       return res.sendStatus(403);
     const role = decoded.role;
@@ -34,7 +32,7 @@ const handleRefreshToken = async (req, res) => {
         username: decoded.username,
         id: decoded.id,
       },
-      process.env.ACCESS_TOKEN_SECRET,
+      envConfig.ACCESS_TOKEN_SECRET,
       {
         expiresIn: "30s",
       }

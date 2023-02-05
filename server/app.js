@@ -5,10 +5,12 @@ var logger = require("morgan");
 var bcrypt = require("bcryptjs");
 var cors = require("cors");
 
+const envConfig = require("./config/env.config");
 const db = require("./models");
 const credentials = require("./middleware/credentials");
 const corsOptions = require("./config/corsOptions");
 const verifyJWT = require("./middleware/verifyJWT");
+
 require("dotenv").config();
 
 const Role = db.role;
@@ -74,21 +76,21 @@ function initDB() {
   User.create({
     username: "adminDNE",
     email: "adminDNE@mail.com",
-    password: bcrypt.hashSync(process.env.ADMINPASS, 8),
+    password: bcrypt.hashSync(envConfig.ADMINPASS, 8),
     roleId: 3,
     isActive: 1,
   });
   User.create({
     username: "user",
     email: "user@mail.com",
-    password: bcrypt.hashSync(process.env.ADMINPASS, 8),
+    password: bcrypt.hashSync(envConfig.ADMINPASS, 8),
     roleId: 1,
     isActive: 1,
   });
   User.create({
     username: "superuser",
     email: "superuser@mail.com",
-    password: bcrypt.hashSync(process.env.ADMINPASS, 8),
+    password: bcrypt.hashSync(envConfig.ADMINPASS, 8),
     roleId: 2,
     isActive: 1,
   });
