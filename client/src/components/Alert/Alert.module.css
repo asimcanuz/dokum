@@ -1,5 +1,5 @@
 .base {
-  @apply rounded-lg py-5 px-6 text-sm text-center mb-3 w-min h-min;
+  @apply rounded-lg py-5 px-6 text-sm text-center mb-3 h-min;
 }
 .primary {
   @apply bg-blue-800 text-blue-100;

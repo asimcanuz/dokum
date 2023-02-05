@@ -57,7 +57,7 @@ function CustomerUpdateModal({
           var _customer = newCustomerList.find(
             (cus) => cus.customerId === customer.customerId
           );
-          _customer.accountNumbe = customer.accountNumber;
+          _customer.accountNumber = customer.accountNumber;
           _customer.customerName = customer.customerName;
           _customer.email = customer.email;
           _customer.phone = customer.phone;
