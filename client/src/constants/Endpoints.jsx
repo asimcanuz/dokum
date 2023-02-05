@@ -13,4 +13,12 @@ export const Endpoints = {
     UPDATE: "api/customers/update",
     DELETE: "api/customers/delete",
   },
+  ORDER: {},
+  COLOR: "api/color",
+  CREATOR: "api/creator",
+  DESCRIPTION: "api/description",
+  OPTION: "api/option",
+  THICK: "api/thick",
+  WAX: "api/wax",
+  TREESTATUS: "api/treeStatus",
 };
