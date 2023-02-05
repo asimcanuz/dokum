@@ -1,0 +1,7 @@
+.topToBtn {
+  @apply fixed bottom-10 right-6 z-20;
+}
+
+.iconStyle {
+  @apply bg-slate-800 rounded-full h-12 w-12 text-white cursor-pointer transition-all hover:animate-pulse hover:bg-slate-300 hover:text-slate-800;
+}
