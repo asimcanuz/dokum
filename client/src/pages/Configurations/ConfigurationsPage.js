@@ -581,6 +581,167 @@ function ConfigurationsPage() {
     }
   };
   //#endregion color requests
+
+  //#region creator request
+  const saveCreator = async (name) => {
+    const controller = new AbortController();
+
+    try {
+      await axiosPrivate.post(
+        Endpoints.CREATOR,
+        { creatorName: name },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      const response = await axiosPrivate.get(Endpoints.CREATOR, {
+        signal: controller.signal,
+      });
+
+      setCreators(response.data.creators);
+      creatorsRef.current = response.data.creators;
+    } catch (error) {
+      console.error(error);
+      navigate("/login", {
+        state: { from: location },
+        replace: true,
+      });
+    }
+  };
+  const updateCreator = async (id, name) => {
+    const controller = new AbortController();
+    try {
+      await axiosPrivate.put(
+        Endpoints.CREATOR,
+        { creatorId: id, creatorName: name },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      const response = await axiosPrivate.get(Endpoints.CREATOR, {
+        signal: controller.signal,
+      });
+
+      setCreators(response.data.creators);
+      creatorsRef.current = response.data.creators;
+    } catch (error) {
+      console.error(error);
+      navigate("/login", {
+        state: { from: location },
+        replace: true,
+      });
+    }
+  };
+  const deleteCreator = async (id) => {
+    const controller = new AbortController();
+
+    try {
+      await axiosPrivate.delete(
+        Endpoints.CREATOR,
+        { data: { creatorId: id } },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      const response = await axiosPrivate.get(Endpoints.CREATOR, {
+        signal: controller.signal,
+      });
+
+      setCreators(response.data.creators);
+      creatorsRef.current = response.data.creators;
+    } catch (error) {
+      console.error(error);
+      navigate("/login", {
+        state: { from: location },
+        replace: true,
+      });
+    }
+  };
+  //#endregion creators requests
+
+  //#region tree status request
+  const saveTreeStatus = async (name) => {
+    const controller = new AbortController();
+
+    try {
+      await axiosPrivate.post(
+        Endpoints.TREESTATUS,
+        { treeStatusName: name },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      const response = await axiosPrivate.get(Endpoints.TREESTATUS, {
+        signal: controller.signal,
+      });
+
+      setTreeStatuses(response.data.treeStatuses);
+      treeStatusesRef.current = response.data.treeStatuses;
+    } catch (error) {
+      console.error(error);
+      navigate("/login", {
+        state: { from: location },
+        replace: true,
+      });
+    }
+  };
+  const updateTreeStatus = async (id, name) => {
+    const controller = new AbortController();
+    try {
+      await axiosPrivate.put(
+        Endpoints.TREESTATUS,
+        { treeStatusId: id, treeStatusName: name },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      const response = await axiosPrivate.get(Endpoints.TREESTATUS, {
+        signal: controller.signal,
+      });
+
+      setTreeStatuses(response.data.treeStatuses);
+      treeStatusesRef.current = response.data.treeStatuses;
+    } catch (error) {
+      console.error(error);
+      navigate("/login", {
+        state: { from: location },
+        replace: true,
+      });
+    }
+  };
+  const deleteTreeStatus = async (id) => {
+    const controller = new AbortController();
+
+    try {
+      await axiosPrivate.delete(
+        Endpoints.TREESTATUS,
+        { data: { treeStatusId: id } },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      const response = await axiosPrivate.get(Endpoints.TREESTATUS, {
+        signal: controller.signal,
+      });
+
+      setTreeStatuses(response.data.treeStatuses);
+      treeStatusesRef.current = response.data.treeStatuses;
+    } catch (error) {
+      console.error(error);
+      navigate("/login", {
+        state: { from: location },
+        replace: true,
+      });
+    }
+  };
+  //#endregion creators requests
+
   return (
     <div className="space-y-4 ">
       <Header
@@ -990,7 +1151,7 @@ function ConfigurationsPage() {
                     </div>
                   </div>
                 );
-              })}{" "}
+              })}
             </div>
           ) : (
             <Alert apperance={"warning"}>Veriler Henüz Girilmemiş!</Alert>
@@ -999,7 +1160,20 @@ function ConfigurationsPage() {
 
         <div className="px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4">
           <h4 className="text-lg">Hazırlayan</h4>
-          <Button appearance={"primary"}>
+          <Button
+            appearance={"primary"}
+            onClick={() => {
+              const lastCreatorId =
+                creators[creators.length - 1]?.creatorId + 1 || 1;
+              const newCreatorItem = {
+                creatorId: lastCreatorId,
+                creatorName: "Yeni Hazırlayan Kişi",
+              };
+
+              setCreators([...creators, newCreatorItem]);
+              saveCreator(newCreatorItem.creatorName);
+            }}
+          >
             <AiOutlinePlus color="white" size={"16px"} />
             Yeni Hazırlayan Ekle
           </Button>
@@ -1009,7 +1183,54 @@ function ConfigurationsPage() {
                 <p>Hazırlayan</p>
                 <p>İşlemler</p>
               </div>
-              <div className="grid grid-flow-row-dense grid-cols-2"></div>
+              {creators.map((creator) => {
+                return (
+                  <div
+                    key={creator.creatorId}
+                    className={` grid grid-flow-row-dense grid-cols-2 gap-2 border-b border-gray-600 py-4`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <EditableText
+                        id={creator.creatorId}
+                        type={"text"}
+                        value={creator.creatorName}
+                        onChange={(e) => {
+                          let newCreatorList = [...creators];
+                          let _creator = newCreatorList.find(
+                            (c) => c.creatorId === creator.creatorId
+                          );
+                          _creator.creatorName = e.target.value;
+                          setCreators(newCreatorList);
+                        }}
+                      />
+                    </div>
+                    <div className="flex flex-row space-x-4 ">
+                      <AiOutlineSave
+                        size={"24px"}
+                        color="white"
+                        className="hover:cursor-pointer hover:animate-pulse "
+                        onClick={() => {
+                          updateCreator(creator.creatorId, creator.creatorName);
+                        }}
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                        title={"Kaydet"}
+                      />
+                      <AiOutlineDelete
+                        size={"24px"}
+                        color="white"
+                        className="hover:cursor-pointer hover:animate-pulse "
+                        onClick={() => {
+                          deleteCreator(creator.creatorId);
+                        }}
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                        title="Sil"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           ) : (
             <Alert apperance={"warning"}>Veriler Henüz Girilmemiş!</Alert>
@@ -1017,9 +1238,22 @@ function ConfigurationsPage() {
         </div>
         <div className="px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4">
           <h4 className="text-lg">Ağaç Durumları</h4>
-          <Button appearance={"primary"} onClick={(e) => {}}>
+          <Button
+            appearance={"primary"}
+            onClick={() => {
+              const lastTreeStatusId =
+                treeStatuses[treeStatuses.length - 1]?.treeStatusId + 1 || 1;
+              const newTreeStatusItem = {
+                treeStatusId: lastTreeStatusId,
+                treeStatusName: "Yeni Ağaç Durumu",
+              };
+
+              setTreeStatuses([...treeStatuses, newTreeStatusItem]);
+              saveTreeStatus(newTreeStatusItem.treeStatusName);
+            }}
+          >
             <AiOutlinePlus color="white" size={"16px"} />
-            Yeni Hazırlayan Ekle
+            Yeni Ağaç Durumu Ekle
           </Button>
           {treeStatuses.length > 0 ? (
             <div className="flex flex-col">
@@ -1027,7 +1261,59 @@ function ConfigurationsPage() {
                 <p>Ağaç Durumu</p>
                 <p>İşlemler</p>
               </div>
-              <div className="grid grid-flow-row-dense grid-cols-2"></div>
+              {treeStatuses.map((treeStatus) => {
+                return (
+                  <div
+                    key={treeStatus.treeStatusId}
+                    className={` 
+                    grid grid-flow-row-dense grid-cols-2 gap-2 border-b border-gray-600 py-4`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <EditableText
+                        id={treeStatus.treeStatusId}
+                        type={"text"}
+                        value={treeStatus.treeStatusName}
+                        onChange={(e) => {
+                          console.log("e");
+                          let newTreeStatusList = [...treeStatuses];
+                          let _treeStatus = newTreeStatusList.find(
+                            (t) => t.treeStatusId === treeStatus.treeStatusId
+                          );
+                          _treeStatus.treeStatusName = e.target.value;
+                          setTreeStatuses(newTreeStatusList);
+                        }}
+                      />
+                    </div>
+                    <div className="flex flex-row space-x-4 ">
+                      <AiOutlineSave
+                        size={"24px"}
+                        color="white"
+                        className="hover:cursor-pointer hover:animate-pulse "
+                        onClick={() => {
+                          updateTreeStatus(
+                            treeStatus.treeStatusId,
+                            treeStatus.treeStatusName
+                          );
+                        }}
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                        title={"Kaydet"}
+                      />
+                      <AiOutlineDelete
+                        size={"24px"}
+                        color="white"
+                        className="hover:cursor-pointer hover:animate-pulse "
+                        onClick={() => {
+                          deleteTreeStatus(treeStatus.treeStatusId);
+                        }}
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                        title="Sil"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           ) : (
             <Alert apperance={"warning"}>Veriler Henüz Girilmemiş!</Alert>

@@ -1,7 +1,7 @@
 .inputs {
   @apply relative w-full 
   px-4 py-2
-  text-xl font-normal text-slate-500
+  text-base font-normal text-slate-500
    bg-white dark:bg-slate-500 bg-clip-padding 
    border border-solid border-gray-300 rounded 
    transition ease-in-out 
@@ -44,4 +44,7 @@
 }
 .flexible {
   @apply w-full md:w-1/2 lg:w-1/4;
+}
+.formGroup {
+  @apply flex flex-row;
 }

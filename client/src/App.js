@@ -1,4 +1,5 @@
 import ThemeSwitcher from "./components/ThemeSwitcher";
+import "react-datepicker/dist/react-datepicker.css";
 
 import Routers from "./Routes";
 

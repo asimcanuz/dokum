@@ -2,7 +2,7 @@ import React from "react";
 import { FaSort } from "react-icons/fa";
 import styles from "./Table.module.css";
 
-function Table({
+function DynamicTable({
   getTableProps,
   headerGroups,
   getTableBodyProps,
@@ -59,4 +59,4 @@ function Table({
   );
 }
 
-export default Table;
+export default DynamicTable;

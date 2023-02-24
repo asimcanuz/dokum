@@ -16,6 +16,10 @@ const sequelize = new Sequelize(
       acquire: dbConfig.pool.acquire,
       idle: dbConfig.pool.idle,
     },
+    dialectOptions: {
+      useUTC: false,
+    },
+    timezone: "+03:00",
   }
 );
 
@@ -45,6 +49,52 @@ db.user.belongsTo(db.role);
 //customer tree n-n
 db.customer.belongsToMany(db.tree, { through: "customerTrees" });
 db.tree.belongsToMany(db.customer, { through: "customerTrees" });
+
+// tree 1-1
+db.option.hasOne(db.tree, {
+  foreignKey: "optionId",
+});
+db.creator.hasOne(db.tree, {
+  foreignKey: "creatorId",
+});
+db.treeStatus.hasOne(db.tree, {
+  foreignKey: "treeStatusId",
+});
+db.thick.hasOne(db.tree, {
+  foreignKey: "thickId",
+});
+db.wax.hasOne(db.tree, {
+  foreignKey: "waxId",
+});
+db.color.hasOne(db.tree, {
+  foreignKey: "colorId",
+});
+
+db.tree.belongsTo(db.option, {
+  foreignKey: "optionId",
+});
+db.tree.belongsTo(db.creator, {
+  foreignKey: "creatorId",
+});
+db.tree.belongsTo(db.treeStatus, {
+  foreignKey: "treeStatusId",
+});
+db.tree.belongsTo(db.thick, {
+  foreignKey: "treeStatusId",
+});
+db.tree.belongsTo(db.wax, {
+  foreignKey: "waxId",
+});
+db.tree.belongsTo(db.color, {
+  foreignKey: "colorId",
+});
+
+// tree - order 1-n
+db.tree.hasMany(db.order);
+db.order.belongsTo(db.tree, {
+  foreignKey: "treeId",
+  as: "tree",
+});
 
 db.ROLES = ["user", "superuser", "admin"];
 

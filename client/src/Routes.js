@@ -13,6 +13,8 @@ import AccountsPage from "./pages/Accounts/AccountsPage";
 import CustomersPage from "./pages/Customers/CustomersPage";
 import Layout from "./components/Layout";
 import ConfigurationsPage from "./pages/Configurations/ConfigurationsPage";
+import { rolesDesc } from "./constants/RolesConstants";
+import TreePage from "./pages/Tree";
 function Routers() {
   return (
     <Routes>
@@ -95,6 +97,10 @@ function Routers() {
             }
           >
             <Route path="configurations" element={<ConfigurationsPage />} />
+          </Route>
+          {/* TREE PAGE */}
+          <Route element={<RequireAuth allowedRoles={rolesDesc.allOf} />}>
+            <Route path="tree" element={<TreePage />} />
           </Route>
         </Route>
         {/* catch all */}

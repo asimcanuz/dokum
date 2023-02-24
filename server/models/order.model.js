@@ -9,9 +9,6 @@ module.exports = (sequelize, Sequelize) => {
     customerId: {
       type: Sequelize.INTEGER,
     },
-    treeId: {
-      type: Sequelize.INTEGER,
-    },
     descriptionId: {
       type: Sequelize.INTEGER,
     },

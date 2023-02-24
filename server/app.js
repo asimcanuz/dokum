@@ -15,6 +15,15 @@ require("dotenv").config();
 
 const Role = db.role;
 const User = db.user;
+const Wax = db.wax;
+const Color = db.color;
+const Creator = db.creator;
+const Customer = db.customer;
+const Description = db.description;
+const Option = db.option;
+const Order = db.order;
+const Thick = db.thick;
+const TreeStatus = db.treeStatus;
 
 var app = express();
 
@@ -33,19 +42,20 @@ app.use(express.static(path.join(__dirname, "public")));
 //public routes for auth and refresh token
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/refresh", require("./routes/refresh.routes"));
+app.use("/api/tree", require("./routes/tree.routes"));
 
+// verify jwt middleware
 app.use(verifyJWT);
 //protected routes
 app.use("/api/users", require("./routes/user.routes"));
 app.use("/api/customers", require("./routes/customer.routes"));
 app.use("/api/order", require("./routes/order.routes"));
-
 app.use("/api/color", require("./routes/color.routes"));
 app.use("/api/creator", require("./routes/creator.routes"));
 app.use("/api/description", require("./routes/description.routes"));
 app.use("/api/option", require("./routes/option.routes"));
 app.use("/api/thick", require("./routes/thick.routes"));
-app.use("/api/tree", require("./routes/tree.routes"));
+// app.use("/api/tree", require("./routes/tree.routes"));
 app.use("/api/wax", require("./routes/wax.routes"));
 app.use("/api/treeStatus", require("./routes/treeStatus.routes"));
 console.log(`NODE_ENV=${envConfig.NODE_ENV}`);
@@ -95,6 +105,15 @@ function initDB() {
     roleId: 2,
     isActive: 1,
   });
+  Wax.create({
+    waxName: "wax",
+  });
+  Color.create({ colorName: "renk" });
+  Creator.create({ creatorName: "hazırlayan" });
+  Description.create({ descriptionText: "açıklama" });
+  Option.create({ optionText: "ayar" });
+  Thick.create({ thickName: "kalınlık" });
+  TreeStatus.create({ treeStatusName: "tree" });
 }
 
 module.exports = app;

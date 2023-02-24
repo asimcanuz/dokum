@@ -17,7 +17,7 @@ function Layout() {
       <div className="flex flex-col md:flex-row ">
         <Sidebar collapse={sidebarCollapse} handleSidebar={handleSidebar} />
 
-        <div className="flex-1 px-12 py-11">
+        <div className="flex-1 px-4 py-4 md:px-12 md:py-11">
           <Outlet />
         </div>
       </div>

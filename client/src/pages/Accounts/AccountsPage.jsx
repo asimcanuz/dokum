@@ -11,7 +11,7 @@ import AccountPasswordUpdateModal from "./AccountPasswordUpdateModal";
 import { FaSort } from "react-icons/fa";
 import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
 import { AiOutlinePlus } from "react-icons/ai";
-import Table from "../../components/Table";
+import DynamicTable from "../../components/Table";
 
 const initialState = {
   defaultUserValues: {
@@ -178,7 +178,7 @@ function AccountsPage() {
         />
       </div>
       {users?.length > 0 ? (
-        <Table
+        <DynamicTable
           preGlobalFilteredRows={preGlobalFilteredRows}
           state={state}
           setGlobalFilter={setGlobalFilter}
