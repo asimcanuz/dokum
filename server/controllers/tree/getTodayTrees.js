@@ -7,7 +7,6 @@ const Tree = db.tree;
 const TODAY = moment().format("YYYY-MM-DD");
 
 const getTodayTrees = async (req, res) => {
-  console.log(TODAY);
   const trees = await Tree.findAll({
     where: {
       date: {
@@ -23,7 +22,9 @@ const getTodayTrees = async (req, res) => {
       { model: db.thick },
       { model: db.color },
       { model: db.treeStatus },
-      { model: db.order },
+      {
+        model: db.order,
+      },
     ],
   });
 

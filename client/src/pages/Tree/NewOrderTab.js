@@ -1,6 +1,9 @@
 import React from "react";
 
-function NewOrderTab() {
+function NewOrderTab({ clickTree, customers, descriptions }) {
+  console.log(clickTree);
+  console.log(customers);
+  console.log(descriptions);
   return <div>New OrderTab</div>;
 }
 

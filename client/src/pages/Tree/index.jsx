@@ -7,7 +7,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import NewTreeTab from "./NewTreeTab";
 import TreeTable from "./TreeTable";
-import OrderTable from "./OrderTable";
 import NewOrderTab from "./NewOrderTab";
 
 const tabs = {
@@ -27,54 +26,46 @@ const tabList = [
 
 function TreePage() {
   const [selectedTab, setSelectedTab] = useState(tabs.agac);
+  const [clickTree, setClickTree] = useState({
+    agacId: "",
+    agacNo: "",
+    listeNo: "",
+    siparisSayisi: "",
+    renk: "",
+    ayar: "",
+    kalinlik: "",
+    musteriSayisi: "",
+  });
+
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
   const effectRun = useRef(false);
 
-  // const [descriptions, setDescriptions] = useState([]);
-  // const [treeStatuses, setTreeStatuses] = useState([]);
+  const [treeStatuses, setTreeStatuses] = useState([]);
   const [options, setOptions] = useState([]);
   const [creators, setCreators] = useState([]);
   const [thicks, setThicks] = useState([]);
   const [waxes, setWaxes] = useState([]);
   const [colors, setColors] = useState([]);
   const [todayTrees, setTodayTrees] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [descriptions, setDescriptions] = useState([]);
 
-  const [selectedTodayTrees, setSelectedTodayTrees] = useState({});
   useEffect(() => {
     const controller = new AbortController();
-
     let isMounted = true;
-
     const getTrees = async () => {
       try {
         const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
           signal: controller.signal,
         });
-        console.log(res.data.trees);
         isMounted && setTodayTrees(res.data.trees);
       } catch (error) {
         console.error(error);
         navigate("/login", { state: { from: location }, replace: true });
       }
     };
-    // const getDescriptions = async () => {
-    //   try {
-    //     const response = await axiosPrivate.get(Endpoints.DESCRIPTION, {
-    //       signal: controller.signal,
-    //     });
-    //     if (isMounted) {
-    //       setDescriptions(response.data.descriptions);
-    //     }
-    //   } catch (error) {
-    //     console.error(error);
-    //     navigate("/login", {
-    //       state: { from: location },
-    //       replace: true,
-    //     });
-    //   }
-    // };
     const getOptions = async () => {
       try {
         const response = await axiosPrivate.get(Endpoints.OPTION, {
@@ -142,23 +133,23 @@ function TreePage() {
         });
       }
     };
-    // const getTreeStatus = async () => {
-    //   try {
-    //     const response = await axiosPrivate.get(Endpoints.TREESTATUS, {
-    //       signal: controller.signal,
-    //     });
+    const getTreeStatus = async () => {
+      try {
+        const response = await axiosPrivate.get(Endpoints.TREESTATUS, {
+          signal: controller.signal,
+        });
 
-    //     if (isMounted) {
-    //       setTreeStatuses(response.data.treeStatuses);
-    //     }
-    //   } catch (error) {
-    //     console.error(error);
-    //     navigate("/login", {
-    //       state: { from: location },
-    //       replace: true,
-    //     });
-    //   }
-    // };
+        if (isMounted) {
+          setTreeStatuses(response.data.treeStatuses);
+        }
+      } catch (error) {
+        console.error(error);
+        navigate("/login", {
+          state: { from: location },
+          replace: true,
+        });
+      }
+    };
 
     const getColors = async () => {
       try {
@@ -177,8 +168,35 @@ function TreePage() {
         });
       }
     };
+    const getDescriptions = async () => {
+      try {
+        const response = await axiosPrivate.get(Endpoints.DESCRIPTION, {
+          signal: controller.signal,
+        });
+        if (isMounted) {
+          setDescriptions(response.data.descriptions);
+        }
+      } catch (error) {
+        console.error(error);
+        navigate("/login", {
+          state: { from: location },
+          replace: true,
+        });
+      }
+    };
+    const getCustomers = async () => {
+      try {
+        const response = await axiosPrivate.get(Endpoints.CUSTOMERS.GET_ALL, {
+          signal: controller.signal,
+        });
+        isMounted && setCustomers(response.data.customers);
+      } catch (err) {
+        console.error(err);
+        navigate("/login", { state: { from: location }, replace: true });
+      }
+    };
     if (effectRun.current) {
-      // getDescriptions();
+      getDescriptions();
       // getTreeStatus();
       getOptions();
       getCreator();
@@ -186,6 +204,8 @@ function TreePage() {
       getWax();
       getColors();
       getTrees();
+      getCustomers();
+      getTreeStatus();
     }
 
     return () => {
@@ -215,15 +235,27 @@ function TreePage() {
                 waxes={waxes}
                 todayTrees={todayTrees}
                 setTodayTrees={setTodayTrees}
-                setSelectedTodayTrees={setSelectedTodayTrees}
+                customers={customers}
+                descriptions={descriptions}
               />
             ) : (
-              <NewOrderTab selectedTodayTrees={selectedTodayTrees} />
+              <NewOrderTab
+                clickTree={clickTree}
+                customers={customers}
+                descriptions={descriptions}
+              />
             )}
           </div>
         </div>
         <div className="col-span-12 lg:col-span-6 xl:col-span-8  bg-zinc-800">
-          <TreeTable todayTrees={todayTrees} />
+          <TreeTable
+            setClickTree={setClickTree}
+            todayTrees={todayTrees}
+            customers={customers}
+            descriptions={descriptions}
+            treeStatuses={treeStatuses}
+            creators={creators}
+          />
         </div>
       </div>
     </section>

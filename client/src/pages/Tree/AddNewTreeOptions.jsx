@@ -33,7 +33,6 @@ function AddNewTreeOptions({ open, size, toggle, type, setForceUpdate }) {
     let isMounted = true;
 
     const getTreeOtions = async () => {
-      console.log(type.toUpperCase());
       try {
         const response = await axiosPrivate.get(Endpoints[type.toUpperCase()], {
           signal: controller.signal,

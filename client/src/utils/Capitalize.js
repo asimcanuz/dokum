@@ -1,5 +1,4 @@
 function Capitalize(string) {
-  console.log(string);
   if (!string) {
     return string;
   }

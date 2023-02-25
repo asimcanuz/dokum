@@ -96,6 +96,40 @@ db.order.belongsTo(db.tree, {
   as: "tree",
 });
 
+//  order 1-1
+
+db.creator.hasOne(db.order, {
+  foreignKey: "createdBy",
+});
+db.creator.hasOne(db.order, {
+  foreignKey: "updatedBy",
+});
+db.customer.hasOne(db.order, {
+  foreignKey: "customerId",
+});
+db.description.hasOne(db.order, {
+  foreignKey: "descriptionId",
+});
+db.treeStatus.hasOne(db.order, {
+  foreignKey: "statusId",
+});
+
+db.order.hasOne(db.creator, {
+  foreignKey: "createdBy",
+});
+db.order.hasOne(db.creator, {
+  foreignKey: "updatedBy",
+});
+db.order.hasOne(db.customer, {
+  foreignKey: "customerId",
+});
+db.order.hasOne(db.description, {
+  foreignKey: "descriptionId",
+});
+db.order.hasOne(db.treeStatus, {
+  foreignKey: "statusId",
+});
+
 db.ROLES = ["user", "superuser", "admin"];
 
 module.exports = db;
