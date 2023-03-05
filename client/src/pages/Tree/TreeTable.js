@@ -265,7 +265,7 @@ function TreeTable({
                 <Fragment key={i}>
                   <tr
                     align="center"
-                    className="hover:mouse-pointer hover:bg-slate-800"
+                    className="hover:mouse-pointer hover:bg-slate-800 select-none"
                     onClick={() => {
                       let clickedTree = row.original;
                       let customerIds = [];
@@ -286,6 +286,9 @@ function TreeTable({
                         musteriSayisi: customerIds.length,
                       });
                       // id,ağaç no, liste no, sipariş sayısı,renk,ayar
+                    }}
+                    onDoubleClick={() => {
+                      console.log(row.original);
                     }}
                   >
                     {row.cells.map((cell) => {

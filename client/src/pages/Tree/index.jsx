@@ -243,6 +243,7 @@ function TreePage() {
                 clickTree={clickTree}
                 customers={customers}
                 descriptions={descriptions}
+                setTodayTrees={setTodayTrees}
               />
             )}
           </div>

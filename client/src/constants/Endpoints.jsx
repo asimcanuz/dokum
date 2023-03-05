@@ -17,7 +17,7 @@ export const Endpoints = {
     MAIN: "api/tree",
     TODAY: "api/tree/today",
   },
-  ORDER: {},
+  ORDER: "api/order",
   COLOR: "api/color",
   CREATOR: "api/creator",
   DESCRIPTION: "api/description",
