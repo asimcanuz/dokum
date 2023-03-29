@@ -117,7 +117,6 @@ function TreeTable({
                             }
                           );
                           deletedOrder.then((res) => {
-                            console.log(res);
                             let newTodayTrees = todayTrees.map((todayTree) => {
                               if (todayTree.treeId === row.original.treeId) {
                                 let newOrders = todayTree.orders.filter(
@@ -255,6 +254,7 @@ function TreeTable({
                 let deletedTree = axiosPrivate.put(Endpoints.TREE.PASSIVE, {
                   treeId: row.original.treeId,
                 });
+
                 deletedTree.then((res) => {
                   let newTodayTrees = todayTrees.filter(
                     (todayTree) => todayTree.treeId !== row.original.treeId
@@ -277,7 +277,7 @@ function TreeTable({
       //   accessor: "",
       // },
     ],
-    []
+    [todayTrees]
   );
   const {
     getTableProps,

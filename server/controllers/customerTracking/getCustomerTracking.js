@@ -40,7 +40,7 @@ const getCustomerTracking = async (req, res) => {
     ],
   });
 
-  // orderları müşterilere göre grupla
+  // orderları müşteri ve ağaç numaralarına  göre grupla
   const ordersByCustomer = orders.reduce((acc, order) => {
     const { customerId } = order;
 
