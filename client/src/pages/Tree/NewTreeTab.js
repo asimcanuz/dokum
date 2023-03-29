@@ -37,6 +37,7 @@ function NewTreeTab({
   waxes,
   todayTrees,
   setTodayTrees,
+  isHaveNotFinished,
 }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [newTree, setNewTree] = useState(initialState.newTree);
@@ -45,9 +46,6 @@ function NewTreeTab({
     type: "",
   });
   const axiosPrivate = useAxiosPrivate();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const controller = new AbortController();
 
   function getBiggestNumber(key) {
     let biggest = Number(todayTrees[0][key]);
@@ -77,6 +75,11 @@ function NewTreeTab({
       renkId: 1 */
 
     try {
+      if (isHaveNotFinished) {
+        throw new Error(
+          "Önceki ağaçların gün sonunu yapınız veya tarihini bugün olarak değiştiriniz."
+        );
+      }
       if (newTree.agacAuto) {
         let biggestNumber = getBiggestNumber("treeNo") + 1;
         setNewTree({ ...newTree, agacNo: biggestNumber });
@@ -144,10 +147,13 @@ function NewTreeTab({
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
+
+      const controller = new AbortController();
       const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
         signal: controller.signal,
       });
       setTodayTrees(res.data.trees);
+      controller.abort();
     } catch (err) {
       window.alert(err);
     }
@@ -217,7 +223,7 @@ function NewTreeTab({
                     type: "COLOR",
                   });
                 }}
-                className="flex items-center gap-x-4 text-blue-700 hover:bg-slate-700 p-2 hover:cursor-pointer"
+                className="flex items-center gap-x-4 text-blue-700 hover:bg-gray-200  dark:hover:bg-slate-700 p-2 hover:cursor-pointer"
               >
                 <AiOutlinePlus /> <span>Yeni Ekle</span>
               </li>
@@ -226,7 +232,9 @@ function NewTreeTab({
                   <li
                     key={color.colorId}
                     className={`${
-                      newTree.renkId === color.colorId ? "bg-slate-800" : ""
+                      newTree.renkId === color.colorId
+                        ? "bg-gray-300 dark:bg-slate-800"
+                        : ""
                     } p-2  `}
                     onClick={() => {
                       setNewTree({ ...newTree, renkId: color.colorId });
@@ -250,7 +258,7 @@ function NewTreeTab({
                     type: "OPTION",
                   });
                 }}
-                className="hover:cursor-pointer flex items-center gap-x-4 text-blue-700 hover:bg-slate-700 p-2"
+                className="hover:cursor-pointer flex items-center gap-x-4 text-blue-700 hover:bg-gray-200  dark:hover:bg-slate-700 p-2"
               >
                 <AiOutlinePlus /> <span>Yeni Ekle</span>
               </li>
@@ -259,7 +267,9 @@ function NewTreeTab({
                   <li
                     key={option.optionId}
                     className={`${
-                      newTree.ayarId === option.optionId ? "bg-slate-800" : ""
+                      newTree.ayarId === option.optionId
+                        ? "bg-gray-300 dark:bg-slate-800"
+                        : ""
                     } p-2  `}
                     onClick={() => {
                       setNewTree({ ...newTree, ayarId: option.optionId });
@@ -281,7 +291,7 @@ function NewTreeTab({
                     type: "THICK",
                   });
                 }}
-                className=" hover:cursor-pointer flex items-center gap-x-4 text-blue-700 hover:bg-slate-700 p-2"
+                className=" hover:cursor-pointer flex items-center gap-x-4 text-blue-700 hover:bg-gray-200  dark:hover:bg-slate-700 p-2"
               >
                 <AiOutlinePlus /> <span>Yeni Ekle</span>
               </li>
@@ -290,7 +300,9 @@ function NewTreeTab({
                   <li
                     key={thick.thickId}
                     className={`${
-                      newTree.kalınlıkId === thick.thickId ? "bg-slate-800" : ""
+                      newTree.kalınlıkId === thick.thickId
+                        ? "bg-gray-300 dark:bg-slate-800"
+                        : ""
                     } p-2  `}
                     onClick={() => {
                       setNewTree({ ...newTree, kalınlıkId: thick.thickId });
@@ -312,7 +324,7 @@ function NewTreeTab({
                     type: "CREATOR",
                   });
                 }}
-                className="hover:cursor-pointer flex items-center gap-x-4 text-blue-700 hover:bg-slate-700 p-2"
+                className="hover:cursor-pointer flex items-center gap-x-4 text-blue-700 hover:bg-gray-200  dark:hover:bg-slate-700 p-2"
               >
                 <AiOutlinePlus /> <span>Yeni Ekle</span>
               </li>
@@ -322,7 +334,7 @@ function NewTreeTab({
                     key={creator.creatorId}
                     className={`${
                       newTree.hazırlayanId === creator.creatorId
-                        ? "bg-slate-800"
+                        ? "bg-gray-300 dark:bg-slate-800"
                         : ""
                     } p-2  `}
                     onClick={() => {
@@ -348,7 +360,7 @@ function NewTreeTab({
                     type: "WAX",
                   });
                 }}
-                className=" hover:cursor-pointer flex items-center gap-x-4 text-blue-700 hover:bg-slate-700 p-2"
+                className=" hover:cursor-pointer flex items-center gap-x-4 text-blue-700 hover:bg-gray-200  dark:hover:bg-slate-700 p-2"
               >
                 <AiOutlinePlus /> <span>Yeni Ekle</span>
               </li>
@@ -357,7 +369,9 @@ function NewTreeTab({
                   <li
                     key={wax.waxId}
                     className={`${
-                      newTree.mumTurId === wax.waxId ? "bg-slate-800" : ""
+                      newTree.mumTurId === wax.waxId
+                        ? "bg-gray-300 dark:bg-slate-800"
+                        : ""
                     } p-2  `}
                     onClick={() => {
                       setNewTree({ ...newTree, mumTurId: wax.waxId });

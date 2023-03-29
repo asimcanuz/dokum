@@ -22,6 +22,7 @@ module.exports = (sequelize, Sequelize) => {
     waxWeight: { type: Sequelize.INTEGER },
     mineralWeight: { type: Sequelize.INTEGER },
     processTime: { type: Sequelize.STRING },
+    finished: { type: Sequelize.BOOLEAN, defaultValue: false },
     createdBy: { type: Sequelize.STRING },
     updatedBy: { type: Sequelize.STRING },
   });

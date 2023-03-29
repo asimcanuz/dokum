@@ -17,6 +17,7 @@ function useRefreshToken() {
         id: response.data.id,
       };
     });
+
     return response.data.accessToken;
   };
 

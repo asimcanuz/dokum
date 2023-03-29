@@ -14,14 +14,12 @@ function ConfigurationsPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const effectRun = useRef(false);
-
   const [descriptions, setDescriptions] = useState([]);
   const [options, setOptions] = useState([]);
   const [creators, setCreators] = useState([]);
   const [thicks, setThicks] = useState([]);
   const [waxes, setWaxes] = useState([]);
-  const [treeStatuses, setTreeStatuses] = useState([]);
+  // const [treeStatuses, setTreeStatuses] = useState([]);
   const [colors, setColors] = useState([]);
 
   const descriptionsRef = useRef(null);
@@ -29,7 +27,7 @@ function ConfigurationsPage() {
   const creatorsRef = useRef(null);
   const thicksRef = useRef(null);
   const waxesRef = useRef(null);
-  const treeStatusesRef = useRef(null);
+  // const treeStatusesRef = useRef(null);
   const colorsRef = useRef(null);
 
   useEffect(() => {
@@ -124,24 +122,24 @@ function ConfigurationsPage() {
         });
       }
     };
-    const getTreeStatus = async () => {
-      try {
-        const response = await axiosPrivate.get(Endpoints.TREESTATUS, {
-          signal: controller.signal,
-        });
+    // const getTreeStatus = async () => {
+    //   try {
+    //     const response = await axiosPrivate.get(Endpoints.TREESTATUS, {
+    //       signal: controller.signal,
+    //     });
 
-        if (isMounted) {
-          setTreeStatuses(response.data.treeStatuses);
-          treeStatusesRef.current = response.data.treeStatusesRef;
-        }
-      } catch (error) {
-        console.error(error);
-        navigate("/login", {
-          state: { from: location },
-          replace: true,
-        });
-      }
-    };
+    //     if (isMounted) {
+    //       setTreeStatuses(response.data.treeStatuses);
+    //       treeStatusesRef.current = response.data.treeStatusesRef;
+    //     }
+    //   } catch (error) {
+    //     console.error(error);
+    //     navigate("/login", {
+    //       state: { from: location },
+    //       replace: true,
+    //     });
+    //   }
+    // };
 
     const getColors = async () => {
       try {
@@ -161,21 +159,16 @@ function ConfigurationsPage() {
         });
       }
     };
-    if (effectRun.current) {
-      getDescriptions();
-      getOptions();
-      getCreator();
-      getThick();
-      getWax();
-      getTreeStatus();
-      getColors();
-    }
-
+    getDescriptions();
+    getOptions();
+    getCreator();
+    getThick();
+    getWax();
+    // getTreeStatus();
+    getColors();
     return () => {
       isMounted = false;
       !isMounted && controller.abort();
-
-      effectRun.current = true;
     };
   }, []);
 
@@ -205,6 +198,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   const updateWax = async (id, name) => {
     const controller = new AbortController();
@@ -231,6 +225,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   const deleteWax = async (id) => {
     const controller = new AbortController();
@@ -257,6 +252,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   //#endregion wax requests
 
@@ -286,6 +282,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   const updateOption = async (id, text) => {
     const controller = new AbortController();
@@ -312,6 +309,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   const deleteOption = async (id) => {
     const controller = new AbortController();
@@ -338,6 +336,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   //#endregion options requests
 
@@ -367,6 +366,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   const updateThick = async (id, name) => {
     const controller = new AbortController();
@@ -393,6 +393,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   const deleteThick = async (id) => {
     const controller = new AbortController();
@@ -419,6 +420,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   //#endregion thick requests
 
@@ -448,6 +450,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   const updateColor = async (id, name) => {
     const controller = new AbortController();
@@ -473,6 +476,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   const deleteColor = async (id) => {
     const controller = new AbortController();
@@ -499,6 +503,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   //#endregion color requests
 
@@ -528,6 +533,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   const updateDescription = async (id, text) => {
     const controller = new AbortController();
@@ -553,6 +559,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   const deleteDescription = async (id) => {
     const controller = new AbortController();
@@ -579,6 +586,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   //#endregion color requests
 
@@ -608,6 +616,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   const updateCreator = async (id, name) => {
     const controller = new AbortController();
@@ -633,6 +642,7 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   const deleteCreator = async (id) => {
     const controller = new AbortController();
@@ -659,87 +669,91 @@ function ConfigurationsPage() {
         replace: true,
       });
     }
+    controller.abort();
   };
   //#endregion creators requests
 
   //#region tree status request
-  const saveTreeStatus = async (name) => {
-    const controller = new AbortController();
+  // const saveTreeStatus = async (name) => {
+  //   const controller = new AbortController();
 
-    try {
-      await axiosPrivate.post(
-        Endpoints.TREESTATUS,
-        { treeStatusName: name },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-      const response = await axiosPrivate.get(Endpoints.TREESTATUS, {
-        signal: controller.signal,
-      });
+  //   try {
+  //     await axiosPrivate.post(
+  //       Endpoints.TREESTATUS,
+  //       { treeStatusName: name },
+  //       {
+  //         headers: { "Content-Type": "application/json" },
+  //         withCredentials: true,
+  //       }
+  //     );
+  //     const response = await axiosPrivate.get(Endpoints.TREESTATUS, {
+  //       signal: controller.signal,
+  //     });
 
-      setTreeStatuses(response.data.treeStatuses);
-      treeStatusesRef.current = response.data.treeStatuses;
-    } catch (error) {
-      console.error(error);
-      navigate("/login", {
-        state: { from: location },
-        replace: true,
-      });
-    }
-  };
-  const updateTreeStatus = async (id, name) => {
-    const controller = new AbortController();
-    try {
-      await axiosPrivate.put(
-        Endpoints.TREESTATUS,
-        { treeStatusId: id, treeStatusName: name },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-      const response = await axiosPrivate.get(Endpoints.TREESTATUS, {
-        signal: controller.signal,
-      });
+  //     setTreeStatuses(response.data.treeStatuses);
+  //     treeStatusesRef.current = response.data.treeStatuses;
+  //   } catch (error) {
+  //     console.error(error);
+  //     navigate("/login", {
+  //       state: { from: location },
+  //       replace: true,
+  //     });
+  //   }
+  //   controller.abort();
+  // };
+  // const updateTreeStatus = async (id, name) => {
+  //   const controller = new AbortController();
+  //   try {
+  //     await axiosPrivate.put(
+  //       Endpoints.TREESTATUS,
+  //       { treeStatusId: id, treeStatusName: name },
+  //       {
+  //         headers: { "Content-Type": "application/json" },
+  //         withCredentials: true,
+  //       }
+  //     );
+  //     const response = await axiosPrivate.get(Endpoints.TREESTATUS, {
+  //       signal: controller.signal,
+  //     });
 
-      setTreeStatuses(response.data.treeStatuses);
-      treeStatusesRef.current = response.data.treeStatuses;
-    } catch (error) {
-      console.error(error);
-      navigate("/login", {
-        state: { from: location },
-        replace: true,
-      });
-    }
-  };
-  const deleteTreeStatus = async (id) => {
-    const controller = new AbortController();
+  //     setTreeStatuses(response.data.treeStatuses);
+  //     treeStatusesRef.current = response.data.treeStatuses;
+  //   } catch (error) {
+  //     console.error(error);
+  //     navigate("/login", {
+  //       state: { from: location },
+  //       replace: true,
+  //     });
+  //   }
+  //   controller.abort();
+  // };
+  // const deleteTreeStatus = async (id) => {
+  //   const controller = new AbortController();
 
-    try {
-      await axiosPrivate.delete(
-        Endpoints.TREESTATUS,
-        { data: { treeStatusId: id } },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-      const response = await axiosPrivate.get(Endpoints.TREESTATUS, {
-        signal: controller.signal,
-      });
+  //   try {
+  //     await axiosPrivate.delete(
+  //       Endpoints.TREESTATUS,
+  //       { data: { treeStatusId: id } },
+  //       {
+  //         headers: { "Content-Type": "application/json" },
+  //         withCredentials: true,
+  //       }
+  //     );
+  //     const response = await axiosPrivate.get(Endpoints.TREESTATUS, {
+  //       signal: controller.signal,
+  //     });
 
-      setTreeStatuses(response.data.treeStatuses);
-      treeStatusesRef.current = response.data.treeStatuses;
-    } catch (error) {
-      console.error(error);
-      navigate("/login", {
-        state: { from: location },
-        replace: true,
-      });
-    }
-  };
+  //     setTreeStatuses(response.data.treeStatuses);
+  //     treeStatusesRef.current = response.data.treeStatuses;
+  //   } catch (error) {
+  //     console.error(error);
+  //     navigate("/login", {
+  //       state: { from: location },
+  //       replace: true,
+  //     });
+  //   }
+  //   controller.abort();
+  // };
   //#endregion creators requests
 
   return (
@@ -794,12 +808,16 @@ function ConfigurationsPage() {
                           _wax.waxName = e.target.value;
                           setWaxes(newWaxList);
                         }}
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter") {
+                            updateWax(wax.waxId, wax.waxName);
+                          }
+                        }}
                       />
                     </div>
                     <div className="flex flex-row space-x-4 ">
                       <AiOutlineSave
                         size={"24px"}
-                        color="white"
                         className="hover:cursor-pointer hover:animate-pulse "
                         onClick={() => {
                           updateWax(wax.waxId, wax.waxName);
@@ -816,7 +834,6 @@ function ConfigurationsPage() {
                       />
                       <AiOutlineDelete
                         size={"24px"}
-                        color="white"
                         className="hover:cursor-pointer hover:animate-pulse "
                         onClick={() => {
                           deleteWax(wax.waxId);
@@ -879,12 +896,16 @@ function ConfigurationsPage() {
                           _option.optionText = e.target.value;
                           setOptions(newOptionList);
                         }}
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter") {
+                            updateOption(option.optionId, option.optionText);
+                          }
+                        }}
                       />
                     </div>
                     <div className="flex flex-row space-x-4 ">
                       <AiOutlineSave
                         size={"24px"}
-                        color="white"
                         className="hover:cursor-pointer hover:animate-pulse "
                         onClick={() => {
                           updateOption(option.optionId, option.optionText);
@@ -901,7 +922,6 @@ function ConfigurationsPage() {
                       />
                       <AiOutlineDelete
                         size={"24px"}
-                        color="white"
                         className="hover:cursor-pointer hover:animate-pulse "
                         onClick={() => {
                           deleteOption(option.optionId);
@@ -964,12 +984,16 @@ function ConfigurationsPage() {
                           _thick.thickName = e.target.value;
                           setThicks(newThickList);
                         }}
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter") {
+                            updateThick(thick.thickId, thick.thickName);
+                          }
+                        }}
                       />
                     </div>
                     <div className="flex flex-row space-x-4 ">
                       <AiOutlineSave
                         size={"24px"}
-                        color="white"
                         className="hover:cursor-pointer hover:animate-pulse "
                         onClick={() => {
                           updateThick(thick.thickId, thick.thickName);
@@ -980,7 +1004,6 @@ function ConfigurationsPage() {
                       />
                       <AiOutlineDelete
                         size={"24px"}
-                        color="white"
                         className="hover:cursor-pointer hover:animate-pulse "
                         onClick={() => {
                           deleteThick(thick.thickId);
@@ -1042,12 +1065,16 @@ function ConfigurationsPage() {
                           _color.colorName = e.target.value;
                           setColors(newColorList);
                         }}
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter") {
+                            updateColor(color.colorId, color.colorName);
+                          }
+                        }}
                       />
                     </div>
                     <div className="flex flex-row space-x-4 ">
                       <AiOutlineSave
                         size={"24px"}
-                        color="white"
                         className="hover:cursor-pointer hover:animate-pulse "
                         onClick={() => {
                           updateColor(color.colorId, color.colorName);
@@ -1058,7 +1085,6 @@ function ConfigurationsPage() {
                       />
                       <AiOutlineDelete
                         size={"24px"}
-                        color="white"
                         className="hover:cursor-pointer hover:animate-pulse "
                         onClick={() => {
                           deleteColor(color.colorId);
@@ -1120,12 +1146,19 @@ function ConfigurationsPage() {
                           _description.descriptionText = e.target.value;
                           setDescriptions(newDescriptionList);
                         }}
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter") {
+                            updateDescription(
+                              description.descriptionId,
+                              description.descriptionText
+                            );
+                          }
+                        }}
                       />
                     </div>
                     <div className="flex flex-row space-x-4 ">
                       <AiOutlineSave
                         size={"24px"}
-                        color="white"
                         className="hover:cursor-pointer hover:animate-pulse "
                         onClick={() => {
                           updateDescription(
@@ -1139,7 +1172,6 @@ function ConfigurationsPage() {
                       />
                       <AiOutlineDelete
                         size={"24px"}
-                        color="white"
                         className="hover:cursor-pointer hover:animate-pulse "
                         onClick={() => {
                           deleteDescription(description.descriptionId);
@@ -1202,12 +1234,19 @@ function ConfigurationsPage() {
                           _creator.creatorName = e.target.value;
                           setCreators(newCreatorList);
                         }}
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter") {
+                            updateCreator(
+                              creator.creatorId,
+                              creator.creatorName
+                            );
+                          }
+                        }}
                       />
                     </div>
                     <div className="flex flex-row space-x-4 ">
                       <AiOutlineSave
                         size={"24px"}
-                        color="white"
                         className="hover:cursor-pointer hover:animate-pulse "
                         onClick={() => {
                           updateCreator(creator.creatorId, creator.creatorName);
@@ -1218,7 +1257,6 @@ function ConfigurationsPage() {
                       />
                       <AiOutlineDelete
                         size={"24px"}
-                        color="white"
                         className="hover:cursor-pointer hover:animate-pulse "
                         onClick={() => {
                           deleteCreator(creator.creatorId);
@@ -1236,7 +1274,7 @@ function ConfigurationsPage() {
             <Alert apperance={"warning"}>Veriler Henüz Girilmemiş!</Alert>
           )}
         </div>
-        <div className="px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4">
+        {/* <div className="px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4">
           <h4 className="text-lg">Ağaç Durumları</h4>
           <Button
             appearance={"primary"}
@@ -1318,7 +1356,7 @@ function ConfigurationsPage() {
           ) : (
             <Alert apperance={"warning"}>Veriler Henüz Girilmemiş!</Alert>
           )}
-        </div>
+        </div> */}
       </div>
 
       {/* descriptions */}

@@ -30,6 +30,7 @@ var app = express();
 app.use(logger("dev"));
 app.use(credentials);
 app.use(cors(corsOptions));
+// app.use(cors());
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -42,23 +43,26 @@ app.use(express.static(path.join(__dirname, "public")));
 //public routes for auth and refresh token
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/refresh", require("./routes/refresh.routes"));
-app.use("/api/order", require("./routes/order.routes"));
-app.use("/api/tree", require("./routes/tree.routes"));
-
-// verify jwt middleware
-app.use(verifyJWT);
-//protected routes
+app.use("/api/customertracking", require("./routes/customerTracking.routes"));
+app.use("/api/createLabel", require("./routes/createLabel.routes"));
 app.use("/api/users", require("./routes/user.routes"));
 app.use("/api/customers", require("./routes/customer.routes"));
-// app.use("/api/order", require("./routes/order.routes"));
+app.use("/api/order", require("./routes/order.routes"));
 app.use("/api/color", require("./routes/color.routes"));
 app.use("/api/creator", require("./routes/creator.routes"));
 app.use("/api/description", require("./routes/description.routes"));
 app.use("/api/option", require("./routes/option.routes"));
 app.use("/api/thick", require("./routes/thick.routes"));
-// app.use("/api/tree", require("./routes/tree.routes"));
+app.use("/api/tree", require("./routes/tree.routes"));
 app.use("/api/wax", require("./routes/wax.routes"));
 app.use("/api/treeStatus", require("./routes/treeStatus.routes"));
+app.use("/api/finishDay", require("./routes/finishDay.routes"));
+
+// verify jwt middleware
+app.use(verifyJWT);
+//protected routes
+// app.use("/api/tree", require("./routes/tree.routes"));
+
 console.log(`NODE_ENV=${envConfig.NODE_ENV}`);
 
 // db.sequelize
@@ -114,7 +118,10 @@ function initDB() {
   Description.create({ descriptionText: "açıklama" });
   Option.create({ optionText: "ayar" });
   Thick.create({ thickName: "kalınlık" });
-  TreeStatus.create({ treeStatusName: "tree" });
+  TreeStatus.create({ treeStatusName: "Hazırlanıyor" });
+  TreeStatus.create({ treeStatusName: "Dökümde" });
+  TreeStatus.create({ treeStatusName: "Döküldü" });
+  TreeStatus.create({ treeStatusName: "Kesimde" });
 }
 
 module.exports = app;

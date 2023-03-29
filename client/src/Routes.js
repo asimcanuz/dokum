@@ -1,11 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/Login";
-import HomePage from "./pages/Home";
 import RequireAuth from "./utils/RequireAuth";
 import Shared from "./utils/Shared";
-import AdminPage from "./pages/AdminPage";
-import SuperPage from "./pages/SuperPage";
-import UserPage from "./pages/UserPage";
 import Unauthorized from "./pages/Unauthorized";
 import NotFoundPage from "./pages/NotFoundPage";
 import PersistLogin from "./utils/PersistLogin";
@@ -15,6 +11,8 @@ import Layout from "./components/Layout";
 import ConfigurationsPage from "./pages/Configurations/ConfigurationsPage";
 import { rolesDesc } from "./constants/RolesConstants";
 import TreePage from "./pages/Tree";
+import EndDayMain from "./pages/EndDay";
+import OrderMain from "./pages/Orders";
 function Routers() {
   return (
     <Routes>
@@ -36,32 +34,7 @@ function Routers() {
               />
             }
           >
-            <Route path="/" element={<HomePage />} />
-          </Route>
-
-          {/* Admin Page */}
-          <Route element={<RequireAuth allowedRoles={[Shared.Roles.admin]} />}>
-            <Route path="admin" element={<AdminPage />} />
-          </Route>
-          {/* SUPER PAGE */}
-          <Route
-            element={
-              <RequireAuth
-                allowedRoles={[Shared.Roles.admin, Shared.Roles.super]}
-              />
-            }
-          >
-            <Route path="super" element={<SuperPage />} />
-          </Route>
-          {/* USER PAGE */}
-          <Route
-            element={
-              <RequireAuth
-                allowedRoles={[Shared.Roles.admin, Shared.Roles.user]}
-              />
-            }
-          >
-            <Route path="user" element={<UserPage />} />
+            <Route path="/" element={<TreePage />} />
           </Route>
 
           {/* ACCOUNTS PAGE */}
@@ -97,6 +70,32 @@ function Routers() {
             }
           >
             <Route path="configurations" element={<ConfigurationsPage />} />
+          </Route>
+          <Route
+            element={
+              <RequireAuth
+                allowedRoles={[
+                  Shared.Roles.admin,
+                  Shared.Roles.super,
+                  Shared.Roles.user,
+                ]}
+              />
+            }
+          >
+            <Route path="endDay" element={<EndDayMain />} />
+          </Route>
+          <Route
+            element={
+              <RequireAuth
+                allowedRoles={[
+                  Shared.Roles.admin,
+                  Shared.Roles.super,
+                  Shared.Roles.user,
+                ]}
+              />
+            }
+          >
+            <Route path="orders" element={<OrderMain />} />
           </Route>
           {/* TREE PAGE */}
           <Route element={<RequireAuth allowedRoles={rolesDesc.allOf} />}>

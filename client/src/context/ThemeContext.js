@@ -5,11 +5,12 @@ export const ThemeContext = createContext();
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(null);
   useEffect(() => {
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
+    setTheme("light");
+    // if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    //   setTheme("dark");
+    // } else {
+    //   setTheme("light");
+    // }
   }, []);
 
   useEffect(() => {

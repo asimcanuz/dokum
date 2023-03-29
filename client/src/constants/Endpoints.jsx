@@ -16,6 +16,7 @@ export const Endpoints = {
   TREE: {
     MAIN: "api/tree",
     TODAY: "api/tree/today",
+    PASSIVE: "api/tree/passive",
   },
   ORDER: "api/order",
   COLOR: "api/color",
@@ -25,4 +26,6 @@ export const Endpoints = {
   THICK: "api/thick",
   WAX: "api/wax",
   TREESTATUS: "api/treeStatus",
+  FINISHDAY: "api/finishDay",
+  CREATELABEL: "api/createLabel",
 };

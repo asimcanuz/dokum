@@ -40,15 +40,12 @@ function NewOrderTab({
 
   async function addOrder() {
     const controller = new AbortController();
-
     try {
       await axiosPrivate.post(Endpoints.ORDER, order, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
-      const response = await axiosPrivate.get(Endpoints.TREE.TODAY, {
-        signal: controller.signal,
-      });
+      const response = await axiosPrivate.get(Endpoints.TREE.TODAY);
 
       setTodayTrees(response.data.trees);
     } catch (error) {
@@ -58,6 +55,7 @@ function NewOrderTab({
         replace: true,
       });
     }
+    controller.abort();
   }
 
   return (

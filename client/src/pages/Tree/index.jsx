@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import Header from "../../components/Header";
 import Tabs from "../../components/Tabs";
 
@@ -8,6 +8,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import NewTreeTab from "./NewTreeTab";
 import TreeTable from "./TreeTable";
 import NewOrderTab from "./NewOrderTab";
+import UpdateTreeModal from "./UpdateTreeModal";
 
 const tabs = {
   agac: "tree",
@@ -23,19 +24,26 @@ const tabList = [
     id: "order",
   },
 ];
+const initUpdateClick = {
+  open: false,
+  active: "",
+  colorId: "",
+  creatorId: "",
+  date: "",
+  isImmediate: "",
+  listNo: "",
+  optionId: "",
+  processId: "",
+  thickId: "",
+  treeNo: "",
+  treeStatusId: "",
+  waxId: "",
+};
 
 function TreePage() {
   const [selectedTab, setSelectedTab] = useState(tabs.agac);
-  const [clickTree, setClickTree] = useState({
-    agacId: "",
-    agacNo: "",
-    listeNo: "",
-    siparisSayisi: "",
-    renk: "",
-    ayar: "",
-    kalinlik: "",
-    musteriSayisi: "",
-  });
+  const [clickTree, setClickTree] = useState(initUpdateClick);
+  const [updateClick, setUpdateClick] = useState({});
 
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -52,6 +60,8 @@ function TreePage() {
   const [customers, setCustomers] = useState([]);
   const [descriptions, setDescriptions] = useState([]);
 
+  const [isHaveNotFinished, setIsHaveNotFinished] = useState(false);
+
   useEffect(() => {
     const controller = new AbortController();
     let isMounted = true;
@@ -60,7 +70,11 @@ function TreePage() {
         const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
           signal: controller.signal,
         });
-        isMounted && setTodayTrees(res.data.trees);
+
+        if (isMounted) {
+          setTodayTrees(res.data.trees);
+          setIsHaveNotFinished(res.data.isHaveNotFinished);
+        }
       } catch (error) {
         console.error(error);
         navigate("/login", { state: { from: location }, replace: true });
@@ -195,71 +209,96 @@ function TreePage() {
         navigate("/login", { state: { from: location }, replace: true });
       }
     };
-    if (effectRun.current) {
-      getDescriptions();
-      // getTreeStatus();
-      getOptions();
-      getCreator();
-      getThick();
-      getWax();
-      getColors();
-      getTrees();
-      getCustomers();
-      getTreeStatus();
-    }
+    getDescriptions();
+    // getTreeStatus();
+    getOptions();
+    getCreator();
+    getThick();
+    getWax();
+    getColors();
+    getTrees();
+    getCustomers();
+    getTreeStatus();
 
     return () => {
       isMounted = false;
       !isMounted && controller.abort();
-
-      effectRun.current = true;
     };
   }, []);
   return (
-    <section className="space-y-4">
-      <Header title={"Ağaçlar"} description={"Döküme girecek ağaç girişleri"} />
-      <div className="grid grid-cols-12 mt-4 gap-x-4 gap-y-4">
-        <div className="col-span-12 lg:col-span-6 xl:col-span-4  max-w-md">
-          <Tabs
-            tabsList={tabList}
-            setSelected={setSelectedTab}
-            selectedTab={selectedTab}
-          />
-          <div className="px-6 py-4">
-            {selectedTab === tabs.agac ? (
-              <NewTreeTab
-                colors={colors}
-                options={options}
-                thicks={thicks}
-                creators={creators}
-                waxes={waxes}
-                todayTrees={todayTrees}
-                setTodayTrees={setTodayTrees}
-                customers={customers}
-                descriptions={descriptions}
-              />
-            ) : (
-              <NewOrderTab
-                clickTree={clickTree}
-                customers={customers}
-                descriptions={descriptions}
-                setTodayTrees={setTodayTrees}
-              />
-            )}
+    <Fragment>
+      <section className="space-y-4">
+        <Header
+          title={"Ağaçlar"}
+          description={"Döküme girecek ağaç girişleri"}
+        />
+        <div className="grid grid-cols-12 mt-4 gap-x-4 gap-y-4">
+          <div className="col-span-12 lg:col-span-6 xl:col-span-4  max-w-md">
+            <Tabs
+              tabsList={tabList}
+              setSelected={setSelectedTab}
+              selectedTab={selectedTab}
+            />
+            <div className="px-6 py-4">
+              {selectedTab === tabs.agac ? (
+                <NewTreeTab
+                  colors={colors}
+                  options={options}
+                  thicks={thicks}
+                  creators={creators}
+                  waxes={waxes}
+                  todayTrees={todayTrees}
+                  setTodayTrees={setTodayTrees}
+                  customers={customers}
+                  descriptions={descriptions}
+                  isHaveNotFinished={isHaveNotFinished}
+                />
+              ) : (
+                <NewOrderTab
+                  clickTree={clickTree}
+                  customers={customers}
+                  descriptions={descriptions}
+                  setTodayTrees={setTodayTrees}
+                />
+              )}
+            </div>
+          </div>
+          <div className="col-span-12 lg:col-span-6 xl:col-span-8  ">
+            <TreeTable
+              setClickTree={setClickTree}
+              todayTrees={todayTrees}
+              customers={customers}
+              descriptions={descriptions}
+              treeStatuses={treeStatuses}
+              creators={creators}
+              setUpdateClick={setUpdateClick}
+              setTodayTrees={setTodayTrees}
+              isHaveNotFinished={isHaveNotFinished}
+            />
           </div>
         </div>
-        <div className="col-span-12 lg:col-span-6 xl:col-span-8  bg-zinc-800">
-          <TreeTable
-            setClickTree={setClickTree}
-            todayTrees={todayTrees}
-            customers={customers}
-            descriptions={descriptions}
-            treeStatuses={treeStatuses}
-            creators={creators}
-          />
-        </div>
-      </div>
-    </section>
+      </section>
+
+      {updateClick.open ? (
+        <UpdateTreeModal
+          updateClick={updateClick}
+          setTodayTrees={setTodayTrees}
+          treeStatuses={treeStatuses}
+          options={options}
+          creators={creators}
+          thicks={thicks}
+          waxes={waxes}
+          colors={colors}
+          todayTrees={todayTrees}
+          customers={customers}
+          descriptions={descriptions}
+          setIsHaveNotFinished={setIsHaveNotFinished}
+          toggle={() => {
+            setUpdateClick(initUpdateClick);
+          }}
+        />
+      ) : null}
+    </Fragment>
   );
 }
 

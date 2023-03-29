@@ -50,15 +50,10 @@ function AddNewTreeOptions({ open, size, toggle, type, setForceUpdate }) {
       }
     };
 
-    if (effectRun.current) {
-      getTreeOtions();
-    }
-
+    getTreeOtions();
     return () => {
       isMounted = false;
       !isMounted && controller.abort();
-
-      effectRun.current = true;
     };
   }, []);
   const handleOperation = async () => {
@@ -98,7 +93,6 @@ function AddNewTreeOptions({ open, size, toggle, type, setForceUpdate }) {
       default:
         break;
     }
-    const controller = new AbortController();
 
     if (operationType === "add") {
       await axiosPrivate.post(Endpoints[type.toUpperCase()], item, {
@@ -112,9 +106,7 @@ function AddNewTreeOptions({ open, size, toggle, type, setForceUpdate }) {
       });
     }
 
-    const response = await axiosPrivate.get(Endpoints[type.toUpperCase()], {
-      signal: controller.signal,
-    });
+    const response = await axiosPrivate.get(Endpoints[type.toUpperCase()]);
 
     const responseDataType = Object.keys(response.data)[0];
     setTreeOptions(response.data[responseDataType]);

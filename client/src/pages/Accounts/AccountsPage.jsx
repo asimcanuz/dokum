@@ -8,7 +8,6 @@ import Button from "../../components/Button";
 import { ROLES } from "../../constants/RolesConstants";
 import AccountCreateAndUpdateModal from "./AccountCreateAndUpdateModal";
 import AccountPasswordUpdateModal from "./AccountPasswordUpdateModal";
-import { FaSort } from "react-icons/fa";
 import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
 import { AiOutlinePlus } from "react-icons/ai";
 import DynamicTable from "../../components/Table";
@@ -71,14 +70,11 @@ function AccountsPage() {
         navigate("/login", { state: { from: location }, replace: true });
       }
     };
-    if (effectRun.current) {
-      getUsers();
-    }
-    // iptal
+
+    getUsers();
     return () => {
       isMounted = false;
       isMounted && controller.abort();
-      effectRun.current = true;
     };
   }, []);
 

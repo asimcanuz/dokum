@@ -9,20 +9,20 @@ import {
   AiOutlineLogout,
   AiOutlineSetting,
   AiOutlineShoppingCart,
+  AiOutlineCalendar,
 } from "react-icons/ai";
 import { MdOutlineAccountTree, MdOutlinePeopleAlt } from "react-icons/md";
 import { Link } from "react-router-dom";
-import Shared from "../../utils/Shared";
 import { rolesDesc } from "../../constants/RolesConstants";
 
 const Menus = [
-  {
-    title: "Ana Sayfa",
-    src: "Home",
-    to: "/",
-    icon: AiOutlineHome,
-    roles: rolesDesc.allOf,
-  },
+  // {
+  //   title: "Ana Sayfa",
+  //   src: "Home",
+  //   to: "/",
+  //   icon: AiOutlineHome,
+  //   roles: rolesDesc.allOf,
+  // },
   {
     title: "Ağaç",
     src: "Tree",
@@ -36,6 +36,13 @@ const Menus = [
     to: "/orders",
     roles: rolesDesc.allOf,
     icon: AiOutlineShoppingCart,
+  },
+  {
+    title: "Gün Sonu",
+    src: "EndDay",
+    to: "/endDay",
+    roles: rolesDesc.allOf,
+    icon: AiOutlineCalendar,
   },
   {
     title: "Hesaplar",

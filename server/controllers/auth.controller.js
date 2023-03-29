@@ -91,7 +91,8 @@ exports.signin = async (req, res) => {
 
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
-      // sameSite: "None",
+      // secure: true,
+      // sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000, // 24hr to ms
     });
     res.status(200).send({

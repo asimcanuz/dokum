@@ -34,6 +34,10 @@ const LoginPage = () => {
         });
         const { username, accessToken, email, role, id } = response?.data;
         setAuth({ username, email, role, accessToken, id });
+        sessionStorage.setItem(
+          "auth",
+          JSON.stringify({ username, email, role, accessToken, id })
+        );
         navigate(from, { replace: true });
       } catch (error) {}
     },

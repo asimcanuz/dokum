@@ -11,6 +11,7 @@ const useLogout = () => {
       const response = await axiosPrivate.post(Endpoints.LOGOUT_URL, {
         withCredentials: true,
       });
+      sessionStorage.removeItem("auth");
     } catch (err) {
       console.error(err);
     }

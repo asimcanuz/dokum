@@ -16,7 +16,6 @@ function CustomersPage() {
   const [customers, setCustomers] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const effectRun = useRef(false);
   const [reqController, setReqController] = useState(false);
 
   const axiosPrivate = useAxiosPrivate();
@@ -50,16 +49,12 @@ function CustomersPage() {
         navigate("/login", { state: { from: location }, replace: true });
       }
     };
-    if (effectRun.current || reqController) {
-      getCustomers();
-      setReqController(false);
-    }
 
-    // iptal
+    getCustomers();
+    setReqController(false);
     return () => {
       isMounted = false;
       isMounted && controller.abort();
-      effectRun.current = true;
     };
   }, [reqController]);
 
