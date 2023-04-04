@@ -36,10 +36,19 @@ const createLabel = async (req, res) => {
           finished: false,
         },
         as: "tree",
-        include: [{ model: db.option }, { model: db.color }],
+        // order: [["option.optionText", "ASC"]],
+        include: [
+          {
+            model: db.option,
+            order: [["optionText", "ASC"]],
+          },
+          { model: db.color },
+        ],
       },
     ],
   });
+  //order'ları ağaçların numarasına göre sırala
+  orders.sort((a, b) => a.tree.option.optionText - b.tree.option.optionText);
 
   // orderları müşterilere göre grupla
   const ordersByCustomer = orders.reduce((acc, order) => {
@@ -60,6 +69,7 @@ const createLabel = async (req, res) => {
         if (!acc["option" + optionId]) {
           acc["option" + optionId] = [];
         }
+
         acc["option" + optionId].push(order);
         return acc;
       },
@@ -77,21 +87,25 @@ const createLabel = async (req, res) => {
         if (!acc["color" + colorId]) {
           acc["color" + colorId] = [];
         }
+
         acc["color" + colorId].push(order);
         return acc;
       }, {});
     }
   }
 
-  // ordersByCustomer'ı adetleri topla
+  // ordersByCustomer'a ağaç numaralarını ekle
   for (const customer in ordersByCustomer) {
     for (const option in ordersByCustomer[customer]) {
       for (const color in ordersByCustomer[customer][option]) {
         ordersByCustomer[customer][option][color] = ordersByCustomer[customer][
           option
         ][color].reduce((acc, order) => {
-          const { quantity } = order;
-          acc.push(quantity);
+          const { treeNo } = order.tree;
+          console.log(treeNo);
+          if (acc.includes(treeNo) === false) {
+            acc.push(treeNo);
+          }
           return acc;
         }, []);
       }

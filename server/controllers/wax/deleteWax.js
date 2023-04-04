@@ -3,7 +3,6 @@ const Wax = db.wax;
 
 async function deleteWax(req, res) {
   const { waxId } = req.body;
-  console.log(waxId);
 
   if (!waxId) {
     res.status(401).send({ message: "Wax id not found!" });

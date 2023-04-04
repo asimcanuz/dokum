@@ -13,6 +13,7 @@ import { rolesDesc } from "./constants/RolesConstants";
 import TreePage from "./pages/Tree";
 import EndDayMain from "./pages/EndDay";
 import OrderMain from "./pages/Orders";
+import CustomerTrackingPage from "./pages/CustomerTracking";
 function Routers() {
   return (
     <Routes>
@@ -96,6 +97,19 @@ function Routers() {
             }
           >
             <Route path="orders" element={<OrderMain />} />
+          </Route>
+          <Route
+            element={
+              <RequireAuth
+                allowedRoles={[
+                  Shared.Roles.admin,
+                  Shared.Roles.super,
+                  Shared.Roles.user,
+                ]}
+              />
+            }
+          >
+            <Route path="customerTracking" element={<CustomerTrackingPage />} />
           </Route>
           {/* TREE PAGE */}
           <Route element={<RequireAuth allowedRoles={rolesDesc.allOf} />}>

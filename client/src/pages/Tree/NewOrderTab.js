@@ -37,10 +37,16 @@ function NewOrderTab({
     value: description.descriptionId,
     label: description.descriptionText,
   }));
+  descriptionOptions.unshift({ value: null, label: "Açıklama Yok" });
 
   async function addOrder() {
     const controller = new AbortController();
     try {
+      console.log(order.customerId);
+      if (order.customerId === "" || order.quantity === "") {
+        throw new Error("Lütfen müşteri ve/veya adet alanlarını doldurunuz.");
+      }
+
       await axiosPrivate.post(Endpoints.ORDER, order, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
@@ -50,10 +56,10 @@ function NewOrderTab({
       setTodayTrees(response.data.trees);
     } catch (error) {
       console.error(error);
-      navigate("/login", {
-        state: { from: location },
-        replace: true,
-      });
+      alert(error.message);
+      if (error.response.status === 401) {
+        navigate("/login", { state: { from: location }, replace: true });
+      }
     }
     controller.abort();
   }

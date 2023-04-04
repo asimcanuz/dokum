@@ -41,6 +41,7 @@ db.treeStatus = require("./treeStatus.model")(sequelize, Sequelize);
 db.thick = require("./thick.model")(sequelize, Sequelize);
 db.wax = require("./wax.model")(sequelize, Sequelize);
 db.color = require("./color.model")(sequelize, Sequelize);
+db.treeStatusDate = require("./treeStatusDate.model")(sequelize, Sequelize);
 
 // user role 1-1
 db.role.hasOne(db.user);

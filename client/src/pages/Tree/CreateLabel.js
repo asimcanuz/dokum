@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
   page: {
     flexDirection: "row",
     fontFamily: "Roboto",
+    fontSize: "13px",
   },
   section: {
     margin: 10,
@@ -82,11 +83,23 @@ const MyDocument = ({ data }) => {
           {/* dinamik bir objeyi ekrana yazdır */}
 
           {Object.keys(data).map((key) => {
+            // data?.sort((a, b) => a[key] - b[key]);
+
             return Object.keys(data[key]).map((key2, index) => {
               return (
                 <Box key={index}>
                   <BoxItem>
-                    <Text>{key}</Text>
+                    <Text>
+                      {key
+                        .slice(
+                          0,
+                          key.indexOf("#") === -1
+                            ? key.length
+                            : key.indexOf("#")
+                        )
+                        .toLocaleLowerCase()
+                        .slice(0, 17)}
+                    </Text>
                   </BoxItem>
                   <BoxItem>
                     <Text>{key2}</Text>
@@ -133,7 +146,13 @@ const MyDocument = ({ data }) => {
                       >
                         <Text>K</Text>
                       </View>
-                      <View style={{ textAlign: "center", fontSize: "13px" }}>
+                      <View
+                        style={{
+                          textAlign: "center",
+                          fontSize: "13px",
+                          overflow: "hidden",
+                        }}
+                      >
                         <Text>
                           {data[key][key2]["Kırmızı"] !== undefined
                             ? data[key][key2]["Kırmızı"].map((item, index) => {
@@ -237,8 +256,39 @@ export default function CreateLabel({ open, toggle }) {
         const res = await axiosPrivate.get(Endpoints.CREATELABEL, {
           signal: controller.signal,
         });
+        // data'yı sırala
+        var ordered = {};
+        Object.keys(res.data.ordersByCustomer).forEach(function (key) {
+          Object.keys(res.data.ordersByCustomer[key]).forEach(function (
+            key2,
+            index
+          ) {
+            // key2 gelince yeni ordered[key] oluştur
+            if (ordered[key] === undefined) {
+              ordered[key] = {};
+              ordered[key][key2] = res.data.ordersByCustomer[key][key2];
+            } else {
+              ordered[key + `#${index}#`] = {};
+              ordered[key + `#${index}#`][key2] =
+                res.data.ordersByCustomer[key][key2];
+            }
+            // ordered key varsa yeni bir tane daha ekle
+          });
+          console.log(res.data.ordersByCustomer[key]);
+        });
 
-        setData(res.data.ordersByCustomer);
+        // ordered objesini sırala  key2'ye göre
+        const sortedKeys = Object.keys(ordered).sort((a, b) => {
+          const a2Key = Object.keys(ordered[a])[0]; // birinci veya ikinci anahtar
+          const b2Key = Object.keys(ordered[b])[0]; // birinci veya ikinci anahtar
+          return a2Key.localeCompare(b2Key); // 2. anahtara göre karşılaştır
+        });
+        const sortedObj = {};
+        for (let key of sortedKeys) {
+          sortedObj[key] = ordered[key];
+        }
+        console.log(sortedObj);
+        setData(sortedObj);
       } catch (error) {
         console.error(error);
         navigate("/login", { state: { from: location }, replace: true });

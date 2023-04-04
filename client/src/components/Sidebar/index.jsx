@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 import {
-  AiOutlineHome,
   AiOutlineRight,
   AiOutlineUser,
   AiOutlineLogout,
@@ -11,6 +10,7 @@ import {
   AiOutlineShoppingCart,
   AiOutlineCalendar,
 } from "react-icons/ai";
+import { BsPersonSquare } from "react-icons/bs";
 import { MdOutlineAccountTree, MdOutlinePeopleAlt } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { rolesDesc } from "../../constants/RolesConstants";
@@ -43,6 +43,13 @@ const Menus = [
     to: "/endDay",
     roles: rolesDesc.allOf,
     icon: AiOutlineCalendar,
+  },
+  {
+    title: "Müşteri Takip",
+    src: "CustomerTracking",
+    to: "/customerTracking",
+    roles: rolesDesc.allOf,
+    icon: BsPersonSquare,
   },
   {
     title: "Hesaplar",

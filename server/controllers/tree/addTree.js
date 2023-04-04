@@ -1,5 +1,6 @@
 const db = require("../../models");
 const Tree = db.tree;
+const moment = require("moment/moment");
 
 const addTree = (req, res) => {
   const {
@@ -15,7 +16,7 @@ const addTree = (req, res) => {
     isImmediate,
     active,
   } = req.body;
-
+  console.log(req.body);
   Tree.create({
     optionId,
     waxId,
@@ -29,10 +30,18 @@ const addTree = (req, res) => {
     isImmediate,
     active,
   })
-    .then((result) => {
-      res.status(200).send(result);
+    .then(async (result) => {
+      await db.treeStatusDate.create({
+        treeStatusDate: moment().format("YYYY-MM-DD"),
+        oldTreeStatusId: treeStatusId,
+        newTreeStatusId: treeStatusId,
+        treeId: result.treeId,
+        // updateBy: req.body.updateBy,
+      });
+      await res.status(200).send(result);
     })
     .catch((err) => {
+      console.log(err);
       res.status(500).send({ message: err.message });
     });
 };

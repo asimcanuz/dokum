@@ -25,7 +25,6 @@ const getTodayTrees = async (req, res) => {
   if (_trees.length > 0) {
     isHaveNotFinished = true;
   }
-  console.log("_trees", _trees);
   const trees = await Tree.findAll({
     where: {
       active: true,

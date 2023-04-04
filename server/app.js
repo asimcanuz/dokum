@@ -63,8 +63,6 @@ app.use(verifyJWT);
 //protected routes
 // app.use("/api/tree", require("./routes/tree.routes"));
 
-console.log(`NODE_ENV=${envConfig.NODE_ENV}`);
-
 // db.sequelize
 //   .sync({ force: true })
 //   .then(() => {
@@ -76,52 +74,48 @@ console.log(`NODE_ENV=${envConfig.NODE_ENV}`);
 //   });
 db.sequelize.sync();
 
-function initDB() {
-  Role.create({
+async function initDB() {
+  await Role.create({
     id: 1,
     name: "user",
   });
-  Role.create({
+  await Role.create({
     id: 2,
     name: "superuser",
   });
-  Role.create({
+  await Role.create({
     id: 3,
     name: "admin",
   });
-  User.create({
+  await User.create({
     username: "adminDNE",
     email: "adminDNE@mail.com",
     password: bcrypt.hashSync(envConfig.ADMINPASS, 8),
     roleId: 3,
     isActive: 1,
   });
-  User.create({
+  await User.create({
     username: "user",
     email: "user@mail.com",
     password: bcrypt.hashSync(envConfig.ADMINPASS, 8),
     roleId: 1,
     isActive: 1,
   });
-  User.create({
+  await User.create({
     username: "superuser",
     email: "superuser@mail.com",
     password: bcrypt.hashSync(envConfig.ADMINPASS, 8),
     roleId: 2,
     isActive: 1,
   });
-  Wax.create({
+  await Wax.create({
     waxName: "wax",
   });
-  Color.create({ colorName: "renk" });
-  Creator.create({ creatorName: "hazırlayan" });
-  Description.create({ descriptionText: "açıklama" });
-  Option.create({ optionText: "ayar" });
-  Thick.create({ thickName: "kalınlık" });
-  TreeStatus.create({ treeStatusName: "Hazırlanıyor" });
-  TreeStatus.create({ treeStatusName: "Dökümde" });
-  TreeStatus.create({ treeStatusName: "Döküldü" });
-  TreeStatus.create({ treeStatusName: "Kesimde" });
+
+  await TreeStatus.create({ treeStatusName: "Hazırlanıyor" });
+  await TreeStatus.create({ treeStatusName: "Dökümde" });
+  await TreeStatus.create({ treeStatusName: "Döküldü" });
+  await TreeStatus.create({ treeStatusName: "Kesimde" });
 }
 
 module.exports = app;

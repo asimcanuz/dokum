@@ -28,4 +28,5 @@ export const Endpoints = {
   TREESTATUS: "api/treeStatus",
   FINISHDAY: "api/finishDay",
   CREATELABEL: "api/createLabel",
+  CUSTOMERTRACKING: "api/customerTracking",
 };

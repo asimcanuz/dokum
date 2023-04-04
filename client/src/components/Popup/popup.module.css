@@ -1,0 +1,12 @@
+.popup {
+  @apply absolute z-50 bg-white shadow-lg rounded-lg overflow-hidden;
+}
+.open {
+  @apply block;
+}
+.popupContent {
+  @apply p-4;
+}
+.popupClose {
+  @apply absolute top-0 right-0 p-4;
+}

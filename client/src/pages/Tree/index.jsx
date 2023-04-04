@@ -274,6 +274,7 @@ function TreePage() {
               setUpdateClick={setUpdateClick}
               setTodayTrees={setTodayTrees}
               isHaveNotFinished={isHaveNotFinished}
+              clickTreeId={clickTree.agacId}
             />
           </div>
         </div>

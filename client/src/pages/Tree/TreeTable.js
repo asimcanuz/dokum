@@ -1,10 +1,16 @@
-import React, { Fragment, useState } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useExpanded, useGlobalFilter, useTable } from "react-table";
 import Alert from "../../components/Alert/Alert";
 import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
-import { BiLabel } from "react-icons/bi";
+import { BiChevronDown, BiChevronRight, BiLabel } from "react-icons/bi";
 import CreateLabel from "./CreateLabel";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { Endpoints } from "../../constants/Endpoints";
@@ -19,10 +25,12 @@ function TreeTable({
   setUpdateClick,
   setTodayTrees,
   isHaveNotFinished,
+  clickTreeId,
 }) {
   const axiosPrivate = useAxiosPrivate();
   const [orderFilter, setOrderFilter] = useState("");
   const [createLabel, setCreateLabel] = useState(false);
+  const [expandedRow, setExpandedRow] = useState(null);
   const renderOrderTable = React.useCallback(
     ({ row }) => {
       let orders = [];
@@ -104,8 +112,6 @@ function TreeTable({
                       <Button
                         appearance={"danger"}
                         onClick={() => {
-                          console.log("sil");
-                          console.log(order.id);
                           let deletedOrder = axiosPrivate.delete(
                             Endpoints.ORDER,
                             {
@@ -147,21 +153,23 @@ function TreeTable({
   const tableColumns = React.useMemo(
     () => [
       {
-        // Make an expander cell
         Header: () => null, // No header
-        id: "expander", // It needs an ID
+        id: "expander", // It needs an ID for expander
         Cell: ({ row }) => (
-          // Use Cell to render an expander for each row.
-          // We can use the getToggleRowExpandedProps prop-getter
-          // to build the expander.
           <span
-            style={{ fontSize: "18px" }}
-            {...row.getToggleRowExpandedProps()}
+            onClick={() => {
+              handleRowClick(row);
+            }}
           >
-            {row.isExpanded ? "-" : "+"}
+            {row.id === expandedRow ? (
+              <BiChevronDown className="text-xl" />
+            ) : (
+              <BiChevronRight className="text-xl" />
+            )}
           </span>
         ),
       },
+
       {
         Header: "Ağaç Id",
         accessor: "treeId",
@@ -277,8 +285,9 @@ function TreeTable({
       //   accessor: "",
       // },
     ],
-    [todayTrees]
+    [todayTrees, expandedRow]
   );
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -286,6 +295,7 @@ function TreeTable({
     rows,
     prepareRow,
     state,
+    toggleRowExpanded,
     preGlobalFilteredRows,
     setGlobalFilter,
     visibleColumns,
@@ -293,10 +303,26 @@ function TreeTable({
     {
       columns: tableColumns,
       data: todayTrees,
+      autoResetExpanded: false,
     },
     useGlobalFilter,
     useExpanded
   );
+
+  const handleRowClick = (row) => {
+    if (row.id === expandedRow) {
+      setExpandedRow(null);
+    } else {
+      setExpandedRow(row.id);
+    }
+  };
+  useEffect(() => {
+    rows.forEach((row) => {
+      if (row.id !== expandedRow) {
+        toggleRowExpanded(row, false);
+      }
+    });
+  }, [expandedRow, rows]);
 
   return (
     <div className="overflow-x-scroll">
@@ -347,11 +373,10 @@ function TreeTable({
           <tbody {...getTableBodyProps()}>
             {rows.map((row, i) => {
               prepareRow(row);
-              console.log(row.original.treeStatus.treeStatusName);
               const rowBackgroundColor = () => {
                 switch (row.original.treeStatus.treeStatusName) {
                   case "Hazırlanıyor":
-                    return "bg-yellow-100";
+                    return "bg-gray-50";
                   case "Dökümde":
                     return "bg-green-100";
                   case "Döküldü":
@@ -364,10 +389,15 @@ function TreeTable({
               };
               return (
                 // <Fragment key={i} {...row.getRowProps()}>
-                <Fragment key={i}>
+                <>
                   <tr
                     align="center"
-                    className={`hover:mouse-pointer text-black hover:bg-neutral-200select-none border-b  ${rowBackgroundColor()}`}
+                    className={`hover:mouse-pointer text-black hover:bg-neutral-200 select-none border-b  ${
+                      row.original.treeId === clickTreeId
+                        ? " bg-gradient-to-l from-stone-200 to-stone-400 hover:bg-stone-300 hover:from-neutral-200 hover:to-neutral-200"
+                        : rowBackgroundColor()
+                    }`}
+                    {...row.getRowProps()}
                     onClick={() => {
                       let clickedTree = row.original;
                       let customerIds = [];
@@ -434,14 +464,14 @@ function TreeTable({
                       );
                     })}
                   </tr>
-                  {row.isExpanded ? (
+                  {row.id === expandedRow ? (
                     <tr>
                       <td className="pl-12 " colSpan={visibleColumns.length}>
                         {renderOrderTable({ row })}
                       </td>
                     </tr>
                   ) : null}
-                </Fragment>
+                </>
               );
             })}
           </tbody>

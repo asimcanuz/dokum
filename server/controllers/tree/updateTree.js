@@ -20,6 +20,25 @@ const updateTree = async (req, res) => {
   //   treeStatusId,
   //   waxId,
   // }
+
+  if (req.body.treeStatusId) {
+    const { treeStatusId, treeId } = req.body;
+    const oldTreeValue = await Tree.findOne({
+      where: {
+        treeId,
+      },
+    });
+    const oldTreeStatusId = oldTreeValue.treeStatusId;
+    if (oldTreeStatusId !== treeStatusId) {
+      const treeStatusDate = await db.treeStatusDate.create({
+        treeStatusDate: moment().format("YYYY-MM-DD"),
+        oldTreeStatusId: oldTreeStatusId,
+        newTreeStatusId: treeStatusId,
+        treeId: treeId,
+        // updateBy: req.body.updateBy,
+      });
+    }
+  }
   const body = req.body;
   Tree.update(body, {
     where: {

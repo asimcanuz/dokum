@@ -35,12 +35,16 @@ const getCustomerTracking = async (req, res) => {
           finished: false,
         },
         as: "tree",
-        include: [{ model: db.option }, { model: db.color }],
+        include: [
+          { model: db.option },
+          { model: db.color },
+          { model: db.treeStatus },
+        ],
       },
     ],
   });
 
-  // orderları müşteri ve ağaç numaralarına  göre grupla
+  // orderları müşteri göre grupla
   const ordersByCustomer = orders.reduce((acc, order) => {
     const { customerId } = order;
 
@@ -66,21 +70,6 @@ const getCustomerTracking = async (req, res) => {
     );
   }
 
-  // ordersByCustomer'ı renge göre grupla
-  for (const customer in ordersByCustomer) {
-    for (const option in ordersByCustomer[customer]) {
-      ordersByCustomer[customer][option] = ordersByCustomer[customer][
-        option
-      ].reduce((acc, order) => {
-        const { colorId } = order.tree;
-        if (!acc["color" + colorId]) {
-          acc["color" + colorId] = [];
-        }
-        acc["color" + colorId].push(order);
-        return acc;
-      }, {});
-    }
-  }
   // grupların keylerinin isimleri ile değiştir
   for (const customer in ordersByCustomer) {
     const _customer = await Customer.findOne({
@@ -99,21 +88,6 @@ const getCustomerTracking = async (req, res) => {
       ordersByCustomer[_customer.customerName][_option.optionText] =
         ordersByCustomer[_customer.customerName][option];
       delete ordersByCustomer[_customer.customerName][option];
-      for (const color in ordersByCustomer[_customer.customerName][
-        _option.optionText
-      ]) {
-        const _color = await Color.findOne({
-          where: {
-            colorId: color.replace("color", ""),
-          },
-        });
-        ordersByCustomer[_customer.customerName][_option.optionText][
-          _color.colorName
-        ] = ordersByCustomer[_customer.customerName][_option.optionText][color];
-        delete ordersByCustomer[_customer.customerName][_option.optionText][
-          color
-        ];
-      }
     }
   }
   if (!_trees) {
