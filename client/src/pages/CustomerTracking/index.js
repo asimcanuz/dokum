@@ -5,7 +5,10 @@ import { Endpoints } from "../../constants/Endpoints";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGlobalFilter, useTable } from "react-table";
 import { FaSort } from "react-icons/fa";
-import statusColor from "../../utils/StatusColor";
+import statusColor, { statusColorStyle } from "../../utils/StatusColor";
+import Alert from "../../components/Alert/Alert";
+import Select from "react-select";
+import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
 
 function CustomerTrackingPage() {
   const axiosPrivate = useAxiosPrivate();
@@ -13,7 +16,8 @@ function CustomerTrackingPage() {
   const location = useLocation();
 
   const [customersTracking, setCustomerTracking] = useState([]);
-
+  const [jobGroups, setJobGroups] = useState([]);
+  const [selectedJobGroup, setSelectedJobGroup] = useState("");
   const setCustomerTrackingData = (data) => {
     var ordered = {};
     var newArr = [];
@@ -62,18 +66,43 @@ function CustomerTrackingPage() {
           if (newArrItem[colorName] === undefined) {
             newArrItem[colorName] = [];
           }
+
+          if (newArrItem[colorName].length > 0) {
+            //treeId aynıysa quantity'yi topla
+            if (
+              newArrItem[colorName][newArrItem[colorName].length - 1].tree
+                .treeId === sortedObj[key][key2][key3].tree.treeId
+            ) {
+              newArrItem[colorName][
+                newArrItem[colorName].length - 1
+              ].quantity += sortedObj[key][key2][key3].quantity;
+              return;
+            }
+          }
           newArrItem[colorName].push(sortedObj[key][key2][key3]);
         });
         newArr.push(newArrItem);
       });
     });
-    console.log(newArr);
     setCustomerTracking(newArr);
   };
 
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
+    const getJobGroups = async () => {
+      try {
+        const response = await axiosPrivate.get(Endpoints.JOBGROUP, {
+          signal: controller.signal,
+        });
+
+        isMounted && setJobGroups(response.data.jobGroupList);
+      } catch (err) {
+        console.error(err);
+        navigate("/login", { state: { from: location }, replace: true });
+      }
+    };
+
     const getCustomerTracking = async () => {
       try {
         const response = await axiosPrivate.get(Endpoints.CUSTOMERTRACKING, {
@@ -85,13 +114,23 @@ function CustomerTrackingPage() {
         navigate("/login", { state: { from: location }, replace: true });
       }
     };
+    getJobGroups();
+    var interval = null;
 
-    getCustomerTracking();
+    if (selectedJobGroup !== "") {
+      getCustomerTracking();
+      interval = setInterval(() => {
+        getCustomerTracking();
+      }, 20000);
+    }
+
     return () => {
       isMounted = false;
       isMounted && controller.abort();
+      clearInterval(interval);
     };
-  }, []);
+  }, [selectedJobGroup]);
+
   const tableColumns = useMemo(
     () => [
       {
@@ -123,9 +162,7 @@ function CustomerTrackingPage() {
               }
               return (
                 <div
-                  className={`d-flex flex-col justify-between ${borderClass} py-2 ${statusColor(
-                    item.tree.treeStatus.treeStatusName
-                  )}`}
+                  className={`d-flex flex-col justify-between ${borderClass} py-2 }`}
                 >
                   {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${
                     item.tree.treeStatus.treeStatusName
@@ -198,8 +235,9 @@ function CustomerTrackingPage() {
         },
       },
     ],
-    []
+    [customersTracking]
   );
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -210,11 +248,47 @@ function CustomerTrackingPage() {
     preGlobalFilteredRows,
     setGlobalFilter,
   } = useTable(
-    { columns: tableColumns, data: customersTracking },
+    {
+      columns: tableColumns,
+      data: customersTracking,
+      autoResetExpanded: false,
+      autoResetGlobalFilter: false,
+      autoResetAll: false,
+    },
     useGlobalFilter
   );
 
-  console.log(customersTracking);
+  const getCellColor = (statusArray) => {
+    if (statusArray.includes("Hazırlanıyor")) {
+      return statusColorStyle("Hazırlanıyor");
+    } else if (statusArray.includes("Dökümde")) {
+      return statusColorStyle("Dökümde");
+    } else if (statusArray.includes("Döküldü")) {
+      return statusColorStyle("Döküldü");
+    } else if (statusArray.includes("Kesimde")) {
+      return statusColorStyle("Kesimde");
+    } else {
+      return statusColorStyle("");
+    }
+  };
+  const jobGroupOptions = useMemo(() => {
+    return jobGroups.map((jobGroup) => {
+      return {
+        value: jobGroup.id,
+        label: "No: " + jobGroup.number + " (" + jobGroup.date + ")",
+      };
+    });
+  }, [jobGroups]);
+
+  const getJobGroupValue = () => {
+    if (selectedJobGroup !== "") {
+      return jobGroupOptions.find(
+        (option) => option.value === selectedJobGroup
+      );
+    } else {
+      return null;
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -222,64 +296,122 @@ function CustomerTrackingPage() {
         title={"Müşteri Takip"}
         description={"Müşterilerinin takibini gerçekleştir"}
       />
+      <Select
+        className="w-1/2"
+        value={getJobGroupValue()}
+        options={jobGroupOptions}
+        onChange={(e) => {
+          setSelectedJobGroup(e.value);
+        }}
+      />
       <div className="overflow-x-scroll">
         {customersTracking?.length > 0 ? (
-          <table
-            {...getTableProps()}
-            className="min-w-full divide-y divide-gray-200 mt-2"
-          >
-            <thead className="bg-gray-50">
-              {headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <th
-                      {...column.getHeaderProps()}
-                      className="py-3 text-xs font-bold text-left text-gray-500 uppercase"
-                    >
-                      <div className="flex flex-1 items-center">
-                        {column.render("Header")}
-                        {column.isSorted ? (
-                          <FaSort className="text-xs ml-4" />
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody
-              {...getTableBodyProps()}
-              className="divide-y divide-gray-200 "
+          <div>
+            <GlobalFilter
+              preGlobalFilteredRows={preGlobalFilteredRows}
+              globalFilter={state.globalFilter}
+              setGlobalFilter={setGlobalFilter}
+            />
+            <table
+              {...getTableProps()}
+              className="min-w-full divide-y divide-gray-200 mt-2 border-collapse border border-slate-500"
             >
-              {rows.map((row) => {
-                prepareRow(row);
-                return (
-                  <tr
-                    {...row.getRowProps()}
-                    className="px-6 py-4 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap"
-                  >
-                    {row.cells.map((cell) => {
-                      return (
-                        <td
-                          {...cell.getCellProps({
-                            style: {
-                              width: cell.column.width,
-                            },
-                          })}
-                        >
-                          {cell.render("Cell")}
-                        </td>
-                      );
-                    })}
+              <thead className="bg-gray-50">
+                {headerGroups.map((headerGroup) => (
+                  <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <th
+                        {...column.getHeaderProps()}
+                        className="py-3 text-xs font-bold text-left text-gray-500 uppercase border border-slate-600 "
+                      >
+                        <div className="flex flex-1 items-center">
+                          {column.render("Header")}
+                          {column.isSorted ? (
+                            <FaSort className="text-xs ml-4" />
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                      </th>
+                    ))}
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                ))}
+              </thead>
+              <tbody
+                {...getTableBodyProps()}
+                className="divide-y divide-gray-200 "
+              >
+                {rows.map((row) => {
+                  prepareRow(row);
+
+                  return (
+                    <tr
+                      {...row.getRowProps()}
+                      className={`px-6 py-4 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap `}
+                    >
+                      {row.cells.map((cell) => {
+                        let backgroundColor = "";
+                        if (
+                          cell.column.Header.split(" ")[0] === "Kırmızı" &&
+                          row.original["Beyaz"] !== undefined &&
+                          row.original["Beyaz"].length > 0
+                        ) {
+                          let arr = [];
+                          row.original["Kırmızı"].forEach((item) => {
+                            const { treeStatusName } = item.tree.treeStatus;
+                            arr.push(treeStatusName);
+                          });
+                          backgroundColor = getCellColor(arr);
+                        }
+                        if (
+                          cell.column.Header.split(" ")[0] === "Beyaz" &&
+                          row.original["Beyaz"] !== undefined &&
+                          row.original["Beyaz"].length > 0
+                        ) {
+                          let arr = [];
+
+                          row.original["Beyaz"].forEach((item) => {
+                            const { treeStatusName } = item.tree.treeStatus;
+                            arr.push(treeStatusName);
+                          });
+                          backgroundColor = getCellColor(arr);
+                        }
+                        if (
+                          cell.column.Header.split(" ")[0] === "Yeşil" &&
+                          row.original["Yeşil"] !== undefined &&
+                          row.original["Yeşil"].length > 0
+                        ) {
+                          let arr = [];
+
+                          row.original["Yeşil"].forEach((item) => {
+                            const { treeStatusName } = item.tree.treeStatus;
+                            arr.push(treeStatusName);
+                          });
+                          backgroundColor = getCellColor(arr);
+                        }
+
+                        return (
+                          <td
+                            {...cell.getCellProps({
+                              style: {
+                                width: cell.column.width,
+                                backgroundColor: backgroundColor,
+                              },
+                            })}
+                            className="border border-slate-200 "
+                          >
+                            {cell.render("Cell")}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         ) : (
-          <div>No Data!</div>
+          <Alert apperance={"danger"}>Aktif Ağaç bulunamadı</Alert>
         )}
       </div>
     </div>

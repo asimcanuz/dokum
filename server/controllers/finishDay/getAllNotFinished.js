@@ -10,11 +10,13 @@ const TODAY = moment().format("YYYY-MM-DD");
  * @description Bu fonksiyon tüm günlerin bitmemiş ağaçlarını döndürür.
  */
 const getAllNotFinished = async (req, res) => {
+  const { jobGroupId } = req.query;
   // bütün treeleri kontrol et,bugüne ait değilse ve finished false olan ağaçları döndür.
   const _trees = await Tree.findAll({
     where: {
       active: true,
       finished: false,
+      jobGroupId,
     },
     include: [
       { model: db.wax },
@@ -24,6 +26,7 @@ const getAllNotFinished = async (req, res) => {
       { model: db.color },
       { model: db.treeStatus },
       { model: db.order },
+      { model: db.jobGroup },
     ],
   });
 

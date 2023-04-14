@@ -42,7 +42,7 @@ const Box = ({ children }) => {
     <View
       style={{
         // sayfanın 4 eşit parçasına bölünmesi için
-
+        border: "1px solid black",
         width: "24%",
         margin: 2,
         display: "flex",
@@ -136,7 +136,13 @@ const MyDocument = ({ data }) => {
                         </Text>
                       </View>
                     </View>
-                    <View style={{ width: "100%" }}>
+                    <View
+                      style={{
+                        width: "100%",
+                        borderRight: "1px solid black",
+                        borderLeft: "1px solid black",
+                      }}
+                    >
                       <View
                         style={{
                           borderBottom: "1px solid black",
@@ -241,7 +247,7 @@ const MyDocument = ({ data }) => {
   );
 };
 
-export default function CreateLabel({ open, toggle }) {
+export default function CreateLabel({ open, toggle, jobGroupId }) {
   const [data, setData] = useState([]);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -254,6 +260,9 @@ export default function CreateLabel({ open, toggle }) {
     const getCreateLabel = async () => {
       try {
         const res = await axiosPrivate.get(Endpoints.CREATELABEL, {
+          params: {
+            jobGroupId: jobGroupId,
+          },
           signal: controller.signal,
         });
         // data'yı sırala
@@ -297,7 +306,7 @@ export default function CreateLabel({ open, toggle }) {
 
     getCreateLabel();
     return () => controller.abort();
-  }, []);
+  }, [jobGroupId]);
 
   return (
     <Modal open={open} size={"normal"}>

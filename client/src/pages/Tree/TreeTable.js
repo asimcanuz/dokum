@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { useExpanded, useGlobalFilter, useTable } from "react-table";
@@ -10,10 +11,11 @@ import Alert from "../../components/Alert/Alert";
 import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
-import { BiChevronDown, BiChevronRight, BiLabel } from "react-icons/bi";
+import { BiChevronDown, BiChevronRight, BiLabel, BiSave } from "react-icons/bi";
 import CreateLabel from "./CreateLabel";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { Endpoints } from "../../constants/Endpoints";
+import calculateWaxWeight from "../../utils/CalculateWaxWeight";
 
 function TreeTable({
   todayTrees,
@@ -24,13 +26,20 @@ function TreeTable({
   setClickTree,
   setUpdateClick,
   setTodayTrees,
-  isHaveNotFinished,
   clickTreeId,
+  jobGroups,
+  selectedJobGroup,
+  setSelectedJobGroup,
+  treeTableRef,
 }) {
   const axiosPrivate = useAxiosPrivate();
   const [orderFilter, setOrderFilter] = useState("");
   const [createLabel, setCreateLabel] = useState(false);
   const [expandedRow, setExpandedRow] = useState(null);
+
+  const editableKeyToFocus = useRef(null);
+  const mineralWeightRef = useRef(null);
+
   const renderOrderTable = React.useCallback(
     ({ row }) => {
       let orders = [];
@@ -159,6 +168,24 @@ function TreeTable({
           <span
             onClick={() => {
               handleRowClick(row);
+              let clickedTree = row.original;
+              let customerIds = [];
+
+              clickedTree.orders.forEach((order) => {
+                if (!customerIds.includes(order.customerId)) {
+                  customerIds.push(order.customerId);
+                }
+              });
+              setClickTree({
+                agacId: clickedTree.treeId,
+                agacNo: clickedTree.treeNo,
+                listeNo: clickedTree.listNo,
+                siparisSayisi: clickedTree.orders.length,
+                renk: clickedTree.color.colorName,
+                ayar: clickedTree.option.optionText,
+                kalinlik: clickedTree.thick.thickName,
+                musteriSayisi: customerIds.length,
+              });
             }}
           >
             {row.id === expandedRow ? (
@@ -169,7 +196,10 @@ function TreeTable({
           </span>
         ),
       },
-
+      {
+        Header: "İş Grup",
+        accessor: "jobGroup.date",
+      },
       {
         Header: "Ağaç Id",
         accessor: "treeId",
@@ -220,10 +250,18 @@ function TreeTable({
           return customerIds.length;
         },
       },
-      // {
-      //   Header: "Agac Tipi",
-      //   accessor: "",
-      // },
+      {
+        Header: "Agac Tipi",
+        accessor: "",
+        Cell: ({ row }) => {
+          console.log(row.original);
+          if (row.original.orders.length === 1) {
+            return row.original.orders[0].customer.customerName;
+          } else {
+            return "Karışık";
+          }
+        },
+      },
       {
         Header: "Mum Turu",
         accessor: "wax.waxName",
@@ -251,6 +289,57 @@ function TreeTable({
       {
         Header: "Hazırlayan",
         accessor: "creator.creatorName",
+      },
+      {
+        Header: "Maden Ağırlık",
+        accessor: "",
+        Cell: ({ row }) => {
+          return (
+            <div>
+              {calculateWaxWeight(
+                row.original.mineralWeight,
+                row.original.option.optionText,
+                row.original.color.colorName
+              )}
+            </div>
+          );
+        },
+      },
+      {
+        Header: "Mum Ağırlık",
+        accessor: "mineralWeight",
+        Cell: ({ row }) => {
+          return (
+            <input
+              type="number"
+              value={row.original.mineralWeight || ""}
+              // autoFocus={row.id === editableKeyToFocus.current}
+              className=" border-none text-gray-800 mr-3 py-1 px-2 leading-tight focus:outline-none hover:bg-white focus:bg-white"
+              onChange={(e) => {
+                editableKeyToFocus.current = row.id;
+                var value = e.target.value.replace(",", "");
+                value = value.replace(".", "");
+
+                let newTodayTrees = todayTrees.map((todayTree) => {
+                  if (todayTree.treeId === row.original.treeId) {
+                    todayTree.mineralWeight = value;
+                  }
+                  return todayTree;
+                });
+                setTodayTrees(newTodayTrees);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  console.log("enter");
+                }
+              }}
+              onBlur={(e) => {
+                console.log(treeTableRef);
+                console.log("gitttim kaydet");
+              }}
+            />
+          );
+        },
       },
       {
         Header: "Sil",
@@ -325,19 +414,27 @@ function TreeTable({
   }, [expandedRow, rows]);
 
   return (
-    <div className="overflow-x-scroll">
+    <div className="space-y-4">
       <div className="flex flex-row justify-between items-center">
-        <GlobalFilter
-          preGlobalFilteredRows={preGlobalFilteredRows}
-          globalFilter={state.globalFilter}
-          setGlobalFilter={setGlobalFilter}
-        />
+        <div className="w-1/2 flex flex-row items-center space-x-11">
+          <GlobalFilter
+            preGlobalFilteredRows={preGlobalFilteredRows}
+            globalFilter={state.globalFilter}
+            setGlobalFilter={setGlobalFilter}
+          />
+          <div className="">
+            <h3>
+              İş Grup : {jobGroups.find((j) => j.id === selectedJobGroup)?.date}
+            </h3>
+          </div>
+        </div>
         <Button
           appearance={"success"}
           onClick={() => {
             try {
-              if (isHaveNotFinished) {
-                throw new Error("Gün sonu yapılmayanları yapınız.");
+              console.log(selectedJobGroup, "selectedJobGroup");
+              if (selectedJobGroup === null || selectedJobGroup === "") {
+                throw new Error("İş grubu seçiniz!");
               } else {
                 setCreateLabel(true);
               }
@@ -353,7 +450,7 @@ function TreeTable({
       {todayTrees.length > 0 ? (
         <table
           {...getTableProps()}
-          className="min-w-full text-left text-sm font-light"
+          className="min-w-full text-left text-sm font-light overflow-x-scroll max-h-screen overflow-y-auto"
         >
           <thead className="border-b font-medium dark:border-neutral-500">
             {headerGroups.map((headerGroup) => (
@@ -392,31 +489,9 @@ function TreeTable({
                 <>
                   <tr
                     align="center"
-                    className={`hover:mouse-pointer text-black hover:bg-neutral-200 select-none border-b  ${
-                      row.original.treeId === clickTreeId
-                        ? " bg-gradient-to-l from-stone-200 to-stone-400 hover:bg-stone-300 hover:from-neutral-200 hover:to-neutral-200"
-                        : rowBackgroundColor()
-                    }`}
+                    className={`hover:mouse-pointer text-black hover:bg-neutral-200 select-none border-b  ${rowBackgroundColor()}`}
                     {...row.getRowProps()}
                     onClick={() => {
-                      let clickedTree = row.original;
-                      let customerIds = [];
-
-                      clickedTree.orders.forEach((order) => {
-                        if (!customerIds.includes(order.customerId)) {
-                          customerIds.push(order.customerId);
-                        }
-                      });
-                      setClickTree({
-                        agacId: clickedTree.treeId,
-                        agacNo: clickedTree.treeNo,
-                        listeNo: clickedTree.listNo,
-                        siparisSayisi: clickedTree.orders.length,
-                        renk: clickedTree.color.colorName,
-                        ayar: clickedTree.option.optionText,
-                        kalinlik: clickedTree.thick.thickName,
-                        musteriSayisi: customerIds.length,
-                      });
                       // id,ağaç no, liste no, sipariş sayısı,renk,ayar
                     }}
                     onDoubleClick={() => {
@@ -482,6 +557,7 @@ function TreeTable({
       {createLabel ? (
         <CreateLabel
           open={createLabel}
+          jobGroupId={selectedJobGroup}
           toggle={async () => {
             setCreateLabel(false);
           }}

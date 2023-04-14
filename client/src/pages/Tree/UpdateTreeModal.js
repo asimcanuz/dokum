@@ -26,7 +26,7 @@ function UpdateTreeModal({
   customers,
   descriptions,
   toggle,
-  setIsHaveNotFinished,
+  selectedJobGroup,
 }) {
   const axiosPrivate = useAxiosPrivate();
 
@@ -76,10 +76,12 @@ function UpdateTreeModal({
         try {
           const controller = new AbortController();
           const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
+            params: {
+              jobGroupId: selectedJobGroup,
+            },
             signal: controller.signal,
           });
 
-          setIsHaveNotFinished(res.data.isHaveNotFinished);
           setTodayTrees(res.data.trees);
           controller.abort();
         } catch (error) {

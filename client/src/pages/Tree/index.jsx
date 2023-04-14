@@ -9,12 +9,18 @@ import NewTreeTab from "./NewTreeTab";
 import TreeTable from "./TreeTable";
 import NewOrderTab from "./NewOrderTab";
 import UpdateTreeModal from "./UpdateTreeModal";
+import NewJobGroup from "./NewJobGroup";
 
 const tabs = {
   agac: "tree",
   siparis: "order",
+  isGrubu: "jobGroup",
 };
 const tabList = [
+  {
+    name: "İş Grubu",
+    id: "jobGroup",
+  },
   {
     name: "Ağaç",
     id: "tree",
@@ -41,14 +47,13 @@ const initUpdateClick = {
 };
 
 function TreePage() {
-  const [selectedTab, setSelectedTab] = useState(tabs.agac);
+  const [selectedTab, setSelectedTab] = useState(tabs.isGrubu);
   const [clickTree, setClickTree] = useState(initUpdateClick);
   const [updateClick, setUpdateClick] = useState({});
 
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
-  const effectRun = useRef(false);
 
   const [treeStatuses, setTreeStatuses] = useState([]);
   const [options, setOptions] = useState([]);
@@ -59,21 +64,24 @@ function TreePage() {
   const [todayTrees, setTodayTrees] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [descriptions, setDescriptions] = useState([]);
+  const [jobGroups, setJobGroups] = useState([]);
 
-  const [isHaveNotFinished, setIsHaveNotFinished] = useState(false);
-
+  const [selectedJobGroup, setSelectedJobGroup] = useState(null);
+  const treeTableRef = useRef(null);
   useEffect(() => {
     const controller = new AbortController();
     let isMounted = true;
     const getTrees = async () => {
       try {
         const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
+          params: {
+            jobGroupId: selectedJobGroup,
+          },
           signal: controller.signal,
         });
 
         if (isMounted) {
           setTodayTrees(res.data.trees);
-          setIsHaveNotFinished(res.data.isHaveNotFinished);
         }
       } catch (error) {
         console.error(error);
@@ -209,6 +217,20 @@ function TreePage() {
         navigate("/login", { state: { from: location }, replace: true });
       }
     };
+    const getJobGroups = async () => {
+      try {
+        const response = await axiosPrivate.get(Endpoints.JOBGROUP, {
+          signal: controller.signal,
+        });
+        console.log(response.data.jobGroupList);
+        isMounted && setJobGroups(response.data.jobGroupList);
+      } catch (err) {
+        console.error(err);
+        navigate("/login", { state: { from: location }, replace: true });
+      }
+    };
+
+    getJobGroups();
     getDescriptions();
     // getTreeStatus();
     getOptions();
@@ -216,7 +238,7 @@ function TreePage() {
     getThick();
     getWax();
     getColors();
-    getTrees();
+    selectedJobGroup && getTrees();
     getCustomers();
     getTreeStatus();
 
@@ -225,6 +247,18 @@ function TreePage() {
       !isMounted && controller.abort();
     };
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
+        params: {
+          jobGroupId: selectedJobGroup,
+        },
+      });
+      treeTableRef.current = res.data.trees;
+      setTodayTrees(res.data.trees);
+    };
+    selectedJobGroup && fetchData();
+  }, [selectedJobGroup]);
   return (
     <Fragment>
       <section className="space-y-4">
@@ -233,7 +267,7 @@ function TreePage() {
           description={"Döküme girecek ağaç girişleri"}
         />
         <div className="grid grid-cols-12 mt-4 gap-x-4 gap-y-4">
-          <div className="col-span-12 lg:col-span-6 xl:col-span-4  max-w-md">
+          <div className="col-span-12 lg:col-span-4 max-w-lg">
             <Tabs
               tabsList={tabList}
               setSelected={setSelectedTab}
@@ -251,19 +285,29 @@ function TreePage() {
                   setTodayTrees={setTodayTrees}
                   customers={customers}
                   descriptions={descriptions}
-                  isHaveNotFinished={isHaveNotFinished}
+                  jobGroups={jobGroups}
+                  selectedJobGroup={selectedJobGroup}
+                  setSelectedJobGroup={setSelectedJobGroup}
                 />
-              ) : (
+              ) : selectedTab === tabs.siparis ? (
                 <NewOrderTab
                   clickTree={clickTree}
                   customers={customers}
                   descriptions={descriptions}
                   setTodayTrees={setTodayTrees}
+                  selectedJobGroup={selectedJobGroup}
+                />
+              ) : (
+                <NewJobGroup
+                  jobGroups={jobGroups}
+                  setJobGroups={setJobGroups}
+                  setSelectedJobGroup={setSelectedJobGroup}
+                  selectedJobGroup={selectedJobGroup}
                 />
               )}
             </div>
           </div>
-          <div className="col-span-12 lg:col-span-6 xl:col-span-8  ">
+          <div className="col-span-12 lg:col-span-8">
             <TreeTable
               setClickTree={setClickTree}
               todayTrees={todayTrees}
@@ -273,8 +317,11 @@ function TreePage() {
               creators={creators}
               setUpdateClick={setUpdateClick}
               setTodayTrees={setTodayTrees}
-              isHaveNotFinished={isHaveNotFinished}
               clickTreeId={clickTree.agacId}
+              jobGroups={jobGroups}
+              selectedJobGroup={selectedJobGroup}
+              setSelectedJobGroup={setSelectedJobGroup}
+              treeTableRef={treeTableRef}
             />
           </div>
         </div>
@@ -293,7 +340,7 @@ function TreePage() {
           todayTrees={todayTrees}
           customers={customers}
           descriptions={descriptions}
-          setIsHaveNotFinished={setIsHaveNotFinished}
+          selectedJobGroup={selectedJobGroup}
           toggle={() => {
             setUpdateClick(initUpdateClick);
           }}

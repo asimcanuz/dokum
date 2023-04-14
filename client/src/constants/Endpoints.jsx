@@ -29,4 +29,5 @@ export const Endpoints = {
   FINISHDAY: "api/finishDay",
   CREATELABEL: "api/createLabel",
   CUSTOMERTRACKING: "api/customerTracking",
+  JOBGROUP: "api/jobGroup",
 };

@@ -14,7 +14,7 @@ function GlobalFilter({
   }, 200);
 
   return (
-    <div className="flex items-center justify-end w-full md:w-1/2 lg:w-1/4 ">
+    <div className="flex items-center justify-end  ">
       <Input
         value={value || ""}
         onChange={(e) => {

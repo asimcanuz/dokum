@@ -13,6 +13,7 @@ function NewOrderTab({
   customers,
   descriptions,
   setTodayTrees,
+  selectedJobGroup,
 }) {
   const auth = useAuth();
   const axiosPrivate = useAxiosPrivate();
@@ -21,7 +22,7 @@ function NewOrderTab({
   const [order, setOrder] = React.useState({
     treeId: tree.agacId,
     customerId: "",
-    descriptionId: "",
+    descriptionId: null,
     quantity: "",
     createdBy: auth.auth.id,
   });
@@ -51,7 +52,11 @@ function NewOrderTab({
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
-      const response = await axiosPrivate.get(Endpoints.TREE.TODAY);
+      const response = await axiosPrivate.get(Endpoints.TREE.TODAY, {
+        params: {
+          jobGroupId: selectedJobGroup,
+        },
+      });
 
       setTodayTrees(response.data.trees);
     } catch (error) {

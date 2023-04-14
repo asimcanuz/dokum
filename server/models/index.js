@@ -42,6 +42,7 @@ db.thick = require("./thick.model")(sequelize, Sequelize);
 db.wax = require("./wax.model")(sequelize, Sequelize);
 db.color = require("./color.model")(sequelize, Sequelize);
 db.treeStatusDate = require("./treeStatusDate.model")(sequelize, Sequelize);
+db.jobGroup = require("./jobGroup.model")(sequelize, Sequelize);
 
 // user role 1-1
 db.role.hasOne(db.user);
@@ -71,6 +72,13 @@ db.color.hasOne(db.tree, {
   foreignKey: "colorId",
 });
 
+db.jobGroup.hasOne(db.tree, {
+  foreignKey: "jobGroupId",
+});
+
+db.tree.belongsTo(db.jobGroup, {
+  foreignKey: "jobGroupId",
+});
 db.tree.belongsTo(db.option, {
   foreignKey: "optionId",
 });

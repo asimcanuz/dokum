@@ -10,11 +10,14 @@ const Option = db.option;
 const Color = db.color;
 
 const createLabel = async (req, res) => {
+  const { jobGroupId } = req.query;
+
   // ağaçları renklere göre grupla, gruplanları ayara göre grupla, gruplanları kişiye göre grupla
   const _trees = await Tree.findAll({
     where: {
       active: true,
       finished: false,
+      jobGroupId,
     },
   });
 

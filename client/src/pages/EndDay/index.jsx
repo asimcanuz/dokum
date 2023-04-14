@@ -1,4 +1,11 @@
-import React, { Fragment, useEffect, useMemo, useState } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Header from "../../components/Header";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
@@ -9,6 +16,7 @@ import CheckBox from "../../components/Input/CheckBox";
 import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
 import Button from "../../components/Button";
 import ReactDatePicker from "react-datepicker";
+import Select from "react-select";
 
 function EndDayMain() {
   const axiosPrivate = useAxiosPrivate();
@@ -17,6 +25,8 @@ function EndDayMain() {
 
   const [trees, setTrees] = useState([]);
   const [selectedTrees, setSelectedTrees] = useState([]);
+  const [jobGroups, setJobGroups] = useState([]);
+  const [selectedJobGroup, setSelectedJobGroup] = useState("");
 
   const tableColumns = useMemo(
     () => [
@@ -44,6 +54,48 @@ function EndDayMain() {
           );
         },
       },
+
+      {
+        Header: "İş Grubu",
+        accessor: "jobGroup?.number",
+        Cell: ({ row }) => {
+          return (
+            <div>
+              {jobGroups.length > 1 ? (
+                <Select
+                  className="w-full "
+                  options={jobGroupOptions}
+                  value={jobGroupOptions.find(
+                    (option) =>
+                      option.value === Number(row?.original?.jobGroupId)
+                  )}
+                  onChange={(e) => {
+                    setTrees(
+                      trees.map((tree) => {
+                        if (tree.treeId === row.original.treeId) {
+                          return { ...tree, jobGroupId: e.value };
+                        }
+                        return tree;
+                      })
+                    );
+
+                    axiosPrivate
+                      .put(Endpoints.FINISHDAY + "/date", {
+                        treeId: row.original.treeId,
+                        jobGroupId: e.value,
+                      })
+                      .then(() => {
+                        getTrees();
+                      });
+                  }}
+                />
+              ) : (
+                <span>{jobGroups[0].number}</span>
+              )}
+            </div>
+          );
+        },
+      },
       { Header: "Ağaç Id", accessor: "treeId" },
       { Header: "Ağaç No", accessor: "treeNo" },
       { Header: "Liste No", accessor: "listNo" },
@@ -51,6 +103,10 @@ function EndDayMain() {
       { Header: "Renk", accessor: "color.colorName" },
       { Header: "Seçenek", accessor: "option.optionText" },
       { Header: "Wax", accessor: "wax.waxName" },
+      {
+        Header: "Tarih",
+        accessor: "date",
+      },
       {
         Header: "Durum",
         accessor: "treeStatus.treeStatusName",
@@ -75,44 +131,10 @@ function EndDayMain() {
           return <span className={cn}>{row.value}</span>;
         },
       },
-      {
-        Header: "Tarih",
-        accessor: "date",
-        Cell: ({ value, row }) => {
-          // date picker for update
-          return (
-            <ReactDatePicker
-              selected={new Date(value)}
-              dateFormat="dd/MM/yyyy"
-              onChange={(date) => {
-                setTrees(
-                  trees.map((tree) => {
-                    if (tree.treeId === row.original.treeId) {
-                      return { ...tree, date: date };
-                    }
-                    return tree;
-                  })
-                );
-
-                let dateUpdate = axiosPrivate.put(
-                  Endpoints.FINISHDAY + "/date",
-                  {
-                    treeId: row.original.treeId,
-                    date: date,
-                  }
-                );
-
-                Promise.all([dateUpdate]).then(() => {
-                  getTrees();
-                });
-              }}
-            />
-          );
-        },
-      },
     ],
-    []
+    [jobGroups]
   );
+  console.log(jobGroups);
 
   useEffect(() => {
     let isMounted = true;
@@ -120,6 +142,9 @@ function EndDayMain() {
     const getTrees = async () => {
       try {
         const res = await axiosPrivate.get(Endpoints.FINISHDAY, {
+          params: {
+            jobGroupId: selectedJobGroup,
+          },
           signal: controller.signal,
         });
 
@@ -129,19 +154,46 @@ function EndDayMain() {
         navigate("/login", { state: { from: location }, replace: true });
       }
     };
-    getTrees();
+    const getJobGroups = async () => {
+      try {
+        const response = await axiosPrivate.get(Endpoints.JOBGROUP, {
+          signal: controller.signal,
+        });
+
+        isMounted && setJobGroups(response.data.jobGroupList);
+      } catch (err) {
+        console.error(err);
+        navigate("/login", { state: { from: location }, replace: true });
+      }
+    };
+
+    getJobGroups();
+    selectedJobGroup !== "" && getTrees();
     return () => {
       isMounted = false;
       controller.abort();
     };
-  }, []);
+  }, [selectedJobGroup]);
   const getTrees = async () => {
     const controller = new AbortController();
     try {
-      const res = await axiosPrivate.get(Endpoints.FINISHDAY);
+      const res = await axiosPrivate.get(Endpoints.FINISHDAY, {
+        params: {
+          jobGroupId: selectedJobGroup,
+        },
+      });
       setTrees(res.data.trees);
     } catch (error) {
       console.error(error);
+      navigate("/login", { state: { from: location }, replace: true });
+    }
+  };
+  const getJobGroups = async () => {
+    try {
+      const response = await axiosPrivate.get(Endpoints.JOBGROUP);
+      setJobGroups(response.data.jobGroupList);
+    } catch (err) {
+      console.error(err);
       navigate("/login", { state: { from: location }, replace: true });
     }
   };
@@ -158,6 +210,24 @@ function EndDayMain() {
     visibleColumns,
   } = useTable({ columns: tableColumns, data: trees }, useGlobalFilter);
 
+  const jobGroupOptions = useMemo(() => {
+    return jobGroups.map((jobGroup) => {
+      return {
+        value: jobGroup.id,
+        label: "No: " + jobGroup.number + " (" + jobGroup.date + ")",
+      };
+    });
+  }, [jobGroups]);
+  const jobGroupRef = useRef(null);
+  const getJobGroupValue = () => {
+    if (selectedJobGroup !== "") {
+      return jobGroupOptions.find(
+        (option) => option.value === selectedJobGroup
+      );
+    } else {
+      return null;
+    }
+  };
   return (
     <Fragment>
       <section className="space-y-4">
@@ -166,77 +236,114 @@ function EndDayMain() {
           description={"Gün sonu işlemlerini buradan yapabilirsiniz."}
         />
       </section>
-      <div className="mt-4 ">
-        {trees.length > 0 && (
-          <div className="  flex flex-row items-center justify-between">
+      <Select
+        ref={jobGroupRef}
+        className="w-1/2"
+        value={getJobGroupValue()}
+        options={jobGroupOptions}
+        onChange={(e) => {
+          setSelectedJobGroup(e.value);
+        }}
+      />
+      <div className="mt-4 space-y-4">
+        <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-row w-1/2 space-x-12">
+            {trees.length > 0 && (
+              <Button
+                disabled={selectedTrees.length === 0}
+                appearance={"primary"}
+                onClick={() => {
+                  let update = axiosPrivate.put(Endpoints.FINISHDAY, {
+                    treeIds: selectedTrees,
+                  });
+
+                  Promise.all([update]).then(() => {
+                    getTrees();
+                  });
+                }}
+              >
+                Gün Sonu Yap
+              </Button>
+            )}
             <Button
-              disabled={selectedTrees.length === 0}
               appearance={"primary"}
+              disabled={selectedJobGroup === ""}
               onClick={() => {
-                let update = axiosPrivate.put(Endpoints.FINISHDAY, {
-                  treeIds: selectedTrees,
+                let update = axiosPrivate.put(Endpoints.FINISHDAY + "/all", {
+                  jobGroupId: selectedJobGroup,
                 });
 
                 Promise.all([update]).then(() => {
-                  getTrees();
+                  setSelectedJobGroup("");
+                  getJobGroups();
+                  setTrees([]);
                 });
               }}
             >
-              Gün Sonu Yap
+              İş Grubunu Kapat
             </Button>
+          </div>
+
+          {trees.length > 0 && (
             <GlobalFilter
               preGlobalFilteredRows={preGlobalFilteredRows}
               globalFilter={state.globalFilter}
               setGlobalFilter={setGlobalFilter}
             />
-          </div>
-        )}
-        {trees.length > 0 ? (
-          <table
-            {...getTableProps()}
-            className="min-w-full text-left text-sm font-light mt-6"
-          >
-            <thead className="border-b font-medium dark:border-neutral-500 bg-gray-50">
-              {headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps()} className="py-2 px-4">
-                      {column.render("Header")}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-              {rows.map((row) => {
-                prepareRow(row);
-                const rowBackgroundColor = () => {
-                  // day Format: 2022-01-01
-                  if (
-                    row.original.date === new Date().toISOString().split("T")[0]
-                  ) {
-                    return "bg-blue-50";
-                  }
-                };
-                return (
-                  <tr
-                    {...row.getRowProps()}
-                    className={` text-left hover:mouse-pointer text-black hover:bg-neutral-200 select-none border-b ${rowBackgroundColor()} `}
-                  >
-                    {row.cells.map((cell) => {
-                      return (
-                        <td {...cell.getCellProps()} className="py-2 px-4">
-                          {cell.render("Cell")}
-                        </td>
-                      );
-                    })}
+          )}
+        </div>
+
+        {selectedJobGroup !== "" ? (
+          trees.length > 0 ? (
+            <table
+              {...getTableProps()}
+              className="min-w-full text-left text-sm font-light mt-6"
+            >
+              <thead className="border-b font-medium dark:border-neutral-500 bg-gray-50">
+                {headerGroups.map((headerGroup) => (
+                  <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <th {...column.getHeaderProps()} className="py-2 px-4">
+                        {column.render("Header")}
+                      </th>
+                    ))}
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                ))}
+              </thead>
+              <tbody {...getTableBodyProps()}>
+                {rows.map((row) => {
+                  prepareRow(row);
+                  const rowBackgroundColor = () => {
+                    // day Format: 2022-01-01
+                    if (
+                      row.original.date ===
+                      new Date().toISOString().split("T")[0]
+                    ) {
+                      return "bg-blue-50";
+                    }
+                  };
+                  return (
+                    <tr
+                      {...row.getRowProps()}
+                      className={` text-left hover:mouse-pointer text-black hover:bg-neutral-200 select-none border-b ${rowBackgroundColor()} `}
+                    >
+                      {row.cells.map((cell) => {
+                        return (
+                          <td {...cell.getCellProps()} className="py-2 px-4">
+                            {cell.render("Cell")}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          ) : (
+            <Alert>Bütün Ağaçlar Gün Sonu yapılmış</Alert>
+          )
         ) : (
-          <Alert>Bütün Ağaçlar Gün Sonu yapılmış</Alert>
+          <Alert apperance={"danger"}>İş Grubu Seçiniz</Alert>
         )}
       </div>
     </Fragment>

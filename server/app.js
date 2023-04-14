@@ -57,6 +57,7 @@ app.use("/api/tree", require("./routes/tree.routes"));
 app.use("/api/wax", require("./routes/wax.routes"));
 app.use("/api/treeStatus", require("./routes/treeStatus.routes"));
 app.use("/api/finishDay", require("./routes/finishDay.routes"));
+app.use("/api/jobGroup", require("./routes/jobGroup.routes"));
 
 // verify jwt middleware
 app.use(verifyJWT);
@@ -109,13 +110,51 @@ async function initDB() {
     isActive: 1,
   });
   await Wax.create({
-    waxName: "wax",
+    waxName: "Reçine",
   });
-
+  await Wax.create({
+    waxName: "Mavi Mum",
+  });
   await TreeStatus.create({ treeStatusName: "Hazırlanıyor" });
   await TreeStatus.create({ treeStatusName: "Dökümde" });
   await TreeStatus.create({ treeStatusName: "Döküldü" });
   await TreeStatus.create({ treeStatusName: "Kesimde" });
+
+  await Color.create({ colorName: "Kırmızı" });
+  await Color.create({ colorName: "Yeşil" });
+  await Color.create({ colorName: "Beyaz" });
+
+  await Option.create({ optionName: "24 Ayar" });
+  await Option.create({ optionName: "22 Ayar" });
+  await Option.create({ optionName: "21 Ayar" });
+  await Option.create({ optionName: "18 Ayar" });
+  await Option.create({ optionName: "14 Ayar" });
+  await Option.create({ optionName: "10 Ayar" });
+  await Option.create({ optionName: "9 Ayar" });
+  await Option.create({ optionName: "8 Ayar" });
+  await Option.create({ optionName: "4 Ayar" });
+  await Option.create({ optionName: "Alloy" });
+  await Option.create({ optionName: "Bronz" });
+  await Option.create({ optionName: "Gümüş" });
+
+  await Thick.create({ thickName: "Kalın" });
+  await Thick.create({ thickName: "Çok Kalın" });
+  await Thick.create({ thickName: "Kalın X" });
+  await Thick.create({ thickName: "Kalın  Z" });
+  await Thick.create({ thickName: "Orta" });
+  await Thick.create({ thickName: "İnce" });
+  await Thick.create({ thickName: "İnce  Z" });
+
+  await Thick.create({ thickName: "Çok İnce" });
+  await Thick.create({ thickName: "Çok İnce  Z" });
+  await Thick.create({ thickName: "Karışık" });
+  await Thick.create({ thickName: "Fransa" });
+  await Thick.create({ thickName: "Fransa Kalın" });
+  await Thick.create({ thickName: "Fransa Çok Kalın" });
+  await Thick.create({ thickName: "Kayısı" });
+  await Thick.create({ thickName: "Kayısı Kalın" });
+  await Thick.create({ thickName: "Alloylu" });
+  await Thick.create({ thickName: "Gümüşlü" });
 }
 
 module.exports = app;

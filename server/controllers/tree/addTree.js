@@ -15,6 +15,7 @@ const addTree = (req, res) => {
     treeStatusId,
     isImmediate,
     active,
+    jobGroupId,
   } = req.body;
   console.log(req.body);
   Tree.create({
@@ -29,6 +30,7 @@ const addTree = (req, res) => {
     treeStatusId,
     isImmediate,
     active,
+    jobGroupId,
   })
     .then(async (result) => {
       await db.treeStatusDate.create({

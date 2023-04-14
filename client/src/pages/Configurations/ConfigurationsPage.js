@@ -960,7 +960,7 @@ function ConfigurationsPage() {
             Yeni Kalınlık Ekle
           </Button>
           {thicks.length > 0 ? (
-            <div className="flex flex-col">
+            <div className="flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth">
               <div className="grid grid-flow-row-dense grid-cols-2">
                 <p>Kalınlık</p>
                 <p>İşlemler</p>
@@ -1041,7 +1041,7 @@ function ConfigurationsPage() {
             Yeni Renk Ekle
           </Button>
           {colors.length > 0 ? (
-            <div className="flex flex-col">
+            <div className="flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth">
               <div className="grid grid-flow-row-dense grid-cols-2">
                 <p>Renk</p>
                 <p>İşlemler</p>
@@ -1122,7 +1122,7 @@ function ConfigurationsPage() {
             Yeni Açıklama Ekle
           </Button>
           {descriptions.length > 0 ? (
-            <div className="flex flex-col">
+            <div className="flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth">
               <div className="grid grid-flow-row-dense grid-cols-2">
                 <p>Açıklama</p>
                 <p>İşlemler</p>
@@ -1210,7 +1210,7 @@ function ConfigurationsPage() {
             Yeni Hazırlayan Ekle
           </Button>
           {creators.length > 0 ? (
-            <div className="flex flex-col">
+            <div className="flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth">
               <div className="grid grid-flow-row-dense grid-cols-2">
                 <p>Hazırlayan</p>
                 <p>İşlemler</p>
