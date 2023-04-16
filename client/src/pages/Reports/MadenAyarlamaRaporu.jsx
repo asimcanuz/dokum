@@ -205,7 +205,7 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
       <Page size="A4" style={styles.page} wrap>
         <View>
           <Text style={{ fontSize: 12, fontWeight: "bold" }}>
-            {jobGroup.label}
+            {jobGroup.label}aaaa
           </Text>
         </View>
         {groupedTrees.map((groupedTree, index) => {
