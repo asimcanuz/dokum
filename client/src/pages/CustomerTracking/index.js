@@ -5,7 +5,7 @@ import { Endpoints } from "../../constants/Endpoints";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGlobalFilter, useTable } from "react-table";
 import { FaSort } from "react-icons/fa";
-import statusColor, { statusColorStyle } from "../../utils/StatusColor";
+import { statusColorStyle } from "../../utils/StatusColor";
 import Alert from "../../components/Alert/Alert";
 import Select from "react-select";
 import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";

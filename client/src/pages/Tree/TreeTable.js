@@ -159,6 +159,38 @@ function TreeTable({
     [customers, descriptions, orderFilter]
   );
 
+  const handleSaveMineralWeight = (treeId) => {
+    let todayTree = todayTrees.find((todayTree) => todayTree.treeId === treeId);
+
+    axiosPrivate.put(
+      Endpoints.TREE.MAIN + "/mineralWeight",
+      {
+        treeId: treeId,
+        mineralWeight: todayTree.mineralWeight,
+        waxWeight: isNaN(
+          Number(
+            calculateWaxWeight(
+              todayTree.mineralWeight,
+              todayTree.option.optionText,
+              todayTree.color.colorName
+            )
+          )
+        )
+          ? 0
+          : Number(
+              calculateWaxWeight(
+                todayTree.mineralWeight,
+                todayTree.option.optionText,
+                todayTree.color.colorName
+              )
+            ),
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      }
+    );
+  };
   const tableColumns = React.useMemo(
     () => [
       {
@@ -254,7 +286,6 @@ function TreeTable({
         Header: "Agac Tipi",
         accessor: "",
         Cell: ({ row }) => {
-          console.log(row.original);
           if (row.original.orders.length === 1) {
             return row.original.orders[0].customer.customerName;
           } else {
@@ -313,7 +344,7 @@ function TreeTable({
             <input
               type="number"
               value={row.original.mineralWeight || ""}
-              // autoFocus={row.id === editableKeyToFocus.current}
+              autoFocus={row.id === editableKeyToFocus.current}
               className=" border-none text-gray-800 mr-3 py-1 px-2 leading-tight focus:outline-none hover:bg-white focus:bg-white"
               onChange={(e) => {
                 editableKeyToFocus.current = row.id;
@@ -330,12 +361,12 @@ function TreeTable({
               }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  console.log("enter");
+                  handleSaveMineralWeight(row.original.treeId);
                 }
               }}
               onBlur={(e) => {
-                console.log(treeTableRef);
-                console.log("gitttim kaydet");
+                editableKeyToFocus.current = null;
+                handleSaveMineralWeight(row.original.treeId);
               }}
             />
           );
@@ -432,7 +463,6 @@ function TreeTable({
           appearance={"success"}
           onClick={() => {
             try {
-              console.log(selectedJobGroup, "selectedJobGroup");
               if (selectedJobGroup === null || selectedJobGroup === "") {
                 throw new Error("İş grubu seçiniz!");
               } else {

@@ -283,7 +283,6 @@ export default function CreateLabel({ open, toggle, jobGroupId }) {
             }
             // ordered key varsa yeni bir tane daha ekle
           });
-          console.log(res.data.ordersByCustomer[key]);
         });
 
         // ordered objesini sırala  key2'ye göre
@@ -296,7 +295,6 @@ export default function CreateLabel({ open, toggle, jobGroupId }) {
         for (let key of sortedKeys) {
           sortedObj[key] = ordered[key];
         }
-        console.log(sortedObj);
         setData(sortedObj);
       } catch (error) {
         console.error(error);

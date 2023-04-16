@@ -134,7 +134,6 @@ function EndDayMain() {
     ],
     [jobGroups]
   );
-  console.log(jobGroups);
 
   useEffect(() => {
     let isMounted = true;

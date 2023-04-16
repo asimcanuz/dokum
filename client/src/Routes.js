@@ -14,6 +14,7 @@ import TreePage from "./pages/Tree";
 import EndDayMain from "./pages/EndDay";
 import OrderMain from "./pages/Orders";
 import CustomerTrackingPage from "./pages/CustomerTracking";
+import ReportsPage from "./pages/Reports";
 function Routers() {
   return (
     <Routes>
@@ -110,6 +111,9 @@ function Routers() {
             }
           >
             <Route path="customerTracking" element={<CustomerTrackingPage />} />
+          </Route>
+          <Route element={<RequireAuth allowedRoles={[Shared.Roles.admin]} />}>
+            <Route path="reports" element={<ReportsPage />} />
           </Route>
           {/* TREE PAGE */}
           <Route element={<RequireAuth allowedRoles={rolesDesc.allOf} />}>

@@ -43,7 +43,6 @@ function NewOrderTab({
   async function addOrder() {
     const controller = new AbortController();
     try {
-      console.log(order.customerId);
       if (order.customerId === "" || order.quantity === "") {
         throw new Error("Lütfen müşteri ve/veya adet alanlarını doldurunuz.");
       }

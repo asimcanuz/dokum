@@ -67,8 +67,6 @@ function UpdateTreeModal({
     },
 
     onSubmit: async (values) => {
-      console.log(values);
-
       // setTodayTrees([...todayTrees]);
       try {
         await axiosPrivate.put(Endpoints.TREE.MAIN, values);
@@ -188,7 +186,6 @@ function UpdateTreeModal({
                 </div>
                 <div className="w-full">
                   <label htmlFor="thickId">Kalınlık</label>
-                  {console.log(formik.values.thickId)}
                   <Select
                     type="select"
                     id="thickId"

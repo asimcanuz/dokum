@@ -15,7 +15,7 @@
   @apply bg-red-800 text-red-100;
 }
 .warning {
-  @apply bg-orange-800 text-orange-100;
+  @apply bg-orange-700 text-orange-100;
 }
 
 /* :global(.dark) .primary {

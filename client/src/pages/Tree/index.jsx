@@ -222,7 +222,6 @@ function TreePage() {
         const response = await axiosPrivate.get(Endpoints.JOBGROUP, {
           signal: controller.signal,
         });
-        console.log(response.data.jobGroupList);
         isMounted && setJobGroups(response.data.jobGroupList);
       } catch (err) {
         console.error(err);

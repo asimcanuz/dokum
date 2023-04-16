@@ -10,6 +10,7 @@ import {
   AiOutlineShoppingCart,
   AiOutlineCalendar,
 } from "react-icons/ai";
+import { HiOutlineDocumentReport } from "react-icons/hi";
 import { BsPersonSquare } from "react-icons/bs";
 import { MdOutlineAccountTree, MdOutlinePeopleAlt } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -50,6 +51,13 @@ const Menus = [
     to: "/customerTracking",
     roles: rolesDesc.allOf,
     icon: BsPersonSquare,
+  },
+  {
+    title: "Raporlar",
+    src: "Reports",
+    to: "/reports",
+    roles: rolesDesc.onlyAdmin,
+    icon: HiOutlineDocumentReport,
   },
   {
     title: "Hesaplar",
