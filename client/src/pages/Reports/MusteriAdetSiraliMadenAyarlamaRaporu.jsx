@@ -255,7 +255,7 @@ const MadenAyarlamaRaporuPDF = ({ trees }) => {
                   <View
                     style={[
                       styles.tableColHeader,
-                      { width: `${100 / mappedHeaders.length}%` },
+                      { width: `${99 / mappedHeaders.length}%` },
                     ]}
                     key={index}
                   >
