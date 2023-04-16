@@ -49,11 +49,6 @@ const madenAyarlamaRaporu = async (req, res) => {
         attributes: ["thickName"],
         paranoid: false,
       },
-      {
-        model: db.order,
-        attributes: ["customerId"],
-        include: [{ model: db.customer, attributes: ["customerName"] }],
-      },
     ],
     order: [
       ["optionId", "ASC"],
