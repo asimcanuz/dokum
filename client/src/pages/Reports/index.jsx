@@ -5,6 +5,7 @@ import Alert from "../../components/Alert/Alert";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Endpoints } from "../../constants/Endpoints";
+import MusteriAdetSiraliMadenAyarlamaRaporu from "./MusteriAdetSiraliMadenAyarlamaRaporu";
 
 const reports = [
   {
@@ -42,11 +43,19 @@ function ReportsPage() {
 
   const [selectedReport, setSelectedReport] = useState(null);
   const [selectedJobGroup, setSelectedJobGroup] = useState(null);
+
   const renderReportPage = (report) => {
-    return <div className="space-y-4 m-auto">YAPIM AŞAMASINDA</div>;
     if (report === "madenAyarlamaRaporu") {
       return (
         <MadenAyarlamaRaporu
+          selectedJobGroup={selectedJobGroup}
+          setSelectedJobGroup={setSelectedJobGroup}
+          jobGroups={jobGroups}
+        />
+      );
+    } else if (report === "musteriAdetSiraliMadenAyarlamaRaporu") {
+      return (
+        <MusteriAdetSiraliMadenAyarlamaRaporu
           selectedJobGroup={selectedJobGroup}
           setSelectedJobGroup={setSelectedJobGroup}
           jobGroups={jobGroups}
@@ -96,7 +105,11 @@ function ReportsPage() {
             role="tablist"
           >
             {reports.map((report, index) => (
-              <li role="presentation" key={index} className="flex-grow ">
+              <li
+                role="presentation"
+                key={index}
+                className="flex-grow  hover:cursor-pointer"
+              >
                 <div
                   className={`${
                     selectedReport === report.src

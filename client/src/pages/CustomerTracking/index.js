@@ -353,8 +353,8 @@ function CustomerTrackingPage() {
                         let backgroundColor = "";
                         if (
                           cell.column.Header.split(" ")[0] === "Kırmızı" &&
-                          row.original["Beyaz"] !== undefined &&
-                          row.original["Beyaz"].length > 0
+                          row.original["Kırmızı"] !== undefined &&
+                          row.original["Kırmızı"].length > 0
                         ) {
                           let arr = [];
                           row.original["Kırmızı"].forEach((item) => {

@@ -4,7 +4,7 @@
   text-base font-normal text-slate-500
    bg-white dark:bg-slate-500 bg-clip-padding 
    border border-solid border-gray-300 rounded 
-   transition ease-in-out 
+   transition ease-in-out hover:cursor-pointer
   focus:text-slate-500 focus:bg-slate-50  focus:outline-none focus:ring focus:ring-blue-300;
 }
 

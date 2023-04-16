@@ -22,7 +22,7 @@ function NewJobGroup({ jobGroups, setJobGroups, setSelectedJobGroup }) {
         (jobGroup) =>
           jobGroup.date === moment(newJobGroup.date).format("YYYY-MM-DD")
       ).length;
-      if (findJobGroupCount > 2) {
+      if (findJobGroupCount > 1) {
         throw new Error("Bu tarihte iş grubu zaten mevcut");
       }
 

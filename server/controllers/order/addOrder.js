@@ -22,8 +22,6 @@ const addOrder = async (req, res) => {
         },
         include: [{ model: db.customer }],
       });
-      console.log(orders);
-
       // farklı customer'ların sayısını hesapla ve
       // farklı müşterilerin sayısı birden fazla ise ağaç tipi karışık olarak değilse müşteri adı ile güncelle
       const customers = [];
@@ -36,6 +34,18 @@ const addOrder = async (req, res) => {
         await db.tree.update(
           {
             treeType: "Karışık",
+            customerQuantity: customers.length,
+          },
+          {
+            where: {
+              treeId,
+            },
+          }
+        );
+      } else {
+        await db.tree.update(
+          {
+            treeType: customers[0],
             customerQuantity: customers.length,
           },
           {

@@ -30,4 +30,7 @@ export const Endpoints = {
   CREATELABEL: "api/createLabel",
   CUSTOMERTRACKING: "api/customerTracking",
   JOBGROUP: "api/jobGroup",
+  REPORTS: {
+    MADENAYARLAMARAPORU: "api/reports/madenayarlama",
+  },
 };

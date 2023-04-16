@@ -43,7 +43,7 @@ app.use(express.static(path.join(__dirname, "public")));
 //public routes for auth and refresh token
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/refresh", require("./routes/refresh.routes"));
-
+app.use("/api/reports", require("./routes/report.routes"));
 // verify jwt middleware
 app.use(verifyJWT);
 // protected routes

@@ -188,6 +188,7 @@ function NewTreeTab({
           <p className="col-span-12 md:col-span-1">İş Grubu</p>
           <div className="col-span-12 md:col-span-5">
             <Select
+              className="hover:cursor-pointer"
               options={jobGroupOptions}
               value={
                 jobGroupOptions.filter(
@@ -217,6 +218,7 @@ function NewTreeTab({
           </div>
           <div className="col-span-12 md:col-span-3">
             <CheckBox
+              id="treeNoAuto"
               htmlFor="treeNo"
               label={"Agaç No Otomatik Artır"}
               checked={newTree.agacAuto}
@@ -241,6 +243,7 @@ function NewTreeTab({
           </div>
           <div className="col-span-12 md:col-span-3">
             <CheckBox
+              id={"listeNoAuto"}
               label={"Liste No Otomatik Artır"}
               checked={newTree.listeAuto}
               onChange={(e) =>
@@ -260,17 +263,6 @@ function NewTreeTab({
                 colors.length > 9 && "overflow-y-scroll"
               } scroll-m-1 scroll-smooth`}
             >
-              {/* <li
-                onClick={() => {
-                  setAddNewTreeOptions({
-                    open: true,
-                    type: "COLOR",
-                  });
-                }}
-                className="flex items-center gap-x-4 text-blue-700 hover:bg-gray-200  dark:hover:bg-slate-700 p-2 hover:cursor-pointer"
-              >
-                <AiOutlinePlus /> <span>Yeni Ekle</span>
-              </li> */}
               {colors.map((color) => {
                 return (
                   <li
@@ -279,7 +271,7 @@ function NewTreeTab({
                       newTree.renkId === color.colorId
                         ? "bg-gray-300 dark:bg-slate-800"
                         : ""
-                    } p-1`}
+                    } p-1 hover:cursor-pointer`}
                     onClick={() => {
                       setNewTree({ ...newTree, renkId: color.colorId });
                     }}
@@ -294,7 +286,7 @@ function NewTreeTab({
             <h4 className="text-lg font-bold flex flex-row items-center justify-around border-b border-slate-800 pb-2">
               Ayar
               <AiOutlinePlus
-                className="text-blue-700 hover:cursor-pointer "
+                className="text-blue-700 hover:cursor-pointer  "
                 size={20}
                 onClick={() => {
                   setAddNewTreeOptions({
@@ -317,7 +309,7 @@ function NewTreeTab({
                       newTree.ayarId === option.optionId
                         ? "bg-gray-300 dark:bg-slate-800"
                         : ""
-                    } p-1`}
+                    } p-1 hover:cursor-pointer`}
                     onClick={() => {
                       setNewTree({ ...newTree, ayarId: option.optionId });
                     }}
@@ -354,7 +346,7 @@ function NewTreeTab({
                       newTree.kalınlıkId === thick.thickId
                         ? "bg-gray-300 dark:bg-slate-800"
                         : ""
-                    } p-1`}
+                    } p-1 hover:cursor-pointer`}
                     onClick={() => {
                       setNewTree({ ...newTree, kalınlıkId: thick.thickId });
                     }}
@@ -391,7 +383,7 @@ function NewTreeTab({
                       newTree.hazırlayanId === creator.creatorId
                         ? "bg-gray-300 dark:bg-slate-800"
                         : ""
-                    } p-1  `}
+                    } p-1 hover:cursor-pointer `}
                     onClick={() => {
                       setNewTree({
                         ...newTree,
@@ -431,7 +423,7 @@ function NewTreeTab({
                       newTree.mumTurId === wax.waxId
                         ? "bg-gray-300 dark:bg-slate-800"
                         : ""
-                    } p-1`}
+                    } p-1 hover:cursor-pointer`}
                     onClick={() => {
                       setNewTree({ ...newTree, mumTurId: wax.waxId });
                     }}
