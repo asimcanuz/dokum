@@ -43,6 +43,7 @@ function ReportsPage() {
   const [selectedReport, setSelectedReport] = useState(null);
   const [selectedJobGroup, setSelectedJobGroup] = useState(null);
   const renderReportPage = (report) => {
+    return <div className="space-y-4 m-auto">YAPIM AŞAMASINDA</div>;
     if (report === "madenAyarlamaRaporu") {
       return (
         <MadenAyarlamaRaporu
