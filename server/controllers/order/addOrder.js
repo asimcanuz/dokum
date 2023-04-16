@@ -20,7 +20,7 @@ const addOrder = async (req, res) => {
         where: {
           treeId,
         },
-        includes: [{ model: db.customer }],
+        include: [{ model: db.customer }],
       });
       console.log(orders);
 
