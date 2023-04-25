@@ -11,7 +11,10 @@ const finishDayDateUpdate = async (req, res) => {
 
   // gelen treeId'ye ait tarihi update et
   const _tree = await Tree.update(
-    { jobGroupId: jobGroupId },
+    {
+      jobGroupId: jobGroupId,
+      isOld: true,
+    },
     {
       where: {
         treeId,

@@ -20,6 +20,8 @@ module.exports = (sequelize, Sequelize) => {
     finished: { type: Sequelize.BOOLEAN, defaultValue: false },
     createdBy: { type: Sequelize.STRING },
     updatedBy: { type: Sequelize.STRING },
+    isOld: { type: Sequelize.BOOLEAN, defaultValue: false },
+    desc: { type: Sequelize.TEXT, defaultValue: "" },
   });
   return Tree;
 };

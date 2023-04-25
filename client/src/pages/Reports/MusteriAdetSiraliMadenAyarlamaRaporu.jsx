@@ -27,7 +27,7 @@ function MusteriAdetSiraliMadenAyarlamaRaporu({
     return jobGroups.map((jobGroup) => {
       return {
         value: jobGroup.id,
-        label: "No: " + jobGroup.number + " (" + jobGroup.date + ")",
+        label: "No: " + jobGroup.number,
       };
     });
   }, [jobGroups]);
@@ -47,7 +47,7 @@ function MusteriAdetSiraliMadenAyarlamaRaporu({
     const controller = new AbortController();
     const fetchData = async () => {
       const res = await axiosPrivate.get(
-        Endpoints.REPORTS.MADENAYARLAMARAPORU,
+        Endpoints.REPORTS.MUSTERIADETSIRALIMADENAYARLAMARAPORU,
         {
           params: {
             jobGroupId: selectedJobGroup,
@@ -57,7 +57,7 @@ function MusteriAdetSiraliMadenAyarlamaRaporu({
       );
 
       if (isMounted) {
-        setTrees(res.data.madenAyarlamaRaporu);
+        setTrees(res.data.musteriAdetSiraliMadenAyarlamaRaporu);
         setLoading(false);
       }
     };
@@ -84,11 +84,13 @@ function MusteriAdetSiraliMadenAyarlamaRaporu({
             <Fragment>
               {trees.length > 0 ? (
                 <PDFViewer className="w-full" style={{ height: "79vh" }}>
-                  <MadenAyarlamaRaporuPDF trees={trees} />
+                  <MadenAyarlamaRaporuPDF
+                    trees={trees}
+                    jobGroup={getJobGroupValue()}
+                  />
                 </PDFViewer>
               ) : (
                 <Alert apperance={"warning"}>
-                  {" "}
                   Seçilen iş grubunda ağaç girilmemiş.
                 </Alert>
               )}
@@ -104,8 +106,9 @@ function MusteriAdetSiraliMadenAyarlamaRaporu({
 const styles = StyleSheet.create({
   page: {
     fontFamily: "Roboto",
-    fontSize: 9,
-    padding: 10,
+    fontSize: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
   },
 
   table: {
@@ -116,6 +119,8 @@ const styles = StyleSheet.create({
     borderColor: "#bfbfbf",
     borderRightWidth: 0,
     borderBottomWidth: 0,
+    marginTop: 2,
+    fontSize: 8,
   },
   tableRow: {
     margin: "auto",
@@ -128,30 +133,37 @@ const styles = StyleSheet.create({
     borderColor: "#bfbfbf",
     borderTopWidth: 0,
     borderLeftWidth: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    height: "32px",
   },
   tableCol: {
+    height: "50px",
     borderStyle: "solid",
     borderWidth: 1,
     borderColor: "#bfbfbf",
     borderTopWidth: 0,
     borderLeftWidth: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
   tableCellHeader: {
     margin: "auto",
     marginTop: 5,
     fontSize: 8,
+    textAlign: "center",
   },
   tableCell: {
-    margin: "auto",
-    marginTop: 5,
-    fontSize: 8,
+    fontSize: 7,
+    minHeight: "40px",
     // textAlign: "center",
     // backgroundColor: "#eaeaea",
   },
   pageNumber: {
     position: "absolute",
     fontSize: 12,
-    bottom: 30,
+    bottom: 0,
     left: 0,
     right: 0,
     textAlign: "center",
@@ -168,58 +180,31 @@ Font.register({
   src: "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-medium-webfont.ttf",
 });
 
-const MadenAyarlamaRaporuPDF = ({ trees }) => {
-  const mappedHeaders = [
-    {
-      label: "AğaçNo",
-      key: "treeNo",
-    },
-    {
-      label: "Ağaç Tipi",
-      key: "treeType",
-    },
-    {
-      label: "Müşteri Adet",
-      key: "customerQuantity",
-    },
-    {
-      label: "Ayar",
-      key: "option.optionText",
-    },
-    {
-      label: "Kalınlık",
-      key: "thick.thickName",
-    },
-    {
-      label: "Renk",
-      key: "color.colorName",
-    },
-    {
-      label: "Mum Ağırlık",
-      key: "waxWeight",
-    },
-    {
-      label: "Maden Ağırlık",
-      key: "mineralWeight",
-    },
-    {
-      label: "Gelen Maden",
-      key: "",
-    },
-    {
-      label: "Gönderilen Maden",
-      key: "",
-    },
-    {
-      label: "Cüruf",
-      key: "",
-    },
-  ];
-
+const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
+  let mineralWaxTotalWeights = {};
   const groupTrees = () => {
     const groupedTrees = [];
+
+    // mineralWaxTotalWeights ["option.optionText"] = {totalMineralWeight: 0, totalWaxWeight: 0}
+
     // option.optionText'e göre grupla
     trees.forEach((tree, index) => {
+      console.log(tree);
+      if (mineralWaxTotalWeights[tree["option.optionText"]] === undefined) {
+        mineralWaxTotalWeights[tree["option.optionText"]] = {
+          totalMineralWeight: tree.mineralWeight,
+          totalWaxWeight: tree.waxWeight,
+        };
+      } else {
+        mineralWaxTotalWeights[tree["option.optionText"]] = {
+          totalMineralWeight:
+            mineralWaxTotalWeights[tree["option.optionText"]]
+              .totalMineralWeight + tree.mineralWeight,
+          totalWaxWeight:
+            mineralWaxTotalWeights[tree["option.optionText"]].totalWaxWeight +
+            tree.waxWeight,
+        };
+      }
       if (index !== 0) {
         if (
           trees[index - 1] !== undefined &&
@@ -227,12 +212,23 @@ const MadenAyarlamaRaporuPDF = ({ trees }) => {
         ) {
           groupedTrees.push([tree]);
         } else {
-          //groupedTrees[groupedTrees.length - 1] uzunluğu 20 olunca yeni bir array oluştur ve içine tree'yi ekle
-          if (groupedTrees[groupedTrees.length - 1].length === 25) {
+          // eklenen ağaç uzunluğu max 20 olunca yeni sayfaya geç
+
+          if (groupedTrees.length === 0) {
             groupedTrees.push([tree]);
           } else {
-            groupedTrees[groupedTrees.length - 1].push(tree);
+            if (groupedTrees[groupedTrees.length - 1].length === 15) {
+              groupedTrees.push([tree]);
+            } else {
+              groupedTrees[groupedTrees.length - 1].push(tree);
+            }
           }
+
+          // if (groupedTrees[groupedTrees.length - 1].length === 20) {
+          //   groupedTrees.push([tree]);
+          // } else {
+          //   groupedTrees[groupedTrees.length - 1].push(tree);
+          // }
         }
       } else {
         groupedTrees.push([tree]);
@@ -243,47 +239,205 @@ const MadenAyarlamaRaporuPDF = ({ trees }) => {
   };
 
   const groupedTrees = groupTrees();
+  console.log(mineralWaxTotalWeights);
 
   return (
     <Document>
       <Page size="A4" style={styles.page} wrap>
-        {groupedTrees.map((groupedTree, index) => {
-          return (
-            <View style={styles.table} break={index > 0}>
-              <View style={styles.tableRow} fixed>
-                {mappedHeaders.map((header, index) => (
-                  <View
-                    style={[
-                      styles.tableColHeader,
-                      { width: `${100 / mappedHeaders.length}%` },
-                    ]}
-                    key={index}
-                  >
-                    <Text style={styles.tableCellHeader}>{header.label}</Text>
+        {groupedTrees !== null &&
+          groupedTrees.map((groupedTree, index) => {
+            return (
+              <View break={index > 0}>
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View fixed>
+                    <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+                      {jobGroup.label}
+                    </Text>
                   </View>
-                ))}
-              </View>
-              {groupedTree.map((row, index) => {
-                return (
-                  <View style={styles.tableRow} key={index} wrap>
-                    {mappedHeaders.map((header, index) => (
-                      <View
-                        style={[
-                          styles.tableCol,
-                          { width: `${100 / mappedHeaders.length}%` },
-                        ]}
-                        key={index}
-                        wrap
-                      >
-                        <Text style={styles.tableCell}>{row[header.key]}</Text>
+                  <View fixed>
+                    <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+                      {groupedTree[0]["option.optionText"]}
+                    </Text>
+                  </View>
+                  <View fixed style={{ display: "flex", flexDirection: "row" }}>
+                    <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+                      Toplam Mum Ağırlık :
+                      {
+                        mineralWaxTotalWeights[
+                          groupedTree[0]["option.optionText"]
+                        ].totalWaxWeight
+                      }
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        fontWeight: "bold",
+                        marginLeft: "12px",
+                      }}
+                    >
+                      Toplam Maden Ağırlık :
+                      {
+                        mineralWaxTotalWeights[
+                          groupedTree[0]["option.optionText"]
+                        ].totalMineralWeight
+                      }
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.table}>
+                  <View style={styles.tableRow} fixed>
+                    <View style={[styles.tableColHeader, { width: 20 }]}>
+                      <Text style={styles.tableCellHeader}>Ağaç No</Text>
+                    </View>
+                    <View style={[styles.tableColHeader, { width: 117 }]}>
+                      <Text style={styles.tableCellHeader}>Ağaç Tipi</Text>
+                    </View>
+                    <View style={[styles.tableColHeader, { width: 30 }]}>
+                      <Text style={styles.tableCellHeader}>Müş. Adet</Text>
+                    </View>
+                    <View style={[styles.tableColHeader, { width: 35 }]}>
+                      <Text style={styles.tableCellHeader}>Ayar</Text>
+                    </View>
+                    <View style={[styles.tableColHeader, { width: 40 }]}>
+                      <Text style={styles.tableCellHeader}>Kalınlık</Text>
+                    </View>
+                    <View style={[styles.tableColHeader, { width: 30 }]}>
+                      <Text style={styles.tableCellHeader}>Renk</Text>
+                    </View>
+                    <View style={[styles.tableColHeader, { width: 40 }]}>
+                      <Text style={styles.tableCellHeader}>Mum Ağırlık</Text>
+                    </View>
+                    <View style={[styles.tableColHeader, { width: 40 }]}>
+                      <Text style={styles.tableCellHeader}>Maden Ağırlık</Text>
+                    </View>
+                    <View style={[styles.tableColHeader, { width: 105 }]}>
+                      <Text style={[styles.tableCellHeader]}></Text>
+                    </View>
+
+                    <View style={[styles.tableColHeader, { width: 105 }]}>
+                      <Text style={styles.tableCellHeader}></Text>
+                    </View>
+                  </View>
+                  {groupedTree.map((row, index) => {
+                    return (
+                      <View style={styles.tableRow} key={index} wrap={false}>
+                        <View
+                          style={[styles.tableCol, { width: 20 }]}
+                          wrap={false}
+                        >
+                          <Text wrap={false}>{row["treeNo"]}</Text>
+                        </View>
+
+                        <View
+                          style={[
+                            styles.tableCol,
+                            {
+                              width: 117,
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              justifyContent: "flex-start",
+                            },
+                          ]}
+                        >
+                          <View
+                            style={[
+                              {
+                                display: "flex",
+                                flexDirection: "row",
+                              },
+                            ]}
+                          >
+                            {row["isImmediate"] ? (
+                              <Text wrap style={{ color: "red" }}>
+                                (A)
+                              </Text>
+                            ) : null}
+
+                            {row["isOld"] ? (
+                              <Text wrap style={{ color: "red" }}>
+                                (E)
+                              </Text>
+                            ) : null}
+                            <Text wrap>{row["treeType"]}</Text>
+                          </View>
+
+                          <View style={{ overflow: "hidden" }}>
+                            <Text
+                              style={{
+                                color: "blue",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {row["desc"] !== null
+                                ? row["desc"].slice(0, 65)
+                                : ""}
+                            </Text>
+                          </View>
+                        </View>
+                        <View
+                          style={[styles.tableCol, { width: 30 }]}
+                          wrap={false}
+                        >
+                          <Text wrap={false}>{row["customerQuantity"]}</Text>
+                        </View>
+                        <View
+                          style={[styles.tableCol, { width: 35 }]}
+                          wrap={false}
+                        >
+                          <Text wrap={false}>{row["option.optionText"]}</Text>
+                        </View>
+                        <View
+                          style={[styles.tableCol, { width: 40 }]}
+                          wrap={false}
+                        >
+                          <Text wrap={false}>{row["thick.thickName"]}</Text>
+                        </View>
+                        <View
+                          style={[styles.tableCol, { width: 30 }]}
+                          wrap={false}
+                        >
+                          <Text wrap={false}>{row["color.colorName"]}</Text>
+                        </View>
+                        <View
+                          style={[styles.tableCol, { width: 40 }]}
+                          wrap={false}
+                        >
+                          <Text wrap={false}>{row["waxWeight"]}</Text>
+                        </View>
+                        <View
+                          style={[styles.tableCol, { width: 40 }]}
+                          wrap={false}
+                        >
+                          <Text wrap={false}>{row["mineralWeight"]}</Text>
+                        </View>
+                        <View
+                          style={[styles.tableCol, { width: 105 }]}
+                          wrap={false}
+                        >
+                          <Text wrap={false}>{""}</Text>
+                        </View>
+                        <View
+                          style={[styles.tableCol, { width: 105 }]}
+                          key={index}
+                          wrap={false}
+                        >
+                          <Text wrap={false}>{""}</Text>
+                        </View>
                       </View>
-                    ))}
-                  </View>
-                );
-              })}
-            </View>
-          );
-        })}
+                    );
+                  })}
+                </View>
+              </View>
+            );
+          })}
         <Text
           style={styles.pageNumber}
           render={({ pageNumber, totalPages }) =>

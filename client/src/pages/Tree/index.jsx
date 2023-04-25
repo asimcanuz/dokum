@@ -262,7 +262,7 @@ function TreePage() {
     <Fragment>
       <section className="space-y-4">
         <Header
-          title={"Ağaçlar"}
+          title={"Ağaç Girişi"}
           description={"Döküme girecek ağaç girişleri"}
         />
         <div className="grid grid-cols-12 mt-4 gap-x-4 gap-y-4">

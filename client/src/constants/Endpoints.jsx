@@ -32,5 +32,7 @@ export const Endpoints = {
   JOBGROUP: "api/jobGroup",
   REPORTS: {
     MADENAYARLAMARAPORU: "api/reports/madenayarlama",
+    MUSTERIADETSIRALIMADENAYARLAMARAPORU: "api/reports/musteriadetsirali",
+    MUSTERISIPARISRAPORU: "api/reports/musterisiparis",
   },
 };

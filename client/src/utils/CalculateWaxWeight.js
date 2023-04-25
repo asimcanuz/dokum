@@ -1,5 +1,5 @@
 const calculateWaxWeight = (mineralWeight, ayar, renk) => {
-  if (mineralWeight === null) {
+  if (mineralWeight === null || Number(mineralWeight) === 0) {
     return 0;
   }
   let _ayar = ayar.toLowerCase();
@@ -24,6 +24,12 @@ const calculateWaxWeight = (mineralWeight, ayar, renk) => {
   } else if (_ayar === "10 ayar") {
     return mineralWeight * 12;
   } else if (_ayar === "8 ayar" || _ayar === "8 ayar") {
+    if (_renk === "yeşil") {
+      return mineralWeight * 10;
+    } else {
+      return mineralWeight * 11.5 + 10;
+    }
+  } else if (_ayar === "9 ayar" || _ayar === "9 ayar") {
     if (_renk === "yeşil") {
       return mineralWeight * 10;
     } else {

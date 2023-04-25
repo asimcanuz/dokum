@@ -6,7 +6,6 @@ const Tree = db.tree;
 
 const getTodayTrees = async (req, res) => {
   const { jobGroupId } = req.query;
-  console.log("jobGroupId", jobGroupId);
 
   const trees = await Tree.findAll({
     where: {

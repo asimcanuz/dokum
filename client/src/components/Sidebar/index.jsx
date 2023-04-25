@@ -13,8 +13,10 @@ import {
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { BsPersonSquare } from "react-icons/bs";
 import { MdOutlineAccountTree, MdOutlinePeopleAlt } from "react-icons/md";
+import { GiVolcano } from "react-icons/gi";
 import { Link } from "react-router-dom";
 import { rolesDesc } from "../../constants/RolesConstants";
+import { Tooltip } from "react-tooltip";
 
 const Menus = [
   // {
@@ -25,18 +27,18 @@ const Menus = [
   //   roles: rolesDesc.allOf,
   // },
   {
-    title: "Ağaç",
+    title: "Ağaç Girişi",
     src: "Tree",
     to: "/tree",
     roles: rolesDesc.allOf,
     icon: MdOutlineAccountTree,
   },
   {
-    title: "Siparişler",
-    src: "Orders",
-    to: "/orders",
-    roles: rolesDesc.allOf,
-    icon: AiOutlineShoppingCart,
+    title: "Fırın",
+    src: "Oven",
+    to: "/oven",
+    roles: rolesDesc.admin_super,
+    icon: GiVolcano,
   },
   {
     title: "Gün Sonu",
@@ -45,6 +47,15 @@ const Menus = [
     roles: rolesDesc.allOf,
     icon: AiOutlineCalendar,
   },
+  {
+    title: "Siparişler",
+    src: "Orders",
+    to: "/orders",
+    roles: rolesDesc.allOf,
+    icon: AiOutlineShoppingCart,
+    gap: true,
+  },
+
   {
     title: "Müşteri Takip",
     src: "CustomerTracking",
@@ -137,8 +148,10 @@ function Sidebar({ collapse, handleSidebar }) {
                   md:flex md:items-center
                   rounded-md p-2 cursor-pointer text-slate-600 hover:text-white dark:text-gray-300 text-sm items-start gap-x-4`}
                   onClick={() => navigate(Menu.to)}
+                  data-tooltip-id={Menu.title}
+                  data-tooltip-content={Menu.title}
                 >
-                  <div>{React.createElement(Menu?.icon, { size: "20" })}</div>{" "}
+                  <div>{React.createElement(Menu?.icon, { size: "20" })}</div>
                   <span
                     className={`${
                       !collapse && "hidden"
@@ -147,6 +160,13 @@ function Sidebar({ collapse, handleSidebar }) {
                     {Menu.title}
                   </span>
                 </li>
+                {!collapse && (
+                  <Tooltip
+                    id={Menu.title}
+                    place="right"
+                    style={{ zIndex: "99999" }}
+                  />
+                )}
               </Link>
             )
         )}

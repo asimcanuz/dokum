@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Input from "../../components/Input";
 import CheckBox from "../../components/Input/CheckBox";
 import Button from "../../components/Button";
-import DatePicker from "react-datepicker";
 import { AiOutlinePlus } from "react-icons/ai";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { Endpoints } from "../../constants/Endpoints";
@@ -33,8 +32,10 @@ function NewTreeTab({
       kalınlıkId: "",
       hazırlayanId: "",
       mumTurId: "",
+      desc: "",
       date: new Date(),
       jobGroupId: selectedJobGroup,
+      isImmediate: false,
     },
     descriptions: [],
     options: [],
@@ -147,10 +148,12 @@ function NewTreeTab({
         listNo: _listeNo,
         treeNo: _agacNo,
         treeStatusId: 1,
-        isImmediate: false,
+        isImmediate: newTree.isImmediate,
         active: true,
         jobGroupId: newTree.jobGroupId,
+        desc: newTree.desc,
       };
+      console.log(treeBody);
       await axiosPrivate.post(Endpoints.TREE.MAIN, treeBody, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
@@ -199,6 +202,17 @@ function NewTreeTab({
                 setNewTree({ ...newTree, jobGroupId: e.value });
                 setSelectedJobGroup(e.value);
               }}
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-2 ">
+          <p className="col-span-12 md:col-span-1">Açıklama</p>
+          <div className="col-span-12 md:col-span-5">
+            <Input
+              placeholder={"Açıklama"}
+              type={"textarea"}
+              value={newTree?.desc}
+              onChange={(e) => setNewTree({ ...newTree, desc: e.target.value })}
             />
           </div>
         </div>
@@ -435,7 +449,17 @@ function NewTreeTab({
             </ul>
           </div>
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-end flex-col items-end">
+          <CheckBox
+            id={"isImmediate"}
+            name={"isImmediate"}
+            label={"Acil mi?"}
+            onChange={(e) => {
+              setNewTree({ ...newTree, isImmediate: e.target.checked });
+            }}
+            checked={newTree.isImmediate}
+          />
+
           <Button type="submit" appearance={"primary"}>
             Agaç Ekle
           </Button>

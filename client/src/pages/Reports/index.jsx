@@ -6,6 +6,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Endpoints } from "../../constants/Endpoints";
 import MusteriAdetSiraliMadenAyarlamaRaporu from "./MusteriAdetSiraliMadenAyarlamaRaporu";
+import MusteriSiparisRaporu from "./MusteriSiparişRaporu";
 
 const reports = [
   {
@@ -61,6 +62,8 @@ function ReportsPage() {
           jobGroups={jobGroups}
         />
       );
+    } else if (report === "musteriSiparisRaporu") {
+      return <MusteriSiparisRaporu />;
     } else {
       return <Alert apperance={"warning"}>Sol Menüden rapor seçiniz!</Alert>;
     }

@@ -73,7 +73,7 @@ app.use("/api/tree", require("./routes/tree.routes"));
 //   .catch((err) => {
 //     console.log("Failed to sync db: " + err.message);
 //   });
-db.sequelize.sync();
+db.sequelize.sync({ alter: true });
 
 async function initDB() {
   await Role.create({

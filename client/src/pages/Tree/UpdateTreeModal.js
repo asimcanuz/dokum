@@ -12,6 +12,7 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { Endpoints } from "../../constants/Endpoints";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReactDatePicker from "react-datepicker";
+import { locale } from "../../utils/DatePickerLocale";
 
 function UpdateTreeModal({
   updateClick,
@@ -312,6 +313,7 @@ function UpdateTreeModal({
                   <label htmlFor="date">Tarih</label>
 
                   <ReactDatePicker
+                    locale={locale}
                     showIcon
                     id="date"
                     name="date"

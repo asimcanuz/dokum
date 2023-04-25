@@ -38,7 +38,6 @@ function TreeTable({
   const [expandedRow, setExpandedRow] = useState(null);
 
   const editableKeyToFocus = useRef(null);
-  const mineralWeightRef = useRef(null);
 
   const renderOrderTable = React.useCallback(
     ({ row }) => {
@@ -141,6 +140,7 @@ function TreeTable({
                               }
                               return todayTree;
                             });
+                            console.log(newTodayTrees);
                             setTodayTrees(newTodayTrees);
                           });
                         }}
@@ -166,8 +166,8 @@ function TreeTable({
       Endpoints.TREE.MAIN + "/mineralWeight",
       {
         treeId: treeId,
-        mineralWeight: todayTree.mineralWeight,
-        waxWeight: isNaN(
+        waxWeight: todayTree.mineralWeight,
+        mineralWeight: isNaN(
           Number(
             calculateWaxWeight(
               todayTree.mineralWeight,

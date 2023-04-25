@@ -25,7 +25,6 @@ function AddNewTreeOptions({ open, size, toggle, type, setForceUpdate }) {
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
-  const effectRun = useRef(false);
 
   useEffect(() => {
     const controller = new AbortController();

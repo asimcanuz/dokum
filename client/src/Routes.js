@@ -15,6 +15,7 @@ import EndDayMain from "./pages/EndDay";
 import OrderMain from "./pages/Orders";
 import CustomerTrackingPage from "./pages/CustomerTracking";
 import ReportsPage from "./pages/Reports";
+import OvenMainPage from "./pages/Oven";
 function Routers() {
   return (
     <Routes>
@@ -102,15 +103,20 @@ function Routers() {
           <Route
             element={
               <RequireAuth
-                allowedRoles={[
-                  Shared.Roles.admin,
-                  Shared.Roles.super,
-                  Shared.Roles.user,
-                ]}
+                allowedRoles={[Shared.Roles.admin, Shared.Roles.super]}
               />
             }
           >
             <Route path="customerTracking" element={<CustomerTrackingPage />} />
+          </Route>
+          <Route
+            element={
+              <RequireAuth
+                allowedRoles={[Shared.Roles.admin, Shared.Roles.super]}
+              />
+            }
+          >
+            <Route path="oven" element={<OvenMainPage />} />
           </Route>
           <Route element={<RequireAuth allowedRoles={[Shared.Roles.admin]} />}>
             <Route path="reports" element={<ReportsPage />} />

@@ -10,6 +10,14 @@ import useAuth from "../../hooks/useAuth";
 import Input from "../../components/Input";
 import CheckBox from "../../components/Input/CheckBox";
 import { Endpoints } from "../../constants/Endpoints";
+import * as Yup from "yup";
+
+const FormSchema = Yup.object().shape({
+  accountNumber: Yup.number().min(1).required("Hesap numarası zorunludur."),
+  customerName: Yup.string().required("Müşteri adı zorunludur."),
+  email: Yup.string().email("Geçerli bir email adresi giriniz."),
+  phone: Yup.string().required("Telefon numarası zorunludur."),
+});
 
 function CustomerAddNewModal({
   open,
@@ -29,7 +37,8 @@ function CustomerAddNewModal({
       phone: "",
       isActive: 1,
     },
-    // validationSchema: FormSchema,
+
+    validationSchema: FormSchema,
     onSubmit: async (values) => {
       var customer = {
         accountNumber: values.accountNumber,
@@ -76,9 +85,17 @@ function CustomerAddNewModal({
                   type={"text"}
                   placeholder={"Hesap Numarası"}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   value={formik.values.accountNumber}
                   required
                 />
+                {formik.errors.accountNumber &&
+                formik.touched.accountNumber &&
+                formik.dirty ? (
+                  <div className="text-red-500 text-sm">
+                    {formik.errors.accountNumber}
+                  </div>
+                ) : null}
               </div>
               <div className="mb-6">
                 <label htmlFor="customerName"> Müşteri Adı</label>
@@ -88,9 +105,15 @@ function CustomerAddNewModal({
                   type={"text"}
                   placeholder={"Müşteri Adı"}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   value={formik.values.customerName}
                   required
                 />
+                {formik.errors.customerName && formik.touched.customerName ? (
+                  <div className="text-red-500 text-sm">
+                    {formik.errors.customerName}
+                  </div>
+                ) : null}
               </div>
               <div className="mb-6">
                 <label htmlFor="email"> Email </label>
@@ -100,9 +123,15 @@ function CustomerAddNewModal({
                   type={"text"}
                   placeholder={"Email"}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   value={formik.values.email}
                   required
                 />
+                {formik.errors.email && formik.touched.email ? (
+                  <div className="text-red-500 text-sm">
+                    {formik.errors.email}
+                  </div>
+                ) : null}
               </div>
               <div className="mb-6">
                 <label htmlFor="phone"> Telefon Numarası </label>
@@ -112,9 +141,15 @@ function CustomerAddNewModal({
                   type={"text"}
                   placeholder={"Hesap Numarası"}
                   onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   value={formik.values.phone}
                   required
                 />
+                {formik.errors.phone && formik.touched.phone ? (
+                  <div className="text-red-500 text-sm">
+                    {formik.errors.phone}
+                  </div>
+                ) : null}
               </div>
               <div className="mb-6">
                 <div className="form-group form-check">
