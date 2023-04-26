@@ -35,7 +35,7 @@ function UpdateTreeModal({
     active,
     colorId,
     creatorId,
-    date,
+    desc,
     isImmediate,
     listNo,
     open,
@@ -55,7 +55,7 @@ function UpdateTreeModal({
       active,
       colorId,
       creatorId,
-      date,
+      desc,
       isImmediate,
       listNo,
       optionId,
@@ -310,19 +310,13 @@ function UpdateTreeModal({
               </div>
               <div className="flex flex-row justify-between space-x-4">
                 <div className="w-full">
-                  <label htmlFor="date">Tarih</label>
-
-                  <ReactDatePicker
-                    locale={locale}
-                    showIcon
-                    id="date"
-                    name="date"
-                    className="h-10 border border-gray-300 rounded-md pl-3"
-                    selected={new Date(formik.values.date)}
-                    onChange={(e) => {
-                      formik.setFieldValue("date", e);
-                    }}
-                    dateFormat="dd/MM/yyyy"
+                  <label htmlFor="desc">Ağaç Açıklaması</label>
+                  <Input
+                    id="desc"
+                    name="desc"
+                    type={"text"}
+                    value={formik.values.desc}
+                    onChange={formik.handleChange}
                   />
                 </div>
               </div>

@@ -21,6 +21,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN,
       defaultValue: false,
     },
+    erkenFırınGrubuOlusturulduMu: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    },
   });
   return JobGroup;
 };

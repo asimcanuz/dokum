@@ -89,7 +89,7 @@ db.tree.belongsTo(db.treeStatus, {
   foreignKey: "treeStatusId",
 });
 db.tree.belongsTo(db.thick, {
-  foreignKey: "treeStatusId",
+  foreignKey: "thickId",
 });
 db.tree.belongsTo(db.wax, {
   foreignKey: "waxId",

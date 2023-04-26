@@ -11,6 +11,7 @@ const getJobGroupList = async (req, res) => {
   var jobGroupList = await JobGroup.findAll({
     where: {
       isFinished: false,
+      isDeleted: false,
     },
   });
 

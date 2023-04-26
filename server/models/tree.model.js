@@ -22,6 +22,10 @@ module.exports = (sequelize, Sequelize) => {
     updatedBy: { type: Sequelize.STRING },
     isOld: { type: Sequelize.BOOLEAN, defaultValue: false },
     desc: { type: Sequelize.TEXT, defaultValue: "" },
+    erkenFirinGrubunaEklendiMi: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    },
   });
   return Tree;
 };

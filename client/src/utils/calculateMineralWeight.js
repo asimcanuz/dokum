@@ -1,4 +1,4 @@
-const calculateWaxWeight = (mineralWeight, ayar, renk) => {
+const CalculateMineralWeight = (mineralWeight, ayar, renk) => {
   if (mineralWeight === null || Number(mineralWeight) === 0) {
     return 0;
   }
@@ -44,4 +44,4 @@ const calculateWaxWeight = (mineralWeight, ayar, renk) => {
   }
 };
 
-export default calculateWaxWeight;
+export default CalculateMineralWeight;

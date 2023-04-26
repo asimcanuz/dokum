@@ -16,6 +16,12 @@ const getTodayTrees = async (req, res) => {
     },
 
     include: [
+      {
+        model: db.jobGroup,
+        where: {
+          isFinished: false,
+        },
+      },
       { model: db.wax },
       { model: db.option },
       { model: db.creator },
@@ -25,12 +31,6 @@ const getTodayTrees = async (req, res) => {
       {
         model: db.order,
         include: [{ model: db.customer }],
-      },
-      {
-        model: db.jobGroup,
-        where: {
-          isFinished: false,
-        },
       },
     ],
   });

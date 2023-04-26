@@ -73,7 +73,8 @@ app.use("/api/tree", require("./routes/tree.routes"));
 //   .catch((err) => {
 //     console.log("Failed to sync db: " + err.message);
 //   });
-db.sequelize.sync({ alter: true });
+// db.sequelize.sync({ alter: true });
+db.sequelize.sync();
 
 async function initDB() {
   await Role.create({
@@ -137,24 +138,11 @@ async function initDB() {
   await Option.create({ optionText: "Bronz" });
   await Option.create({ optionText: "Gümüş" });
 
-  await Thick.create({ thickName: "Kalın" });
   await Thick.create({ thickName: "Çok Kalın" });
-  await Thick.create({ thickName: "Kalın X" });
-  await Thick.create({ thickName: "Kalın  Z" });
+  await Thick.create({ thickName: "Kalın" });
   await Thick.create({ thickName: "Orta" });
   await Thick.create({ thickName: "İnce" });
-  await Thick.create({ thickName: "İnce  Z" });
-
   await Thick.create({ thickName: "Çok İnce" });
-  await Thick.create({ thickName: "Çok İnce  Z" });
-  await Thick.create({ thickName: "Karışık" });
-  await Thick.create({ thickName: "Fransa" });
-  await Thick.create({ thickName: "Fransa Kalın" });
-  await Thick.create({ thickName: "Fransa Çok Kalın" });
-  await Thick.create({ thickName: "Kayısı" });
-  await Thick.create({ thickName: "Kayısı Kalın" });
-  await Thick.create({ thickName: "Alloylu" });
-  await Thick.create({ thickName: "Gümüşlü" });
 }
 
 module.exports = app;

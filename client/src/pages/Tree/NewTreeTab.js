@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Input from "../../components/Input";
 import CheckBox from "../../components/Input/CheckBox";
 import Button from "../../components/Button";
-import { AiOutlinePlus } from "react-icons/ai";
+// import { AiOutlinePlus } from "react-icons/ai";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { Endpoints } from "../../constants/Endpoints";
 import { Capitalize } from "../../utils/Capitalize";
@@ -299,7 +299,7 @@ function NewTreeTab({
           <div className="px-2 py-2 border-r border-t border-b border-slate-800 ">
             <h4 className="text-lg font-bold flex flex-row items-center justify-around border-b border-slate-800 pb-2">
               Ayar
-              <AiOutlinePlus
+              {/* <AiOutlinePlus
                 className="text-blue-700 hover:cursor-pointer  "
                 size={20}
                 onClick={() => {
@@ -308,7 +308,7 @@ function NewTreeTab({
                     type: "OPTION",
                   });
                 }}
-              />
+              /> */}
             </h4>
             <ul
               className={`mt-2 max-h-60  ${
@@ -337,7 +337,7 @@ function NewTreeTab({
           <div className="px-2 py-2 border border-l-0 border-slate-800">
             <h4 className="text-lg font-bold flex flex-row items-center justify-around border-b border-slate-800 pb-2">
               Kalınlık
-              <AiOutlinePlus
+              {/* <AiOutlinePlus
                 className="text-blue-700 hover:cursor-pointer "
                 onClick={() => {
                   setAddNewTreeOptions({
@@ -345,7 +345,7 @@ function NewTreeTab({
                     type: "THICK",
                   });
                 }}
-              />
+              /> */}
             </h4>
             <ul
               className={`mt-2 max-h-60  ${
@@ -374,7 +374,7 @@ function NewTreeTab({
           <div className="px-2 py-2  border border-t-0 border-slate-800">
             <h4 className=" text-lg font-bold flex flex-row items-center justify-around border-b border-slate-800 pb-2">
               Hazırlayan
-              <AiOutlinePlus
+              {/* <AiOutlinePlus
                 className="text-blue-700 hover:cursor-pointer "
                 onClick={() => {
                   setAddNewTreeOptions({
@@ -382,7 +382,7 @@ function NewTreeTab({
                     type: "CREATOR",
                   });
                 }}
-              />
+              /> */}
             </h4>
             <ul
               className={`mt-2 max-h-60 ${
@@ -414,7 +414,7 @@ function NewTreeTab({
           <div className="px-2 py-2  border-r border-b border-slate-800 col-span-2 md:col-span-1">
             <h4 className=" text-lg font-bold flex flex-row items-center justify-around border-b border-slate-800 pb-2">
               Mum Türü
-              <AiOutlinePlus
+              {/* <AiOutlinePlus
                 className="text-blue-700 hover:cursor-pointer "
                 onClick={() => {
                   setAddNewTreeOptions({
@@ -422,7 +422,7 @@ function NewTreeTab({
                     type: "WAX",
                   });
                 }}
-              />
+              /> */}
             </h4>
             <ul
               className={`mt-2 max-h-44  ${

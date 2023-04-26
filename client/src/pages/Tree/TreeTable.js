@@ -1,21 +1,14 @@
-import React, {
-  Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useExpanded, useGlobalFilter, useTable } from "react-table";
 import Alert from "../../components/Alert/Alert";
 import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
-import { BiChevronDown, BiChevronRight, BiLabel, BiSave } from "react-icons/bi";
+import { BiChevronDown, BiChevronRight, BiLabel } from "react-icons/bi";
 import CreateLabel from "./CreateLabel";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { Endpoints } from "../../constants/Endpoints";
-import calculateWaxWeight from "../../utils/CalculateWaxWeight";
+import CalculatedMineralWeight from "../../utils/calculateMineralWeight";
 
 function TreeTable({
   todayTrees,
@@ -161,29 +154,21 @@ function TreeTable({
 
   const handleSaveMineralWeight = (treeId) => {
     let todayTree = todayTrees.find((todayTree) => todayTree.treeId === treeId);
-
+    let calculatedMineralWeight = Number(
+      CalculatedMineralWeight(
+        todayTree.waxWeight,
+        todayTree.option.optionText,
+        todayTree.color.colorName
+      )
+    );
     axiosPrivate.put(
       Endpoints.TREE.MAIN + "/mineralWeight",
       {
         treeId: treeId,
-        waxWeight: todayTree.mineralWeight,
-        mineralWeight: isNaN(
-          Number(
-            calculateWaxWeight(
-              todayTree.mineralWeight,
-              todayTree.option.optionText,
-              todayTree.color.colorName
-            )
-          )
-        )
+        waxWeight: Number(todayTree.waxWeight),
+        mineralWeight: isNaN(calculatedMineralWeight)
           ? 0
-          : Number(
-              calculateWaxWeight(
-                todayTree.mineralWeight,
-                todayTree.option.optionText,
-                todayTree.color.colorName
-              )
-            ),
+          : calculatedMineralWeight,
       },
       {
         headers: { "Content-Type": "application/json" },
@@ -228,10 +213,10 @@ function TreeTable({
           </span>
         ),
       },
-      {
-        Header: "İş Grup",
-        accessor: "jobGroup.date",
-      },
+      // {
+      //   Header: "İş Grup",
+      //   accessor: "jobGroup.date",
+      // },
       {
         Header: "Ağaç Id",
         accessor: "treeId",
@@ -323,12 +308,12 @@ function TreeTable({
       },
       {
         Header: "Maden Ağırlık",
-        accessor: "",
+        accessor: "mineralWeight",
         Cell: ({ row }) => {
           return (
             <div>
-              {calculateWaxWeight(
-                row.original.mineralWeight,
+              {CalculatedMineralWeight(
+                row.original.waxWeight,
                 row.original.option.optionText,
                 row.original.color.colorName
               )}
@@ -338,12 +323,12 @@ function TreeTable({
       },
       {
         Header: "Mum Ağırlık",
-        accessor: "mineralWeight",
+        accessor: "waxWeight",
         Cell: ({ row }) => {
           return (
             <input
               type="number"
-              value={row.original.mineralWeight || ""}
+              value={row.original.waxWeight || ""}
               autoFocus={row.id === editableKeyToFocus.current}
               className=" border-none text-gray-800 mr-3 py-1 px-2 leading-tight focus:outline-none hover:bg-white focus:bg-white"
               onChange={(e) => {
@@ -353,7 +338,7 @@ function TreeTable({
 
                 let newTodayTrees = todayTrees.map((todayTree) => {
                   if (todayTree.treeId === row.original.treeId) {
-                    todayTree.mineralWeight = value;
+                    todayTree.waxWeight = value;
                   }
                   return todayTree;
                 });
@@ -361,6 +346,7 @@ function TreeTable({
               }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
+                  editableKeyToFocus.current = null;
                   handleSaveMineralWeight(row.original.treeId);
                 }
               }}
@@ -436,12 +422,15 @@ function TreeTable({
       setExpandedRow(row.id);
     }
   };
-  useEffect(() => {
-    rows.forEach((row) => {
-      if (row.id !== expandedRow) {
-        toggleRowExpanded(row, false);
-      }
-    });
+  useMemo(() => {
+    if (editableKeyToFocus.current === null) {
+      return rows.forEach((row, index) => {
+        console.log("b", index);
+        if (row.id !== expandedRow) {
+          toggleRowExpanded(row, false);
+        }
+      });
+    }
   }, [expandedRow, rows]);
 
   return (
@@ -539,6 +528,7 @@ function TreeTable({
                         treeStatusId,
                         waxId,
                         treeId,
+                        desc,
                       } = row.original;
                       setUpdateClick({
                         open: true,
@@ -546,7 +536,7 @@ function TreeTable({
                         active,
                         colorId,
                         creatorId,
-                        date,
+                        desc,
                         isImmediate,
                         listNo,
                         optionId,

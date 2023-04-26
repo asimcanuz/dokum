@@ -13,7 +13,8 @@ const updateMineralWeight = async (req, res) => {
     },
   });
   const oldMineralWeight = tree.mineralWeight;
-  if (mineralWeight !== oldMineralWeight) {
+  const oldWaxWeight = tree.waxWeight;
+  if (mineralWeight !== oldMineralWeight || oldWaxWeight !== waxWeight) {
     // update
     Tree.update(
       { mineralWeight, waxWeight },
