@@ -11,7 +11,7 @@ const addNewJobGroup = async (req, res) => {
 
   const jobGroup = await JobGroup.create({
     date: moment(date).format("YYYY-MM-DD"),
-    number: moment(date).format("YYYY-MM-DD"),
+    number: moment(date).format("DD-MM-YYYY"),
   });
 
   if (!jobGroup) res.status(401).send();

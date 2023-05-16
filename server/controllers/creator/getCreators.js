@@ -4,6 +4,9 @@ const Creator = db.creator;
 async function getCreators(req, res) {
   const creators = await Creator.findAll({
     attributes: ["creatorId", "creatorName"],
+    where: {
+      isDeleted: false,
+    },
   });
 
   if (!creators) {

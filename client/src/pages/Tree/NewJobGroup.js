@@ -27,7 +27,7 @@ function NewJobGroup({ jobGroups, setJobGroups, setSelectedJobGroup }) {
       if (jobGroups.length === 2) {
         throw new Error("En fazla 2 iş grubu oluşturabilirsiniz!");
       }
-
+      console.log(newJobGroup);
       const response = await axiosPrivate.post(Endpoints.JOBGROUP, newJobGroup);
       setSelectedJobGroup(response.data.jobGroup.id);
 

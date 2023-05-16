@@ -43,7 +43,10 @@ exports.signin = async (req, res) => {
   });
 
   // not found user
-  if (!foundUser) return res.status(401).send({ message: "User not found" });
+  if (!foundUser)
+    return res
+      .status(401)
+      .send({ type: "username", message: "Kullanıcı Adı Hatalıdır!" });
 
   // match crypted password
   const match = await bcrypt.compare(password, foundUser.password);
@@ -106,7 +109,8 @@ exports.signin = async (req, res) => {
   } else {
     return res.status(401).send({
       accessToken: null,
-      message: "Invalid Password!",
+      type: "password",
+      message: "Girilen şifre hatalıdır!",
     });
   }
 };

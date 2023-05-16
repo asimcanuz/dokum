@@ -8,12 +8,19 @@ import useAuth from "../../hooks/useAuth";
 
 import axios from "../../api/axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Endpoints } from "../../constants/Endpoints";
 import PasswordInput from "../../components/Input/PasswordInput";
 
+const initalLoginError = {
+  show: false,
+  message: "",
+  type: "",
+};
+
 const LoginPage = () => {
   const { setAuth, persist, setPersist } = useAuth();
+  const [loginError, setLoginError] = useState(initalLoginError);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -39,9 +46,24 @@ const LoginPage = () => {
           JSON.stringify({ username, email, role, accessToken, id })
         );
         navigate(from, { replace: true });
-      } catch (error) {}
+      } catch (error) {
+        const { type, message } = error.response.data;
+        setLoginError({
+          show: true,
+          message,
+          type,
+        });
+      }
     },
   });
+  useEffect(() => {
+    if (loginError.show) {
+      const loginErrorTimeout = setTimeout(() => {
+        setLoginError(initalLoginError);
+      }, 10000);
+      return () => clearTimeout(loginErrorTimeout);
+    }
+  }, [loginError]);
 
   const togglePersist = () => {
     setPersist((prev) => !prev);
@@ -70,28 +92,42 @@ const LoginPage = () => {
               }}
             >
               <div className="mb-6">
-                <label htmlFor="username">Username</label>
+                <label htmlFor="username" className="dark:text-slate-200">
+                  Kullanıcı Adı
+                </label>
                 <Input
                   id={"username"}
                   name={"username"}
                   type={"text"}
-                  placeholder={"Username"}
+                  placeholder={"Kullanıcı Adı"}
                   onChange={formik.handleChange}
                   value={formik.values.username}
                   required
                 />
+                {loginError.type === "username" && loginError.show ? (
+                  <div className="text-red-500 text-sm">
+                    {loginError.message}
+                  </div>
+                ) : null}
               </div>
 
               <div className="mb-6">
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password" className="dark:text-slate-200">
+                  Şifre
+                </label>
                 <PasswordInput
                   id={"password"}
                   name={"password"}
-                  placeholder={"Password"}
+                  placeholder={"Şifre"}
                   onChange={formik.handleChange}
                   value={formik.values.password}
                   required
                 />
+                {loginError.type === "password" && loginError.show ? (
+                  <div className="text-red-500 text-sm">
+                    {loginError.message}
+                  </div>
+                ) : null}
               </div>
 
               <div className="flex justify-between items-center mb-6">

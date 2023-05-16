@@ -177,7 +177,7 @@ function NewTreeTab({
   const jobGroupOptions = jobGroups.map((jobGroup) => {
     return {
       value: jobGroup.id,
-      label: "No: " + jobGroup.date,
+      label: "No: " + jobGroup.number,
     };
   });
 

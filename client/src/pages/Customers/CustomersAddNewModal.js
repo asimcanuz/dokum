@@ -13,10 +13,17 @@ import { Endpoints } from "../../constants/Endpoints";
 import * as Yup from "yup";
 
 const FormSchema = Yup.object().shape({
-  accountNumber: Yup.number().min(1).required("Hesap numarası zorunludur."),
+  accountNumber: Yup.number()
+    .typeError("Sadece numara girilmelidr")
+    .min(1)
+    .required("Hesap numarası zorunludur."),
   customerName: Yup.string().required("Müşteri adı zorunludur."),
   email: Yup.string().email("Geçerli bir email adresi giriniz."),
-  phone: Yup.string().required("Telefon numarası zorunludur."),
+  phone: Yup.number()
+    .typeError("Telefon numarası girilmelidir.")
+    .positive("Telefon numarası negatif sayı olamaz.")
+    .min(8)
+    .required("Telefon numarası zorunludur."),
 });
 
 function CustomerAddNewModal({

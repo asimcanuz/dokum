@@ -9,6 +9,7 @@ import CreateLabel from "./CreateLabel";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { Endpoints } from "../../constants/Endpoints";
 import CalculatedMineralWeight from "../../utils/calculateMineralWeight";
+import moment from "moment/moment";
 
 function TreeTable({
   todayTrees,
@@ -297,6 +298,9 @@ function TreeTable({
       {
         Header: "Tarih",
         accessor: "date",
+        Cell: ({ value }) => {
+          return <div>{moment(value).format("DD-MM-YYYY")}</div>;
+        },
       },
       {
         Header: "Durum",
@@ -425,7 +429,6 @@ function TreeTable({
   useMemo(() => {
     if (editableKeyToFocus.current === null) {
       return rows.forEach((row, index) => {
-        console.log("b", index);
         if (row.id !== expandedRow) {
           toggleRowExpanded(row, false);
         }
@@ -444,7 +447,8 @@ function TreeTable({
           />
           <div className="">
             <h3>
-              İş Grup : {jobGroups.find((j) => j.id === selectedJobGroup)?.date}
+              İş Grup :{" "}
+              {jobGroups.find((j) => j.id === selectedJobGroup)?.number}
             </h3>
           </div>
         </div>

@@ -6,9 +6,12 @@ async function deleteCreator(req, res) {
   if (!creatorId) {
     res.status(401).send({ message: "Creator id not found!" });
   }
-  await Creator.destroy({
-    where: { creatorId },
-  })
+  await Creator.update(
+    { isDeleted: true },
+    {
+      where: { creatorId },
+    }
+  )
     .then((creator) => {
       res.status(200).send({ message: "Creator deleted successfull" });
     })

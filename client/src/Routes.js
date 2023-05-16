@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import LoginPage from "./pages/Login";
 import RequireAuth from "./utils/RequireAuth";
 import Shared from "./utils/Shared";
@@ -9,22 +9,23 @@ import AccountsPage from "./pages/Accounts/AccountsPage";
 import CustomersPage from "./pages/Customers/CustomersPage";
 import Layout from "./components/Layout";
 import ConfigurationsPage from "./pages/Configurations/ConfigurationsPage";
-import { rolesDesc } from "./constants/RolesConstants";
+import {rolesDesc} from "./constants/RolesConstants";
 import TreePage from "./pages/Tree";
 import EndDayMain from "./pages/EndDay";
 import OrderMain from "./pages/Orders";
 import CustomerTrackingPage from "./pages/CustomerTracking";
 import ReportsPage from "./pages/Reports";
 import OvenMainPage from "./pages/Oven";
+
 function Routers() {
   return (
     <Routes>
       {/* PUBLIC ROUTES */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/" element={<Layout />}>
-        <Route path="unauthorized" element={<Unauthorized />} />
+      <Route path="/login" element={<LoginPage/>}/>
+      <Route path="/" element={<Layout/>}>
+        <Route path="unauthorized" element={<Unauthorized/>}/>
         {/* PROTECTED ROUTES */}
-        <Route element={<PersistLogin />}>
+        <Route element={<PersistLogin/>}>
           {/* HOME PAGE */}
           <Route
             element={
@@ -37,7 +38,7 @@ function Routers() {
               />
             }
           >
-            <Route path="/" element={<TreePage />} />
+            <Route path="/" element={<TreePage/>}/>
           </Route>
 
           {/* ACCOUNTS PAGE */}
@@ -48,7 +49,7 @@ function Routers() {
               />
             }
           >
-            <Route path="accounts" element={<AccountsPage />} />
+            <Route path="accounts" element={<AccountsPage/>}/>
           </Route>
           {/* CUSTOMERS PAGE */}
           <Route
@@ -62,7 +63,7 @@ function Routers() {
               />
             }
           >
-            <Route path="customers" element={<CustomersPage />} />
+            <Route path="customers" element={<CustomersPage/>}/>
           </Route>
           {/* CONFIGURATION PAGE */}
           <Route
@@ -72,7 +73,16 @@ function Routers() {
               />
             }
           >
-            <Route path="configurations" element={<ConfigurationsPage />} />
+            <Route path="configurations" element={<ConfigurationsPage/>}/>
+          </Route>
+          <Route
+            element={
+              <RequireAuth
+                allowedRoles={[Shared.Roles.admin, Shared.Roles.super]}
+              />
+            }
+          >
+            <Route path="endDay" element={<EndDayMain/>}/>
           </Route>
           <Route
             element={
@@ -85,20 +95,7 @@ function Routers() {
               />
             }
           >
-            <Route path="endDay" element={<EndDayMain />} />
-          </Route>
-          <Route
-            element={
-              <RequireAuth
-                allowedRoles={[
-                  Shared.Roles.admin,
-                  Shared.Roles.super,
-                  Shared.Roles.user,
-                ]}
-              />
-            }
-          >
-            <Route path="orders" element={<OrderMain />} />
+            <Route path="orders" element={<OrderMain/>}/>
           </Route>
           <Route
             element={
@@ -107,7 +104,7 @@ function Routers() {
               />
             }
           >
-            <Route path="customerTracking" element={<CustomerTrackingPage />} />
+            <Route path="customerTracking" element={<CustomerTrackingPage/>}/>
           </Route>
           <Route
             element={
@@ -116,18 +113,20 @@ function Routers() {
               />
             }
           >
-            <Route path="oven" element={<OvenMainPage />} />
+            <Route path="oven" element={<OvenMainPage/>}/>
           </Route>
-          <Route element={<RequireAuth allowedRoles={[Shared.Roles.admin]} />}>
-            <Route path="reports" element={<ReportsPage />} />
+          <Route element={<RequireAuth allowedRoles={[Shared.Roles.admin]}/>}>
+            <Route path="reports" element={<ReportsPage/>}/>
           </Route>
           {/* TREE PAGE */}
-          <Route element={<RequireAuth allowedRoles={rolesDesc.allOf} />}>
-            <Route path="tree" element={<TreePage />} />
+          <Route element={<RequireAuth allowedRoles={rolesDesc.allOf}/>}>
+            <Route path="tree" element={<TreePage/>}/>
           </Route>
+
         </Route>
+
         {/* catch all */}
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="*" element={<NotFoundPage/>}/>
       </Route>
     </Routes>
   );

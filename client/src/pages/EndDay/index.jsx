@@ -16,6 +16,7 @@ import CheckBox from "../../components/Input/CheckBox";
 import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
 import Button from "../../components/Button";
 import Select from "react-select";
+import moment from "moment/moment";
 
 function EndDayMain() {
   const axiosPrivate = useAxiosPrivate();
@@ -105,6 +106,9 @@ function EndDayMain() {
       {
         Header: "Tarih",
         accessor: "date",
+        Cell: ({ value }) => {
+          return <div>{moment(value).format("DD-MM-YYYY")}</div>;
+        },
       },
       {
         Header: "Durum",
@@ -212,7 +216,7 @@ function EndDayMain() {
     return jobGroups.map((jobGroup) => {
       return {
         value: jobGroup.id,
-        label: "No: " + jobGroup.number + " (" + jobGroup.date + ")",
+        label: "No: " + jobGroup.number,
       };
     });
   }, [jobGroups]);

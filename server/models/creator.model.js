@@ -9,6 +9,10 @@ module.exports = (sequelize, Sequelize) => {
     creatorName: {
       type: Sequelize.STRING,
     },
+    isDeleted: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    },
   });
   return Creator;
 };
