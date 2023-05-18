@@ -2,23 +2,16 @@ import React, { Fragment, useEffect, useMemo, useState } from "react";
 import Select from "react-select";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { Endpoints } from "../../constants/Endpoints";
-import {
-  Document,
-  Font,
-  PDFViewer,
-  Page,
-  StyleSheet,
-  Text,
-  View,
-} from "@react-pdf/renderer";
+import { Document, Font, Page, PDFViewer, StyleSheet, Text, View } from "@react-pdf/renderer";
 import Alert from "../../components/Alert/Alert";
+
 // import PdfTable from "./PdfTable";
 
 function MadenAyarlamaRaporu({
-  selectedJobGroup,
-  setSelectedJobGroup,
-  jobGroups,
-}) {
+                               selectedJobGroup,
+                               setSelectedJobGroup,
+                               jobGroups
+                             }) {
   const axiosPrivate = useAxiosPrivate();
   const [trees, setTrees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +20,7 @@ function MadenAyarlamaRaporu({
     return jobGroups.map((jobGroup) => {
       return {
         value: jobGroup.id,
-        label: "No: " + jobGroup.number,
+        label: "No: " + jobGroup.number
       };
     });
   }, [jobGroups]);
@@ -50,9 +43,9 @@ function MadenAyarlamaRaporu({
         Endpoints.REPORTS.MADENAYARLAMARAPORU,
         {
           params: {
-            jobGroupId: selectedJobGroup,
+            jobGroupId: selectedJobGroup
           },
-          signal: controller.signal,
+          signal: controller.signal
         }
       );
 
@@ -103,12 +96,13 @@ function MadenAyarlamaRaporu({
     </div>
   );
 }
+
 const styles = StyleSheet.create({
   page: {
     fontFamily: "Roboto",
     fontSize: 8,
     paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingVertical: 16
   },
 
   table: {
@@ -120,11 +114,11 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
     borderBottomWidth: 0,
     marginTop: 2,
-    fontSize: 8,
+    fontSize: 8
   },
   tableRow: {
     margin: "auto",
-    flexDirection: "row",
+    flexDirection: "row"
   },
   tableColHeader: {
     fontWeight: "medium",
@@ -135,7 +129,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     alignItems: "center",
     justifyContent: "center",
-    height: "32px",
+    height: "32px"
   },
   tableCol: {
     height: "50px",
@@ -146,17 +140,17 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     display: "flex",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "flex-start"
   },
   tableCellHeader: {
     margin: "auto",
     marginTop: 5,
     fontSize: 8,
-    textAlign: "center",
+    textAlign: "center"
   },
   tableCell: {
     fontSize: 7,
-    minHeight: "40px",
+    minHeight: "40px"
     // textAlign: "center",
     // backgroundColor: "#eaeaea",
   },
@@ -167,17 +161,17 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     textAlign: "center",
-    color: "grey",
-  },
+    color: "grey"
+  }
 });
 // Register Font
 Font.register({
   family: "Roboto",
-  src: "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf",
+  src: "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf"
 });
 Font.register({
   family: "Roboto",
-  src: "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-medium-webfont.ttf",
+  src: "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-medium-webfont.ttf"
 });
 
 const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
@@ -193,7 +187,7 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
       if (mineralWaxTotalWeights[tree["option.optionText"]] === undefined) {
         mineralWaxTotalWeights[tree["option.optionText"]] = {
           totalMineralWeight: tree.mineralWeight,
-          totalWaxWeight: tree.waxWeight,
+          totalWaxWeight: tree.waxWeight
         };
       } else {
         mineralWaxTotalWeights[tree["option.optionText"]] = {
@@ -202,7 +196,7 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
               .totalMineralWeight + tree.mineralWeight,
           totalWaxWeight:
             mineralWaxTotalWeights[tree["option.optionText"]].totalWaxWeight +
-            tree.waxWeight,
+            tree.waxWeight
         };
       }
       if (index !== 0) {
@@ -239,7 +233,6 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
   };
 
   const groupedTrees = groupTrees();
-  console.log(mineralWaxTotalWeights);
 
   return (
     <Document>
@@ -252,7 +245,7 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
                   style={{
                     display: "flex",
                     flexDirection: "row",
-                    justifyContent: "space-between",
+                    justifyContent: "space-between"
                   }}
                 >
                   <View fixed>
@@ -271,21 +264,21 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
                       {
                         mineralWaxTotalWeights[
                           groupedTree[0]["option.optionText"]
-                        ].totalWaxWeight
+                          ].totalWaxWeight
                       }
                     </Text>
                     <Text
                       style={{
                         fontSize: 12,
                         fontWeight: "bold",
-                        marginLeft: "12px",
+                        marginLeft: "12px"
                       }}
                     >
                       Toplam Maden Ağırlık :
                       {
                         mineralWaxTotalWeights[
                           groupedTree[0]["option.optionText"]
-                        ].totalMineralWeight
+                          ].totalMineralWeight
                       }
                     </Text>
                   </View>
@@ -346,16 +339,16 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
                               display: "flex",
                               flexDirection: "column",
                               alignItems: "center",
-                              justifyContent: "flex-start",
-                            },
+                              justifyContent: "flex-start"
+                            }
                           ]}
                         >
                           <View
                             style={[
                               {
                                 display: "flex",
-                                flexDirection: "row",
-                              },
+                                flexDirection: "row"
+                              }
                             ]}
                           >
                             {row["isImmediate"] ? (
@@ -377,7 +370,7 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
                               style={{
                                 color: "blue",
                                 overflow: "hidden",
-                                textOverflow: "ellipsis",
+                                textOverflow: "ellipsis"
                               }}
                             >
                               {row["desc"] !== null

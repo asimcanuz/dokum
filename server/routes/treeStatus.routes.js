@@ -10,4 +10,4 @@ router.post("/", addTreeStatus);
 router.put("/", updateTreeStatus);
 router.delete("/", deleteTreeStatus);
 
-module.exports = router;
+module.exports = router

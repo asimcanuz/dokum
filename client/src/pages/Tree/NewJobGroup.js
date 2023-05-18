@@ -1,15 +1,13 @@
 import React from "react";
-import Input from "../../components/Input";
-import ReactDatePicker from "react-datepicker";
 import Button from "../../components/Button";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { Endpoints } from "../../constants/Endpoints";
 import moment from "moment/moment";
-import { locale } from "../../utils/DatePickerLocale";
+import { Calendar } from "devextreme-react";
+import { Endpoints } from "../../constants/Endpoints";
 
 function NewJobGroup({ jobGroups, setJobGroups, setSelectedJobGroup }) {
   const [newJobGroup, setNewJobGroup] = React.useState({
-    date: new Date(),
+    date: new Date()
   });
   const axiosPrivate = useAxiosPrivate();
 
@@ -27,7 +25,6 @@ function NewJobGroup({ jobGroups, setJobGroups, setSelectedJobGroup }) {
       if (jobGroups.length === 2) {
         throw new Error("En fazla 2 iş grubu oluşturabilirsiniz!");
       }
-      console.log(newJobGroup);
       const response = await axiosPrivate.post(Endpoints.JOBGROUP, newJobGroup);
       setSelectedJobGroup(response.data.jobGroup.id);
 
@@ -52,15 +49,14 @@ function NewJobGroup({ jobGroups, setJobGroups, setSelectedJobGroup }) {
       <form className="space-y-4" onSubmit={formSubmit}>
         <p className="col-span-12 md:col-span-1">Tarih</p>
         <div className="col-span-12 md:col-span-4">
-          <ReactDatePicker
-            locale={locale}
-            inline
-            minDate={new Date()}
-            selected={newJobGroup.date}
-            onChange={(date) => {
-              setNewJobGroup({ ...newJobGroup, date: date });
+          <Calendar
+
+            min={new Date()}
+            value={newJobGroup.date}
+            onValueChanged={(e) => {
+              setNewJobGroup({ ...newJobGroup, date: e.value });
             }}
-            dateFormat="dd/MM/yyyy"
+
           />
         </div>
         <div className="flex justify-end">

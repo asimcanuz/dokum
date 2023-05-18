@@ -1,23 +1,22 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useExpanded, useGlobalFilter, useTable } from "react-table";
-import Alert from "../../components/Alert/Alert";
-import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
-import Input from "../../components/Input";
-import Button from "../../components/Button";
-import { BiChevronDown, BiChevronRight, BiLabel } from "react-icons/bi";
-import CreateLabel from "./CreateLabel";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { Endpoints } from "../../constants/Endpoints";
-import CalculatedMineralWeight from "../../utils/calculateMineralWeight";
-import moment from "moment/moment";
+import React, { useState } from 'react';
+import Alert from '../../components/Alert/Alert';
+import Button from '../../components/Button';
+import { BiLabel } from 'react-icons/bi';
+import CreateLabel from './CreateLabel';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { Endpoints } from '../../constants/Endpoints';
+import CalculatedMineralWeight from '../../utils/calculateMineralWeight';
+import calculateMineralWeight from '../../utils/calculateMineralWeight';
+import { DataGrid } from 'devextreme-react';
+import { Column, Editing, MasterDetail, Scrolling, Selection } from 'devextreme-react/data-grid';
 
 function TreeTable({
+  setClickTree,
   todayTrees,
   customers,
   descriptions,
   treeStatuses,
   creators,
-  setClickTree,
   setUpdateClick,
   setTodayTrees,
   clickTreeId,
@@ -25,439 +24,128 @@ function TreeTable({
   selectedJobGroup,
   setSelectedJobGroup,
   treeTableRef,
+  options,
+  thicks,
+  waxes,
+  colors,
 }) {
   const axiosPrivate = useAxiosPrivate();
-  const [orderFilter, setOrderFilter] = useState("");
   const [createLabel, setCreateLabel] = useState(false);
-  const [expandedRow, setExpandedRow] = useState(null);
 
-  const editableKeyToFocus = useRef(null);
-
-  const renderOrderTable = React.useCallback(
-    ({ row }) => {
-      let orders = [];
-      row.original.orders.forEach((order) => {
-        let customer = customers?.find(
-          (customer) => customer?.customerId === order?.customerId
-        );
-        let description = descriptions?.find(
-          (description) => description?.descriptionId === order?.descriptionId
-        )?.descriptionText;
-        const _order = {
-          id: order.orderId,
-          hesapNo: customer.accountNumber,
-          musteriAdi: customer.customerName,
-          adet: order.quantity,
-          aciklama: description,
-        };
-        orders.push(_order);
-      });
-
-      if (orderFilter !== "") {
-        orders = orders.filter((order) => {
-          return (
-            order.hesapNo
-              .toLocaleLowerCase()
-              .includes(orderFilter.toLocaleLowerCase()) ||
-            order.musteriAdi
-              .toLocaleLowerCase()
-              .includes(orderFilter.toLocaleLowerCase()) ||
-            order.aciklama
-              .toLocaleLowerCase()
-              .includes(orderFilter.toLocaleLowerCase())
-          );
-        });
-      }
-
-      return (
-        <div className=" flex flex-col ">
-          <Input
-            type={"text"}
-            placeholder={"Sipariş Filtre"}
-            value={orderFilter}
-            onChange={(e) => setOrderFilter(e.target.value)}
-          />
-          <table className=" w-full divide-y divide-gray-200 mt-2">
-            <thead>
-              <tr className="space-x-4">
-                <th className=" text-xs font-bold text-left text-gray-500 uppercase">
-                  Hesap No
-                </th>
-                <th className="text-xs font-bold text-left text-gray-500 uppercase">
-                  Müşteri Adı
-                </th>
-                <th className="text-xs font-bold text-left text-gray-500 uppercase">
-                  Adet
-                </th>
-                <th className=" text-xs font-bold text-left text-gray-500 uppercase">
-                  Açıklama
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => {
-                return (
-                  <tr key={order.id} className="space-x-4">
-                    <td className=" text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">
-                      {order.hesapNo}
-                    </td>
-                    <td className=" text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">
-                      {order.musteriAdi}
-                    </td>
-                    <td className=" text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">
-                      {order.adet}
-                    </td>
-                    <td className=" text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap">
-                      {order.aciklama}
-                    </td>
-                    <td className="space-x-4">
-                      <Button
-                        appearance={"danger"}
-                        onClick={() => {
-                          let deletedOrder = axiosPrivate.delete(
-                            Endpoints.ORDER,
-                            {
-                              data: { orderId: order.id },
-                            },
-                            {
-                              headers: { "Content-Type": "application/json" },
-                              withCredentials: true,
-                            }
-                          );
-                          deletedOrder.then((res) => {
-                            let newTodayTrees = todayTrees.map((todayTree) => {
-                              if (todayTree.treeId === row.original.treeId) {
-                                let newOrders = todayTree.orders.filter(
-                                  (tree) => tree.orderId !== order.id
-                                );
-                                todayTree.orders = newOrders;
-                              }
-                              return todayTree;
-                            });
-                            console.log(newTodayTrees);
-                            setTodayTrees(newTodayTrees);
-                          });
-                        }}
-                      >
-                        Sil
-                      </Button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      );
-    },
-    [customers, descriptions, orderFilter]
-  );
-
-  const handleSaveMineralWeight = (treeId) => {
-    let todayTree = todayTrees.find((todayTree) => todayTree.treeId === treeId);
+  const handleSaveMineralWeight = (data) => {
+    let todayTree = data;
     let calculatedMineralWeight = Number(
       CalculatedMineralWeight(
         todayTree.waxWeight,
         todayTree.option.optionText,
-        todayTree.color.colorName
-      )
+        todayTree.color.colorName,
+      ),
     );
     axiosPrivate.put(
-      Endpoints.TREE.MAIN + "/mineralWeight",
+      Endpoints.TREE.MAIN + '/mineralWeight',
       {
-        treeId: treeId,
+        treeId: data.treeId,
         waxWeight: Number(todayTree.waxWeight),
-        mineralWeight: isNaN(calculatedMineralWeight)
-          ? 0
-          : calculatedMineralWeight,
+        mineralWeight: isNaN(calculatedMineralWeight) ? 0 : calculatedMineralWeight,
       },
       {
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
-      }
+      },
     );
   };
-  const tableColumns = React.useMemo(
-    () => [
-      {
-        Header: () => null, // No header
-        id: "expander", // It needs an ID for expander
-        Cell: ({ row }) => (
-          <span
-            onClick={() => {
-              handleRowClick(row);
-              let clickedTree = row.original;
-              let customerIds = [];
 
-              clickedTree.orders.forEach((order) => {
-                if (!customerIds.includes(order.customerId)) {
-                  customerIds.push(order.customerId);
-                }
-              });
-              setClickTree({
-                agacId: clickedTree.treeId,
-                agacNo: clickedTree.treeNo,
-                listeNo: clickedTree.listNo,
-                siparisSayisi: clickedTree.orders.length,
-                renk: clickedTree.color.colorName,
-                ayar: clickedTree.option.optionText,
-                kalinlik: clickedTree.thick.thickName,
-                musteriSayisi: customerIds.length,
-              });
-            }}
-          >
-            {row.id === expandedRow ? (
-              <BiChevronDown className="text-xl" />
-            ) : (
-              <BiChevronRight className="text-xl" />
-            )}
-          </span>
-        ),
-      },
-      // {
-      //   Header: "İş Grup",
-      //   accessor: "jobGroup.date",
-      // },
-      {
-        Header: "Ağaç Id",
-        accessor: "treeId",
-      },
-      {
-        Header: "Agac No",
-        accessor: "treeNo",
-      },
-      {
-        Header: "Liste No",
-        accessor: "listNo",
-      },
-      {
-        Header: "Acil Mi?",
-        accessor: "isImmediate",
-        Cell: ({ value, row }) => {
-          if (value) {
-            return (
-              <div
-                className="bg-red-100 rounded-lg py-2 px-3 mb-4 text-base text-red-700 "
-                role="alert"
-              >
-                Evet
-              </div>
-            );
-          } else {
-            return (
-              <div
-                className="bg-blue-100 rounded-lg py-2 px-3 mb-4 text-base text-blue-700 "
-                role="alert"
-              >
-                Hayır
-              </div>
-            );
-          }
-        },
-      },
-      {
-        Header: "Musteri Adet",
-        accessor: "",
-        Cell: ({ row }) => {
-          let customerIds = [];
-          row.original.orders.forEach((order) => {
-            if (!customerIds.includes(order.customerId)) {
-              customerIds.push(order.customerId);
-            }
-          });
-          return customerIds.length;
-        },
-      },
-      {
-        Header: "Agac Tipi",
-        accessor: "",
-        Cell: ({ row }) => {
-          if (row.original.orders.length === 1) {
-            return row.original.orders[0].customer.customerName;
-          } else {
-            return "Karışık";
-          }
-        },
-      },
-      {
-        Header: "Mum Turu",
-        accessor: "wax.waxName",
-      },
-      {
-        Header: "Ayar",
-        accessor: "option.optionText",
-      },
-      {
-        Header: "Kalınlık",
-        accessor: "thick.thickName",
-      },
-      {
-        Header: "Renk",
-        accessor: "color.colorName",
-      },
-      {
-        Header: "Tarih",
-        accessor: "date",
-        Cell: ({ value }) => {
-          return <div>{moment(value).format("DD-MM-YYYY")}</div>;
-        },
-      },
-      {
-        Header: "Durum",
-        accessor: "treeStatus.treeStatusName",
-      },
-      {
-        Header: "Hazırlayan",
-        accessor: "creator.creatorName",
-      },
-      {
-        Header: "Maden Ağırlık",
-        accessor: "mineralWeight",
-        Cell: ({ row }) => {
-          return (
-            <div>
-              {CalculatedMineralWeight(
-                row.original.waxWeight,
-                row.original.option.optionText,
-                row.original.color.colorName
-              )}
-            </div>
-          );
-        },
-      },
-      {
-        Header: "Mum Ağırlık",
-        accessor: "waxWeight",
-        Cell: ({ row }) => {
-          return (
-            <input
-              type="number"
-              value={row.original.waxWeight || ""}
-              autoFocus={row.id === editableKeyToFocus.current}
-              className=" border-none text-gray-800 mr-3 py-1 px-2 leading-tight focus:outline-none hover:bg-white focus:bg-white"
-              onChange={(e) => {
-                editableKeyToFocus.current = row.id;
-                var value = e.target.value.replace(",", "");
-                value = value.replace(".", "");
+  function selectionChanged(e) {
+    e.component.collapseAll(-1);
+    e.component.expandRow(e.currentSelectedRowKeys[0]);
 
-                let newTodayTrees = todayTrees.map((todayTree) => {
-                  if (todayTree.treeId === row.original.treeId) {
-                    todayTree.waxWeight = value;
-                  }
-                  return todayTree;
-                });
-                setTodayTrees(newTodayTrees);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  editableKeyToFocus.current = null;
-                  handleSaveMineralWeight(row.original.treeId);
-                }
-              }}
-              onBlur={(e) => {
-                editableKeyToFocus.current = null;
-                handleSaveMineralWeight(row.original.treeId);
-              }}
-            />
-          );
-        },
-      },
-      {
-        Header: "Sil",
-        Cell: ({ row }) => {
-          return (
-            <Button
-              appearance={"danger"}
-              onClick={() => {
-                let deletedTree = axiosPrivate.put(Endpoints.TREE.PASSIVE, {
-                  treeId: row.original.treeId,
-                });
+    let clickedTree = e.selectedRowsData[0];
 
-                deletedTree.then((res) => {
-                  let newTodayTrees = todayTrees.filter(
-                    (todayTree) => todayTree.treeId !== row.original.treeId
-                  );
-                  setTodayTrees(newTodayTrees);
-                });
-              }}
-            >
-              Sil
-            </Button>
-          );
-        },
-      },
-      // {
-      //   Header: "Mum Ağırlık",
-      //   accessor: "",
-      // },
-      // {
-      //   Header: "Maden Ağırlık",
-      //   accessor: "",
-      // },
-    ],
-    [todayTrees, expandedRow]
-  );
+    let customerIds = [];
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    state,
-    toggleRowExpanded,
-    preGlobalFilteredRows,
-    setGlobalFilter,
-    visibleColumns,
-  } = useTable(
-    {
-      columns: tableColumns,
-      data: todayTrees,
-      autoResetExpanded: false,
-    },
-    useGlobalFilter,
-    useExpanded
-  );
+    clickedTree.orders.forEach((order) => {
+      if (!customerIds.includes(order.customerId)) {
+        customerIds.push(order.customerId);
+      }
+    });
+    setClickTree({
+      agacId: clickedTree.treeId,
+      agacNo: clickedTree.treeNo,
+      listeNo: clickedTree.listNo,
+      siparisSayisi: clickedTree.orders.length,
+      renk: clickedTree.color.colorName,
+      ayar: clickedTree.option.optionText,
+      kalinlik: clickedTree.thick.thickName,
+      musteriSayisi: customerIds.length,
+    });
+  }
 
-  const handleRowClick = (row) => {
-    if (row.id === expandedRow) {
-      setExpandedRow(null);
-    } else {
-      setExpandedRow(row.id);
-    }
-  };
-  useMemo(() => {
-    if (editableKeyToFocus.current === null) {
-      return rows.forEach((row, index) => {
-        if (row.id !== expandedRow) {
-          toggleRowExpanded(row, false);
-        }
-      });
-    }
-  }, [expandedRow, rows]);
+  function rowDblClick(e) {
+    const { data } = e;
+    const {
+      active,
+      colorId,
+      creatorId,
+      isImmediate,
+      listNo,
+      optionId,
+      processId,
+      thickId,
+      treeNo,
+      treeStatusId,
+      waxId,
+      treeId,
+      desc,
+    } = data;
+    setUpdateClick({
+      open: true,
+      treeId,
+      active,
+      colorId,
+      creatorId,
+      desc,
+      isImmediate,
+      listNo,
+      optionId,
+      processId,
+      thickId,
+      treeNo,
+      treeStatusId,
+      waxId,
+    });
+  }
+
+  function onRowRemoving(e) {
+    const { data } = e;
+    let deletedtree = axiosPrivate.put(Endpoints.TREE.PASSIVE, {
+      treeId: data.treeId,
+    });
+
+    deletedtree.then((res) => {
+      let newtodaytrees = todayTrees.filter((todaytree) => todaytree.treeId !== data.treeId);
+      setTodayTrees(newtodaytrees);
+    });
+  }
+
+  function onRowUpdate(e) {
+    handleSaveMineralWeight(e.data);
+  }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-row justify-between items-center">
-        <div className="w-1/2 flex flex-row items-center space-x-11">
-          <GlobalFilter
-            preGlobalFilteredRows={preGlobalFilteredRows}
-            globalFilter={state.globalFilter}
-            setGlobalFilter={setGlobalFilter}
-          />
-          <div className="">
-            <h3>
-              İş Grup :{" "}
-              {jobGroups.find((j) => j.id === selectedJobGroup)?.number}
-            </h3>
-          </div>
+    <div className='space-y-4'>
+      <div className='flex flex-row justify-between items-center'>
+        <div className='w-1/2 flex flex-row items-center space-x-11'>
+          <h4 className={'text-lg font-medium '}>
+            İş Grup:&nbsp;
+            {jobGroups.find((j) => j.id === selectedJobGroup)?.number}
+          </h4>
         </div>
         <Button
-          appearance={"success"}
+          appearance={'success'}
           onClick={() => {
             try {
-              if (selectedJobGroup === null || selectedJobGroup === "") {
-                throw new Error("İş grubu seçiniz!");
+              if (selectedJobGroup === null || selectedJobGroup === '') {
+                throw new Error('İş grubu seçiniz!');
               } else {
                 setCreateLabel(true);
               }
@@ -470,113 +158,118 @@ function TreeTable({
           <span>Etiket Oluştur</span>
         </Button>
       </div>
+      {/*
+      TODO: 
+       * Form Editing: https://js.devexpress.com/Demos/WidgetsGallery/Demo/DataGrid/FormEditing/React/Light/
+       * PopUp Editing: https://js.devexpress.com/Demos/WidgetsGallery/Demo/DataGrid/PopupEditing/React/Light/
+      */}
       {todayTrees.length > 0 ? (
-        <table
-          {...getTableProps()}
-          className="min-w-full text-left text-sm font-light overflow-x-scroll max-h-screen overflow-y-auto"
+        <DataGrid
+          id={'grid-container'}
+          dataSource={todayTrees}
+          showBorders={true}
+          keyExpr={'treeId'}
+          remoteOperations={true}
+          height={700}
+          hoverStateEnabled={true}
+          onSelectionChanged={selectionChanged}
+          onRowDblClick={rowDblClick}
+          onRowRemoving={onRowRemoving}
+          onRowUpdated={onRowUpdate}
         >
-          <thead className="border-b font-medium dark:border-neutral-500">
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th
-                    scope="col"
-                    className="px-6 py-4"
-                    {...column.getHeaderProps()}
-                  >
-                    {column.render("Header")}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {rows.map((row, i) => {
-              prepareRow(row);
-              const rowBackgroundColor = () => {
-                switch (row.original.treeStatus.treeStatusName) {
-                  case "Hazırlanıyor":
-                    return "bg-gray-50";
-                  case "Dökümde":
-                    return "bg-green-100";
-                  case "Döküldü":
-                    return "bg-blue-100";
-                  case "Kesimde":
-                    return "bg-purple-100";
-                  default:
-                    return "bg-white";
+          <Editing
+            mode={'cell'}
+            useIcons={true}
+            allowAdding={false}
+            allowUpdating={true}
+            allowDeleting={true}
+          />
+          <Scrolling mode='virtual' />
+          <Selection mode={'single'} />
+          <Column dataField={'treeNo'} caption={'Ağaç No'} width={'70px'} allowEditing={false} />
+          <Column dataField={'listNo'} caption={'Liste No'} width={'70px'} allowEditing={false} />
+          <Column
+            dataField={'isImmediate'}
+            caption={'Acil Mi'}
+            cellRender={({ value }) =>
+              value ? (
+                <div className='bg-red-100 rounded-lg text-base text-red-700' role='alert'>
+                  Evet
+                </div>
+              ) : (
+                <div className='bg-blue-100 rounded-lg text-base text-blue-700' role='alert'>
+                  Hayır
+                </div>
+              )
+            }
+            allowEditing={false}
+          />
+          <Column
+            caption={'Müşteri Adeti'}
+            cellRender={({ data }) => {
+              if (Object.keys(data.orders).length > 0) {
+                let customerids = [];
+                data.orders.forEach((order) => {
+                  if (!customerids.includes(order.customerId)) {
+                    customerids.push(order.customerId);
+                  }
+                });
+                return customerids.length;
+              } else {
+                return <div>0</div>;
+              }
+            }}
+            allowEditing={false}
+          />
+
+          <Column
+            caption={'Ağaç Tipi'}
+            cellRender={({ data }) => {
+              if (Object.keys(data.orders).length > 0) {
+                if (data.orders.length === 1) {
+                  return data.orders[0].customer.customername;
+                } else {
+                  return 'karışık';
                 }
-              };
+              } else {
+                return <div>-</div>;
+              }
+            }}
+            allowEditing={false}
+          />
+
+          <Column caption={'Mum Türü'} dataField={'wax.waxName'} allowEditing={false} />
+          <Column caption={'Ayar'} dataField={'option.optionText'} allowEditing={false} />
+          <Column caption={'Kalınlık'} dataField={'thick.thickName'} allowEditing={false} />
+          <Column caption={'Renk'} dataField={'color.colorName'} allowEditing={false} />
+          <Column caption={'Tarih'} dataField={'date'} allowEditing={false} />
+          <Column caption={'Durum'} dataField={'treeStatus.treeStatusName'} allowEditing={false} />
+          <Column caption={'Hazırlayan'} dataField={'creator.creatorName'} allowEditing={false} />
+          <Column
+            caption={'Maden Ağırlık'}
+            dataField={'mineralWeight'}
+            allowEditing={false}
+            cellRender={({ data }) => {
               return (
-                // <Fragment key={i} {...row.getRowProps()}>
-                <>
-                  <tr
-                    align="center"
-                    className={`hover:mouse-pointer text-black hover:bg-neutral-200 select-none border-b  ${rowBackgroundColor()}`}
-                    {...row.getRowProps()}
-                    onClick={() => {
-                      // id,ağaç no, liste no, sipariş sayısı,renk,ayar
-                    }}
-                    onDoubleClick={() => {
-                      const {
-                        active,
-                        colorId,
-                        creatorId,
-                        date,
-                        isImmediate,
-                        listNo,
-                        optionId,
-                        processId,
-                        thickId,
-                        treeNo,
-                        treeStatusId,
-                        waxId,
-                        treeId,
-                        desc,
-                      } = row.original;
-                      setUpdateClick({
-                        open: true,
-                        treeId,
-                        active,
-                        colorId,
-                        creatorId,
-                        desc,
-                        isImmediate,
-                        listNo,
-                        optionId,
-                        processId,
-                        thickId,
-                        treeNo,
-                        treeStatusId,
-                        waxId,
-                      });
-                    }}
-                  >
-                    {row.cells.map((cell) => {
-                      return (
-                        <td
-                          className="whitespace-nowrap px-6 py-4"
-                          {...cell.getCellProps()}
-                        >
-                          {cell.render("Cell")}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                  {row.id === expandedRow ? (
-                    <tr>
-                      <td className="pl-12 " colSpan={visibleColumns.length}>
-                        {renderOrderTable({ row })}
-                      </td>
-                    </tr>
-                  ) : null}
-                </>
+                <div>
+                  {calculateMineralWeight(
+                    data.waxWeight,
+                    data.option.optionText,
+                    data.color.colorName,
+                  )}
+                </div>
               );
-            })}
-          </tbody>
-        </table>
+            }}
+          />
+          <Column caption={'Mum Ağırlık'} dataField={'waxWeight'} />
+          <MasterDetail
+            render={(e) => {
+              return treeMasterDetail(e.data, axiosPrivate, descriptions);
+            }}
+          />
+        </DataGrid>
       ) : (
-        <Alert apperance={"danger"}>Veri bulunamadı!</Alert>
+        <Alert apperance={'danger'}>Veri bulunamadı!</Alert>
       )}
       {createLabel ? (
         <CreateLabel
@@ -587,6 +280,64 @@ function TreeTable({
           }}
         />
       ) : null}
+    </div>
+  );
+}
+
+function treeMasterDetail(data, axiosPrivate, descriptions) {
+  let orders = data.orders;
+
+  function onRowRemoving({ data }) {
+    axiosPrivate.delete(
+      Endpoints.ORDER,
+      {
+        data: { orderId: data.orderId },
+      },
+      {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+      },
+    );
+  }
+
+  return (
+    <div className={'flex flex-col space-y-4'}>
+      <DataGrid
+        dataSource={orders}
+        id={'grid-container'}
+        showBorders={true}
+        keyExpr={'orderId'}
+        remoteOperations={true}
+        height={300}
+        hoverStateEnabled={true}
+        onRowRemoving={onRowRemoving}
+      >
+        <Editing
+          mode={'cell'}
+          useIcons={true}
+          allowAdding={false}
+          allowUpdating={false}
+          allowDeleting={true}
+        />
+        <Scrolling mode='virtual' />
+        <Column
+          dataField={'customer.accountNumber'}
+          caption={'Hesap Numarası'}
+          allowEditing={false}
+          width={70}
+        />
+        <Column dataField={'customer.customerName'} caption={'Müşteri Adı'} allowEditing={false} />
+        <Column dataField={'quantity'} caption={'Adet'} allowEditing={false} />
+        <Column
+          dataField={'descriptionId'}
+          caption={'Açıklama'}
+          allowEditing={false}
+          cellRender={({ data }) => {
+            return descriptions?.find((desc) => desc.descriptionId === data.descriptionId)
+              ?.descriptionText;
+          }}
+        />
+      </DataGrid>
     </div>
   );
 }

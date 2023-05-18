@@ -1,4 +1,4 @@
-import { firinlarConstants } from "../constants/firinlarConstants";
+import { firinlarConstants } from '../constants/firinlarConstants';
 // TODO : ağaçları firinlara aktardım bazılarında hata olabilir. kontrol et. 17 den fazla ağaç varsa diğer firinlara aktarma işleminden devam et
 export const agaclariFirinla = (trees, checkedGroup) => {
   let _firin = {
@@ -17,10 +17,9 @@ export const agaclariFirinla = (trees, checkedGroup) => {
   };
   let acikKalanAgaclar = [];
 
-  if (checkedGroup === "normal") {
+  if (checkedGroup === 'normal') {
     trees.forEach((element) => {
-      const { treeNo, erkenFirinGrubunaEklendiMi, color, option, thick } =
-        element;
+      const { treeNo, erkenFirinGrubunaEklendiMi, color, option, thick } = element;
       const { colorName: renk } = color;
       const { optionText: ayar } = option;
       const { thickName: kalinlik } = thick;
@@ -30,25 +29,16 @@ export const agaclariFirinla = (trees, checkedGroup) => {
 
       // Döngülerle her bir kategori için kontrol yapma
       for (let i = 1; i <= categoryCount; i++) {
-        const category = firinlarConstants[i];
-        const keys = Object.keys(category);
+        const category = firinlarConstants[i]; // 1,2,3
+        const keys = Object.keys(category); //alt ust
 
         for (const key of keys) {
           category[key].forEach((firin) => {
-            console.log(
-              firin.ayar,
-              ayar,
-              "\n",
-              firin.renk,
-              renk,
-              "\n",
-              firin.kalinlik,
-              kalinlik
-            );
+            // alt ust
             if (
-              (firin.ayar === ayar || firin.ayar === "Hepsi") &&
-              (firin.renk === renk || firin.renk === "Hepsi") &&
-              (firin.kalinlik === kalinlik || firin.kalinlik === "Hepsi")
+              (firin.ayar === ayar || firin.ayar === 'Hepsi') &&
+              (firin.renk === renk || firin.renk === 'Hepsi') &&
+              (firin.kalinlik === kalinlik || firin.kalinlik === 'Hepsi')
             ) {
               _firin[i][key].push(treeNo);
             }
@@ -72,28 +62,26 @@ export const agaclariFirinla = (trees, checkedGroup) => {
           }
         }
       }
-
       if (!isFound) {
         acikKalanAgaclar.push(treeId);
       }
     });
-  } else {
   }
 
-  // acikKalanAgaclar.forEach((element) => {
-  //   trees.forEach((tree) => {
-  //     if (tree.treeId === element) {
-  //       const { color, option, thick } = tree;
-  //       const { colorName: renk } = color;
-  //       const { optionText: ayar } = option;
-  //       const { thickName: kalınlık } = thick;
+  acikKalanAgaclar.forEach((element) => {
+    trees.forEach((tree) => {
+      if (tree.treeId === element) {
+        const { color, option, thick } = tree;
+        const { colorName: renk } = color;
+        const { optionText: ayar } = option;
+        const { thickName: kalınlık } = thick;
 
-  //       console.log(renk, ayar, kalınlık);
-  //     }
-  //   });
-  // });
-
-  // Firinları kontrol et, bir firinin alt ve üst bolmesinde max 17 ağaç olacak. 17 den fazla ise diğer bolmeye aktar.
+        console.log(renk, ayar, kalınlık);
+      }
+    });
+  });
+  
+  // Firinları kontrol et, bir firinin alt ve üst bolmesinde max 17 ağaç olacak. 17 den fazla ise diğer bolmeye aktar. 13 + 4 iç   -> 17
   // Eğer aktarılan ağaçlar da 17 den fazla ise diğer firina aktar. Bu şekilde butun firinların alt ve ust bolmeleri dolacak.
   // Eğer hepsi doluysa ağaçları acikKalanAgaclar dizisine aktar.
 };

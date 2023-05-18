@@ -1,13 +1,10 @@
-import React, { useState } from "react";
-import Input from "../../components/Input";
-import CheckBox from "../../components/Input/CheckBox";
-import Button from "../../components/Button";
-// import { AiOutlinePlus } from "react-icons/ai";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { Endpoints } from "../../constants/Endpoints";
-import { Capitalize } from "../../utils/Capitalize";
-import AddNewTreeOptions from "./AddNewTreeOptions";
-import Select from "react-select";
+import React, { useState } from 'react';
+import Button from '../../components/Button';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { Endpoints } from '../../constants/Endpoints';
+import { Capitalize } from '../../utils/Capitalize';
+import AddNewTreeOptions from './AddNewTreeOptions';
+import { CheckBox, NumberBox, SelectBox, TextBox } from 'devextreme-react';
 
 function NewTreeTab({
   colors,
@@ -23,16 +20,16 @@ function NewTreeTab({
 }) {
   const initialState = {
     newTree: {
-      treeNo: "",
-      listeNo: "",
+      treeNo: '',
+      listeNo: '',
       agacAuto: false,
       listeAuto: false,
-      renkId: "",
-      ayarId: "",
-      kalınlıkId: "",
-      hazırlayanId: "",
-      mumTurId: "",
-      desc: "",
+      renkId: '',
+      ayarId: '',
+      kalınlıkId: '',
+      hazırlayanId: '',
+      mumTurId: '',
+      desc: '',
       date: new Date(),
       jobGroupId: selectedJobGroup,
       isImmediate: false,
@@ -47,7 +44,7 @@ function NewTreeTab({
   const [newTree, setNewTree] = useState(initialState.newTree);
   const [addNewTreeOptions, setAddNewTreeOptions] = useState({
     open: false,
-    type: "",
+    type: '',
   });
   const axiosPrivate = useAxiosPrivate();
 
@@ -72,71 +69,69 @@ function NewTreeTab({
     let _agacNo = newTree?.treeNo;
     let _listeNo = newTree?.listeNo;
     try {
-      if (newTree.jobGroupId === "") {
-        throw new Error("İş grubu seçilmedi!");
+      if (newTree.jobGroupId === '') {
+        throw new Error('İş grubu seçilmedi!');
       }
       if (newTree.agacAuto) {
-        _agacNo = getBiggestNumber("treeNo") + 1;
+        _agacNo = getBiggestNumber('treeNo') + 1;
         // set New tree with prev State
 
         // setNewTree({ ...newTree, treeNo: _agacNo });
       } else {
         todayTrees.forEach((tree) => {
           if (
-            tree["treeNo"] === Number(newTree.treeNo) &&
-            tree["jobGroupId"] === selectedJobGroup
+            tree['treeNo'] === Number(newTree.treeNo) &&
+            tree['jobGroupId'] === selectedJobGroup
           ) {
             throw new Error(
               `Tekrar eden bir Agaç numarası girdiniz!. ${
-                getBiggestNumber("treeNo") + 1
-              } numarasını girebilirsiniz. `
+                getBiggestNumber('treeNo') + 1
+              } numarasını girebilirsiniz. `,
             );
           }
         });
       }
 
       if (newTree.listeAuto) {
-        _listeNo = getBiggestNumber("listNo") + 1;
+        _listeNo = getBiggestNumber('listNo') + 1;
       } else {
         todayTrees.forEach((tree) => {
           if (
-            tree["listNo"] === Number(newTree.listeNo) &&
-            tree["jobGroupId"] === selectedJobGroup
+            tree['listNo'] === Number(newTree.listeNo) &&
+            tree['jobGroupId'] === selectedJobGroup
           ) {
             throw new Error(
               `Tekrar eden bir Liste numarası girdiniz!. ${
-                getBiggestNumber("listNo") + 1
-              } numarasını girebilirsiniz. `
+                getBiggestNumber('listNo') + 1
+              } numarasını girebilirsiniz. `,
             );
           }
         });
       }
 
-      if (newTree.agacNo === "" && newTree.agacAuto === false) {
-        throw new Error("Agaç Numarası Girilmedi!");
+      if (newTree.agacNo === '' && newTree.agacAuto === false) {
+        throw new Error('Agaç Numarası Girilmedi!');
       }
-      if (newTree.listeNo === "" && newTree.listeAuto === false) {
-        throw new Error("Liste Numarası Girilmedi!");
+      if (newTree.listeNo === '' && newTree.listeAuto === false) {
+        throw new Error('Liste Numarası Girilmedi!');
       }
-      if (newTree.renkId === "") {
-        throw new Error("Renk Seçilmedi!");
+      if (newTree.renkId === '') {
+        throw new Error('Renk Seçilmedi!');
       }
-      if (newTree.ayarId === "") {
-        throw new Error("Ayar Seçilmedi!");
+      if (newTree.ayarId === '') {
+        throw new Error('Ayar Seçilmedi!');
       }
-      if (newTree.kalınlıkId === "") {
-        throw new Error("Kalınlık Seçilmedi!");
+      if (newTree.kalınlıkId === '') {
+        throw new Error('Kalınlık Seçilmedi!');
       }
-      if (newTree.hazırlayanId === "") {
-        throw new Error("Hazırlayan Seçilmedi!");
+      if (newTree.hazırlayanId === '') {
+        throw new Error('Hazırlayan Seçilmedi!');
       }
-      if (newTree.mumTurId === "") {
-        throw new Error("Mum Turu Seçilmedi");
+      if (newTree.mumTurId === '') {
+        throw new Error('Mum Turu Seçilmedi');
       }
       setNewTree({ ...newTree, treeNo: _agacNo, listeNo: _listeNo });
-      const treeDate = jobGroups.filter(
-        (jobGroup) => jobGroup.id === newTree.jobGroupId
-      )[0].date;
+      const treeDate = jobGroups.filter((jobGroup) => jobGroup.id === newTree.jobGroupId)[0].date;
 
       var treeBody = {
         optionId: newTree.ayarId,
@@ -153,9 +148,9 @@ function NewTreeTab({
         jobGroupId: newTree.jobGroupId,
         desc: newTree.desc,
       };
-      console.log(treeBody);
+
       await axiosPrivate.post(Endpoints.TREE.MAIN, treeBody, {
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
       });
 
@@ -177,114 +172,91 @@ function NewTreeTab({
   const jobGroupOptions = jobGroups.map((jobGroup) => {
     return {
       value: jobGroup.id,
-      label: "No: " + jobGroup.number,
+      label: 'No: ' + jobGroup.number,
     };
   });
 
   return (
     <>
-      <form
-        className="space-y-4 border-r border-gray-700 px-4"
-        onSubmit={onFormSubmit}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-2">
-          <p className="col-span-12 md:col-span-1">İş Grubu</p>
-          <div className="col-span-12 md:col-span-5">
-            <Select
-              className="hover:cursor-pointer"
-              options={jobGroupOptions}
+      <form className='space-y-1 border-r border-gray-700 px-4 text-sm' onSubmit={onFormSubmit}>
+        <div className='grid grid-cols-1 md:grid-cols-6 '>
+          <p className='col-span-12 md:col-span-1 items-center flex flex-row justify-center'>
+            İş Grubu
+          </p>
+          <div className='col-span-12 md:col-span-5'>
+            <SelectBox
+              className='hover:cursor-pointer text-sm'
+              dataSource={jobGroupOptions}
+              displayExpr={'label'}
+              valueExpr='value'
               value={
-                jobGroupOptions.filter(
-                  (option) => option.value === selectedJobGroup
-                )[0]
+                jobGroupOptions?.filter((option) => option.value === selectedJobGroup)[0]?.value
               }
-              onChange={(e) => {
+              onValueChanged={(e) => {
                 setNewTree({ ...newTree, jobGroupId: e.value });
                 setSelectedJobGroup(e.value);
               }}
             />
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-2 ">
-          <p className="col-span-12 md:col-span-1">Açıklama</p>
-          <div className="col-span-12 md:col-span-5">
-            <Input
-              placeholder={"Açıklama"}
-              type={"textarea"}
-              value={newTree?.desc}
-              onChange={(e) => setNewTree({ ...newTree, desc: e.target.value })}
-            />
-          </div>
+        <div className='flex items-center w-full'>
+          <TextBox
+            className={'text-sm w-full'}
+            label={'Açıklama'}
+            labelMode={'floating'}
+            mode={'text'}
+            value={newTree?.desc}
+            onValueChanged={(e) => setNewTree({ ...newTree, desc: e.value })}
+          />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-2 ">
-          <p className="col-span-12 md:col-span-1">Agac No</p>
-          <div className="col-span-12 md:col-span-2">
-            <Input
-              id="treeNo"
-              placeholder={"Agaç No"}
-              type={"number"}
-              value={newTree?.treeNo || ""}
-              min="0"
-              onChange={(e) =>
-                setNewTree({ ...newTree, treeNo: e.target.value })
-              }
-            />
-          </div>
-          <div className="col-span-12 md:col-span-3">
-            <CheckBox
-              id="treeNoAuto"
-              htmlFor="treeNo"
-              label={"Agaç No Otomatik Artır"}
-              checked={newTree.agacAuto}
-              onChange={(e) =>
-                setNewTree({ ...newTree, agacAuto: !newTree.agacAuto })
-              }
-            />
-          </div>
+        <div className='flex flex-row items-center justify-between'>
+          <NumberBox
+            label={'Agaç No'}
+            labelMode={'floating'}
+            value={newTree?.treeNo}
+            min='0'
+            onValueChanged={(e) => setNewTree({ ...newTree, treeNo: e.value })}
+          />
+          <CheckBox
+            id='treeNoAuto'
+            htmlFor='treeNo'
+            text={'Otomatik Artır'}
+            value={newTree.agacAuto}
+            onValueChanged={(e) => setNewTree({ ...newTree, agacAuto: !newTree.agacAuto })}
+          />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-2 ">
-          <p className="col-span-12 md:col-span-1">Liste No</p>
-          <div className="col-span-12 md:col-span-2">
-            <Input
-              placeholder={"Liste No"}
-              type={"number"}
-              value={newTree?.listeNo}
-              min="0"
-              onChange={(e) =>
-                setNewTree({ ...newTree, listeNo: e.target.value })
-              }
-            />
-          </div>
-          <div className="col-span-12 md:col-span-3">
-            <CheckBox
-              id={"listeNoAuto"}
-              label={"Liste No Otomatik Artır"}
-              checked={newTree.listeAuto}
-              onChange={(e) =>
-                setNewTree({ ...newTree, listeAuto: !newTree.listeAuto })
-              }
-            />
-          </div>
+        <div className='flex flex-row items-center justify-between '>
+          <NumberBox
+            label={'Liste No'}
+            labelMode={'floating'}
+            value={newTree?.listeNo}
+            min='0'
+            onValueChanged={(e) => setNewTree({ ...newTree, listeNo: e.value })}
+          />
+          <CheckBox
+            id={'listeNoAuto'}
+            text={'Otomatik Artır'}
+            defaultValue={newTree.listeAuto}
+            onValueChanged={(e) => setNewTree({ ...newTree, listeAuto: !newTree.listeAuto })}
+          />
         </div>
 
-        <div className="grid grid-cols-3 grid-rows-2 ">
-          <div className="px-2 py-2  border border-slate-800 space-y-4">
-            <h4 className="text-lg font-bold flex flex-row items-center justify-around border-b border-slate-800 pb-2">
+        <div className='grid grid-cols-3 grid-rows-2 '>
+          <div className='border border-slate-400'>
+            <div className='font-bold flex flex-row items-center justify-around border-b border-slate-400'>
               Renk
-            </h4>
+            </div>
             <ul
-              className={`mt-2 max-h-60  ${
-                colors.length > 9 && "overflow-y-scroll"
-              } scroll-m-1 scroll-smooth`}
+              className={`mt-1 max-h-48  ${
+                colors.length > 7 && 'overflow-y-scroll'
+              } scroll-m-1 scroll-smooth scroll`}
             >
               {colors.map((color) => {
                 return (
                   <li
                     key={color.colorId}
                     className={`${
-                      newTree.renkId === color.colorId
-                        ? "bg-gray-300 dark:bg-slate-800"
-                        : ""
+                      newTree.renkId === color.colorId ? 'bg-gray-300 dark:bg-slate-800' : ''
                     } p-1 hover:cursor-pointer`}
                     onClick={() => {
                       setNewTree({ ...newTree, renkId: color.colorId });
@@ -296,23 +268,14 @@ function NewTreeTab({
               })}
             </ul>
           </div>
-          <div className="px-2 py-2 border-r border-t border-b border-slate-800 ">
-            <h4 className="text-lg font-bold flex flex-row items-center justify-around border-b border-slate-800 pb-2">
+
+          <div className='border-r border-t border-b border-slate-400 '>
+            <div className='font-bold flex flex-row items-center justify-around border-b border-slate-400'>
               Ayar
-              {/* <AiOutlinePlus
-                className="text-blue-700 hover:cursor-pointer  "
-                size={20}
-                onClick={() => {
-                  setAddNewTreeOptions({
-                    open: true,
-                    type: "OPTION",
-                  });
-                }}
-              /> */}
-            </h4>
+            </div>
             <ul
-              className={`mt-2 max-h-60  ${
-                options.length > 9 && "overflow-y-scroll"
+              className={`mt-1 max-h-52  ${
+                options.length > 7 && 'overflow-y-scroll'
               } scroll-m-1 scroll-smooth`}
             >
               {options.map((option) => {
@@ -320,9 +283,7 @@ function NewTreeTab({
                   <li
                     key={option.optionId}
                     className={`${
-                      newTree.ayarId === option.optionId
-                        ? "bg-gray-300 dark:bg-slate-800"
-                        : ""
+                      newTree.ayarId === option.optionId ? 'bg-gray-300 dark:bg-slate-800' : ''
                     } p-1 hover:cursor-pointer`}
                     onClick={() => {
                       setNewTree({ ...newTree, ayarId: option.optionId });
@@ -334,22 +295,14 @@ function NewTreeTab({
               })}
             </ul>
           </div>
-          <div className="px-2 py-2 border border-l-0 border-slate-800">
-            <h4 className="text-lg font-bold flex flex-row items-center justify-around border-b border-slate-800 pb-2">
+
+          <div className='border border-l-0 border-slate-400'>
+            <div className=' font-bold flex flex-row items-center justify-around border-b border-slate-400 '>
               Kalınlık
-              {/* <AiOutlinePlus
-                className="text-blue-700 hover:cursor-pointer "
-                onClick={() => {
-                  setAddNewTreeOptions({
-                    open: true,
-                    type: "THICK",
-                  });
-                }}
-              /> */}
-            </h4>
+            </div>
             <ul
-              className={`mt-2 max-h-60  ${
-                thicks.length > 9 && "overflow-y-scroll"
+              className={`mt-1 max-h-60  ${
+                thicks.length > 7 && 'overflow-y-scroll'
               } scroll-m-1 scroll-smooth`}
             >
               {thicks.map((thick) => {
@@ -357,9 +310,7 @@ function NewTreeTab({
                   <li
                     key={thick.thickId}
                     className={`${
-                      newTree.kalınlıkId === thick.thickId
-                        ? "bg-gray-300 dark:bg-slate-800"
-                        : ""
+                      newTree.kalınlıkId === thick.thickId ? 'bg-gray-300 dark:bg-slate-800' : ''
                     } p-1 hover:cursor-pointer`}
                     onClick={() => {
                       setNewTree({ ...newTree, kalınlıkId: thick.thickId });
@@ -371,22 +322,13 @@ function NewTreeTab({
               })}
             </ul>
           </div>
-          <div className="px-2 py-2  border border-t-0 border-slate-800">
-            <h4 className=" text-lg font-bold flex flex-row items-center justify-around border-b border-slate-800 pb-2">
+          <div className='border border-t-0 border-slate-400'>
+            <div className='font-bold flex flex-row items-center justify-around border-b border-slate-400'>
               Hazırlayan
-              {/* <AiOutlinePlus
-                className="text-blue-700 hover:cursor-pointer "
-                onClick={() => {
-                  setAddNewTreeOptions({
-                    open: true,
-                    type: "CREATOR",
-                  });
-                }}
-              /> */}
-            </h4>
+            </div>
             <ul
-              className={`mt-2 max-h-60 ${
-                creators.length > 9 && "overflow-y-scroll"
+              className={`mt-1 max-h-60 ${
+                creators.length > 9 && 'overflow-y-scroll'
               } scroll-m-1 scroll-smooth`}
             >
               {creators.map((creator) => {
@@ -395,8 +337,8 @@ function NewTreeTab({
                     key={creator.creatorId}
                     className={`${
                       newTree.hazırlayanId === creator.creatorId
-                        ? "bg-gray-300 dark:bg-slate-800"
-                        : ""
+                        ? 'bg-gray-300 dark:bg-slate-800'
+                        : ''
                     } p-1 hover:cursor-pointer `}
                     onClick={() => {
                       setNewTree({
@@ -411,22 +353,13 @@ function NewTreeTab({
               })}
             </ul>
           </div>
-          <div className="px-2 py-2  border-r border-b border-slate-800 col-span-2 md:col-span-1">
-            <h4 className=" text-lg font-bold flex flex-row items-center justify-around border-b border-slate-800 pb-2">
+          <div className='border-r border-b border-slate-400 col-span-2 md:col-span-1'>
+            <div className=' font-bold flex flex-row items-center justify-around border-b border-slate-400 '>
               Mum Türü
-              {/* <AiOutlinePlus
-                className="text-blue-700 hover:cursor-pointer "
-                onClick={() => {
-                  setAddNewTreeOptions({
-                    open: true,
-                    type: "WAX",
-                  });
-                }}
-              /> */}
-            </h4>
+            </div>
             <ul
-              className={`mt-2 max-h-44  ${
-                waxes.length > 9 && "overflow-y-scroll"
+              className={`mt-1 max-h-44  ${
+                waxes.length > 7 && 'overflow-y-scroll'
               } scroll-m-1 scroll-smooth`}
             >
               {waxes.map((wax) => {
@@ -434,9 +367,7 @@ function NewTreeTab({
                   <li
                     key={wax.waxId}
                     className={`${
-                      newTree.mumTurId === wax.waxId
-                        ? "bg-gray-300 dark:bg-slate-800"
-                        : ""
+                      newTree.mumTurId === wax.waxId ? 'bg-gray-300 dark:bg-slate-800' : ''
                     } p-1 hover:cursor-pointer`}
                     onClick={() => {
                       setNewTree({ ...newTree, mumTurId: wax.waxId });
@@ -449,18 +380,18 @@ function NewTreeTab({
             </ul>
           </div>
         </div>
-        <div className="flex justify-end flex-col items-end">
+        <div className='flex justify-between flex-row items-end'>
           <CheckBox
-            id={"isImmediate"}
-            name={"isImmediate"}
-            label={"Acil mi?"}
-            onChange={(e) => {
-              setNewTree({ ...newTree, isImmediate: e.target.checked });
+            id={'isImmediate'}
+            name={'isImmediate'}
+            text={'Acil mi?'}
+            onValueChanged={(e) => {
+              setNewTree({ ...newTree, isImmediate: e.value });
             }}
             checked={newTree.isImmediate}
           />
 
-          <Button type="submit" appearance={"primary"}>
+          <Button type='submit' appearance={'primary'}>
             Agaç Ekle
           </Button>
         </div>
@@ -470,7 +401,7 @@ function NewTreeTab({
           open={addNewTreeOptions.open}
           type={addNewTreeOptions.type.toUpperCase()}
           setAddNewTreeOptions={setAddNewTreeOptions}
-          toggle={() => setAddNewTreeOptions({ open: false, type: "" })}
+          toggle={() => setAddNewTreeOptions({ open: false, type: '' })}
         />
       ) : null}
     </>

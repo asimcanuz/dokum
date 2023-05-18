@@ -30,7 +30,7 @@ const getTodayTrees = async (req, res) => {
       { model: db.treeStatus },
       {
         model: db.order,
-        include: [{ model: db.customer }],
+        include: [{ model: db.customer },{model:db.description}],
       },
     ],
   });

@@ -29,6 +29,5 @@ const passiveTree = async (req, res) => {
         error: err,
       });
     });
-};
-
+}
 module.exports = passiveTree;

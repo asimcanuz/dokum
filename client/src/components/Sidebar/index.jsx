@@ -1,20 +1,18 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useLogout from "../../hooks/useLogout";
 import useAuth from "../../hooks/useAuth";
 import {
-  AiOutlineRight,
-  AiOutlineUser,
+  AiOutlineCalendar,
   AiOutlineLogout,
   AiOutlineSetting,
   AiOutlineShoppingCart,
-  AiOutlineCalendar,
+  AiOutlineUser
 } from "react-icons/ai";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { BsPersonSquare } from "react-icons/bs";
 import { MdOutlineAccountTree, MdOutlinePeopleAlt } from "react-icons/md";
 import { GiVolcano } from "react-icons/gi";
-import { Link } from "react-router-dom";
 import { rolesDesc } from "../../constants/RolesConstants";
 import { Tooltip } from "react-tooltip";
 
@@ -31,21 +29,21 @@ const Menus = [
     src: "Tree",
     to: "/tree",
     roles: rolesDesc.allOf,
-    icon: MdOutlineAccountTree,
+    icon: MdOutlineAccountTree
   },
   {
     title: "Fırın",
     src: "Oven",
     to: "/oven",
     roles: rolesDesc.admin_super,
-    icon: GiVolcano,
+    icon: GiVolcano
   },
   {
     title: "Gün Sonu",
     src: "EndDay",
     to: "/endDay",
     roles: rolesDesc.allOf,
-    icon: AiOutlineCalendar,
+    icon: AiOutlineCalendar
   },
   {
     title: "Siparişler",
@@ -53,7 +51,7 @@ const Menus = [
     to: "/orders",
     roles: rolesDesc.allOf,
     icon: AiOutlineShoppingCart,
-    gap: true,
+    gap: true
   },
 
   {
@@ -61,14 +59,14 @@ const Menus = [
     src: "CustomerTracking",
     to: "/customerTracking",
     roles: rolesDesc.allOf,
-    icon: BsPersonSquare,
+    icon: BsPersonSquare
   },
   {
     title: "Raporlar",
     src: "Reports",
     to: "/reports",
     roles: rolesDesc.onlyAdmin,
-    icon: HiOutlineDocumentReport,
+    icon: HiOutlineDocumentReport
   },
   {
     title: "Hesaplar",
@@ -76,7 +74,7 @@ const Menus = [
     to: "/accounts",
     roles: rolesDesc.onlyAdmin,
     icon: AiOutlineUser,
-    gap: true,
+    gap: true
   },
   {
     title: "Müşteriler",
@@ -84,16 +82,17 @@ const Menus = [
     to: "/customers",
     roles: rolesDesc.admin_super,
 
-    icon: MdOutlinePeopleAlt,
+    icon: MdOutlinePeopleAlt
   },
   {
     title: "Konfigürasyonlar",
     src: "configuration",
     to: "/configurations",
     roles: rolesDesc.admin_super,
-    icon: AiOutlineSetting,
-  },
+    icon: AiOutlineSetting
+  }
 ];
+
 function Sidebar({ collapse, handleSidebar }) {
   const navigate = useNavigate();
   const logout = useLogout();
@@ -108,25 +107,17 @@ function Sidebar({ collapse, handleSidebar }) {
     <aside
       className={`w-full
         ${
-          collapse ? "md:w-72" : "md:w-24"
-        } bg-transparent p-5  pt-8 relative duration-300 transition-all`}
+        collapse ? "md:w-72" : "md:w-24"
+      } bg-transparent p-5  pt-8 relative duration-300 transition-all`}
     >
-      <AiOutlineRight
-        className={`absolute cursor-pointer -bottom-4 right-1/2 md:-right-4 md:top-11 md:bottom-0 w-8 h-8 text-slate-700 dark:text-white ${
-          collapse ? "-rotate-90 md:rotate-180" : "rotate-90 md:rotate-0"
-        } `}
-        onClick={handleSidebar}
-      />
+      <div className="flex gap-x-4 items-center" onClick={handleSidebar}>
+        <img
+          src="images/logo.png"
+          className={`cursor-pointer duration-500 `}
+          alt="logo"
+        />
+      </div>
 
-      <Link to={"/"}>
-        <div className="flex gap-x-4 items-center">
-          <img
-            src="images/logo.png"
-            className={`cursor-pointer duration-500 `}
-            alt="logo"
-          />
-        </div>
-      </Link>
       <ul className="pt-6">
         {Menus.map(
           (Menu, index) =>
@@ -177,8 +168,8 @@ function Sidebar({ collapse, handleSidebar }) {
            duration-200
           
               ${
-                !collapse ? "hidden" : "flex items-center duration-200"
-              } md:flex md:items-center
+            !collapse ? "hidden" : "flex items-center duration-200"
+          } md:flex md:items-center
               rounded-md p-2 cursor-pointer hover:bg-light-white  text-sm items-start gap-x-4 
               mt-12
               hover:animate-pulse
