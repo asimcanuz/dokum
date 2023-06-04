@@ -6,8 +6,6 @@ const Tree = db.tree;
 
 const finishDayDateUpdate = async (req, res) => {
   const { treeId, jobGroupId } = req.body;
-  console.log("treeId: " + treeId);
-  console.log("jobGroupId: " + jobGroupId);
 
   // gelen treeId'ye ait tarihi update et
   const _tree = await Tree.update(

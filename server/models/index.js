@@ -43,6 +43,7 @@ db.wax = require("./wax.model")(sequelize, Sequelize);
 db.color = require("./color.model")(sequelize, Sequelize);
 db.treeStatusDate = require("./treeStatusDate.model")(sequelize, Sequelize);
 db.jobGroup = require("./jobGroup.model")(sequelize, Sequelize);
+db.fırın = require("./fırın.model")(sequelize, Sequelize);
 
 // user role 1-1
 db.role.hasOne(db.user);
@@ -96,6 +97,12 @@ db.tree.belongsTo(db.wax, {
 });
 db.tree.belongsTo(db.color, {
   foreignKey: "colorId",
+});
+db.fırın.hasOne(db.tree, {
+  foreignKey: "fırınId",
+});
+db.tree.belongsTo(db.fırın, {
+  foreignKey: "fırınId",
 });
 
 // tree - order 1-n

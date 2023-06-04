@@ -5,6 +5,7 @@ const updateTree = require("../controllers/tree/updateTree");
 const getTodayTrees = require("../controllers/tree/getTodayTrees");
 const passiveTree = require("../controllers/tree/passiveTree");
 const updateMineralWeight = require("../controllers/tree/updateMineralWeight");
+const updateTreeOven = require("../controllers/tree/updateTreeOven");
 
 const router = express.Router();
 
@@ -14,5 +15,6 @@ router.post("/", addTree);
 router.put("/", updateTree);
 router.put("/passive", passiveTree);
 router.put("/mineralWeight", updateMineralWeight);
+router.put("/oven", updateTreeOven);
 
 module.exports = router;

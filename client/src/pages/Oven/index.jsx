@@ -1,15 +1,36 @@
-import React, { useEffect, useMemo } from "react";
-import Header from "../../components/Header";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { Endpoints } from "../../constants/Endpoints";
-import { useLocation, useNavigate } from "react-router-dom";
-import Select from "react-select";
-import Button from "../../components/Button";
-import Input from "../../components/Input";
-import Alert from "../../components/Alert/Alert";
-import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
-import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
-import { agaclariFirinla } from "../../utils/agaclariFirinla";
+import React, { useEffect, useMemo, Fragment } from 'react';
+import Header from '../../components/Header';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { Endpoints } from '../../constants/Endpoints';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Select from 'react-select';
+import Button from '../../components/Button';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+
+const printList = () => {
+  var content = document.getElementById('treeList');
+  var pri = document.getElementById('ifmcontentstoprint').contentWindow;
+  pri.document.open();
+  pri.document.write(content.innerHTML);
+  pri.document.close();
+  pri.focus();
+  pri.print();
+};
+
+const initialFirinListesi = {
+  1: {
+    ust: [],
+    alt: [],
+  },
+  2: {
+    ust: [],
+    alt: [],
+  },
+  3: {
+    ust: [],
+    alt: [],
+  },
+};
 
 function OvenMainPage() {
   const axiosPrivate = useAxiosPrivate();
@@ -18,38 +39,30 @@ function OvenMainPage() {
 
   const [jobGroups, setJobGroups] = React.useState([]);
   const [selectedJobGroup, setSelectedJobGroup] = React.useState(null);
-  const [trees, setTrees] = React.useState([]);
   const [erkenGrupDisabled, setErkenGrupDisabled] = React.useState(false);
   const [checkedGroup, setCheckedGroup] = React.useState(null);
-
-  // useEffect(() => {
-  //   if (localStorage.getItem("selectedJobGroup") !== null) {
-  //     setSelectedJobGroup(localStorage.getItem("selectedJobGroup"));
-  //   }
-  //   if (localStorage.getItem("selectedJobGroup.erkenGrupOlusturulduMu")) {
-  //     setErkenGrupDisabled(
-  //       localStorage.getItem("selectedJobGroup.erkenGrupOlusturulduMu")
-  //     );
-  //   }
-  // }, []);
+  const [firinListesi, setFirinListesi] = React.useState(initialFirinListesi);
+  const [allDisabled, setAllDisabled] = React.useState(false);
   useEffect(() => {
     const controller = new AbortController();
     let isMounted = true;
-    const getTrees = async () => {
+    const getFirinListesi = async () => {
       try {
-        const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
-          params: {
-            jobGroupId: selectedJobGroup,
+        const res = await axiosPrivate.post(
+          Endpoints.OVEN + '/query',
+          { jobGroupId: selectedJobGroup },
+          {
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: true,
           },
-          signal: controller.signal,
-        });
+        );
 
         if (isMounted) {
-          setTrees(res.data.trees);
+          setFirinListesi(res.data.firinListesi);
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", { state: { from: location }, replace: true });
+        navigate('/login', { state: { from: location }, replace: true });
       }
     };
 
@@ -61,12 +74,12 @@ function OvenMainPage() {
         isMounted && setJobGroups(response.data.jobGroupList);
       } catch (err) {
         console.error(err);
-        navigate("/login", { state: { from: location }, replace: true });
+        navigate('/login', { state: { from: location }, replace: true });
       }
     };
 
     getJobGroups();
-    selectedJobGroup && getTrees();
+    selectedJobGroup && getFirinListesi();
 
     return () => {
       isMounted = false;
@@ -78,8 +91,9 @@ function OvenMainPage() {
     return jobGroups.map((jobGroup) => {
       return {
         value: jobGroup.id,
-        label: "No: " + jobGroup.date,
+        label: 'No: ' + jobGroup.date,
         erkenGrupOlusturulduMu: jobGroup.erkenFırınGrubuOlusturulduMu,
+        normalFırınGrubuOlusturulduMu: jobGroup.normalFırınGrubuOlusturulduMu,
       };
     });
   }, [jobGroups]);
@@ -89,63 +103,90 @@ function OvenMainPage() {
 
   return (
     <div>
-      <section className="space-y-4">
-        <Header
-          title="Fırın"
-          description="Fırınlarınızı bu sayfadan yönetebilirsiniz."
-        />
+      <section className='space-y-4'>
+        <Header title='Fırın' description='Fırınlarınızı bu sayfadan yönetebilirsiniz.' />
+        <iframe
+          title='#'
+          id='ifmcontentstoprint'
+          style={{ height: 0, width: 0, position: 'absolute' }}
+        ></iframe>
 
-        <div className="space-y-4">
+        <div className='space-y-4'>
           {/* seçilen iş grubu erkenFırınGrubuOlusturulduMu false ise erken firin oluştur button disabled:false  */}
           <Select
-            className="hover:cursor-pointer md:w-1/4"
+            className='hover:cursor-pointer md:w-1/4'
             options={jobGroupOptions}
-            value={
-              jobGroupOptions.filter(
-                (option) => option.value === selectedJobGroup
-              )[0]
-            }
+            value={jobGroupOptions.filter((option) => option.value === selectedJobGroup)[0]}
             onChange={(e) => {
-              e.erkenGrupOlusturulduMu && setCheckedGroup("normal");
               setErkenGrupDisabled(e.erkenGrupOlusturulduMu);
               setSelectedJobGroup(e.value);
-              // localStorage.setItem("selectedJobGroup", e.value);
-              // localStorage.setItem(
-              //   "selectedJobGroup.erkenGrupOlusturulduMu",
-              //   e.erkenGrupOlusturulduMu
-              // );
+              if (e.erkenGrupOlusturulduMu) {
+                setCheckedGroup('normal');
+              } else if (e.normalFırınGrubuOlusturulduMu) {
+                setAllDisabled(true);
+              } else {
+                setFirinListesi(initialFirinListesi);
+              }
+              if (!e.normalFırınGrubuOlusturulduMu) {
+                setAllDisabled(false);
+              }
             }}
           />
-          {!erkenGrupDisabled && selectedJobGroup !== null && (
-            <div className="space-y-4 flex flex-col" onChange={onChangeValue}>
-              <h2>Fırın Grubu:</h2>
-              <div className="space-x-4 flex flex-row">
+
+          {selectedJobGroup !== null && (
+            <div
+              style={{ display: allDisabled ? 'none' : 'block' }}
+              className='space-y-4 mt-3 flex flex-col'
+              onChange={onChangeValue}
+            >
+              <div className='space-x-4 flex flex-row'>
                 <div>
                   <input
-                    type="radio"
-                    value="erken"
-                    name="firinType"
-                    id="erkenFirin"
+                    type='radio'
+                    value='erken'
+                    name='firinType'
+                    id='erkenFirin'
                     disabled={erkenGrupDisabled}
-                    checked={checkedGroup === "erken"}
+                    checked={checkedGroup === 'erken'}
                   />
-                  <label htmlFor="erkenFirin"> Erken Fırın Grubu </label>
+                  <label htmlFor='erkenFirin'> Erken Fırın Grubu </label>
                 </div>
                 <div>
                   <input
-                    type="radio"
-                    id="normalFirin"
-                    value="normal"
-                    name="firinType"
-                    checked={checkedGroup === "normal"}
+                    type='radio'
+                    id='normalFirin'
+                    value='normal'
+                    name='firinType'
+                    checked={checkedGroup === 'normal'}
                   />
-                  <label htmlFor="normalFirin"> Normal Fırın Grubu </label>
+                  <label htmlFor='normalFirin'> Normal Fırın Grubu </label>
                 </div>
               </div>
               <Button
-                appearance={"primary"}
-                onClick={() => {
-                  agaclariFirinla(trees, checkedGroup);
+                appearance={'primary'}
+                disabled={!checkedGroup || allDisabled}
+                onClick={async () => {
+                  if (checkedGroup === 'erken') {
+                    await axiosPrivate.post(Endpoints.OVEN + '/erken', {
+                      jobGroupId: selectedJobGroup,
+                    });
+                  } else if (checkedGroup === 'normal') {
+                    await axiosPrivate.post(Endpoints.OVEN + '/normal', {
+                      jobGroupId: selectedJobGroup,
+                    });
+                  }
+                  const res = await axiosPrivate.post(
+                    Endpoints.OVEN + '/query',
+                    { jobGroupId: selectedJobGroup },
+                    {
+                      headers: { 'Content-Type': 'application/json' },
+                      withCredentials: true,
+                    },
+                  );
+
+                  if (res.status === 200) {
+                    setFirinListesi(res.data.firinListesi);
+                  }
                 }}
               >
                 Oluştur
@@ -153,54 +194,222 @@ function OvenMainPage() {
             </div>
           )}
         </div>
+        <button onClick={() => printList()}>yazdır!</button>
+        <div className='flex flex-row justify-between' id='treeList'>
+          <div className='px-2 py-4 space-y-2 flex flex-col items-center border border-slate-400 w-1/3'>
+            <h4>1. Fırın </h4>
+            {erkenGrupDisabled && <h4 className='text-red-900'>Erken Fırın</h4>}
+            <table className='w-full'>
+              <tr>
+                <th colSpan={'3'}>
+                  <h4>UST</h4>
+                </th>
+              </tr>
 
-        <div className="flex flex-col">
-          {trees.length > 0 ? (
-            <div>
-              {/* <h1 className="text-5xl">Ağaçlar</h1> */}
-              <Table>
-                <Thead>
-                  <Tr>
-                    <Th>Ağaç No</Th>
-                    <Th>Kalınlık</Th>
-                    <Th>Renk</Th>
-                    <Th>Ayar</Th>
-                    <Th>Oluşturulma Tarihi</Th>
-                    <Th>Yerlesmesi Gereken Fırın</Th>
-                    <Th>Yerleştiği Fırın</Th>
-                    <Th>Erken Fırına Girdi Mi?</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {trees.map((tree) => {
+              {firinListesi[1]['ust'] && firinListesi[1]['ust'].length > 0 ? (
+                <React.Fragment>
+                  <tr>
+                    <th align='center'>Ağaç No</th>
+                    <th align='center'>Yerleştiği Fırın</th>
+                    <th align='center'>Yerleşmesi Gereken</th>
+                  </tr>
+                  {firinListesi[1]['ust'].map((element) => {
                     return (
-                      <Tr key={tree.id}>
-                        <Td>{tree.treeNo}</Td>
-                        <Td>{tree.thick["thickName"]}</Td>
-                        <Td>{tree.color["colorName"]}</Td>
-                        <Td>{tree.option["optionText"]}</Td>
-                        <Td>{tree.createdAt.slice(11, 19)}</Td>
-                        <Td>{tree?.yerlesmesiGereken}</Td>
-                        <Td>{tree?.yerlestigiFirin}</Td>
-
-                        <Td>
-                          {tree.erkenFirinaGirdiMi ? (
-                            <Alert apperance={"success"}>Girdi</Alert>
-                          ) : (
-                            <Alert apperance={"success"}>Girmedi</Alert>
-                          )}
-                        </Td>
-                      </Tr>
+                      <tr>
+                        <td align='center'>{element.treeNo}</td>
+                        <td align='center'>
+                          {element.yerlestigiFirin + '-' + element.yerlestigiKonum}
+                        </td>
+                        <td align='center'>
+                          {element.yerlesmesiGerekenFirin || element.yerlesmesiGerekenFirin !== ''
+                            ? element.yerlesmesiGerekenFirin
+                            : '-'}
+                        </td>
+                      </tr>
                     );
                   })}
-                </Tbody>
-              </Table>
-            </div>
-          ) : (
-            <Alert apperance={"danger"}>
-              Seçilen İş Grubuna Ağaç Eklenmemiştir
-            </Alert>
-          )}
+                </React.Fragment>
+              ) : (
+                <div className='text-center'>Fırın Boştur!</div>
+              )}
+            </table>
+            <table className='w-full'>
+              <tr>
+                <th colSpan={'3'}>
+                  <h4>ALT</h4>
+                </th>
+              </tr>
+              {firinListesi[1]['alt'] && firinListesi[1]['alt'].length > 0 ? (
+                <Fragment>
+                  <tr>
+                    <th align='center'>Ağaç No</th>
+                    <th align='center'>Yerleştiği Fırın</th>
+                    <th align='center'>Yerleşmesi Gereken</th>
+                  </tr>
+
+                  {firinListesi[1]['alt'].map((element) => {
+                    return (
+                      <tr>
+                        <td align='center'>{element.treeNo}</td>
+                        <td align='center'>
+                          {element.yerlestigiFirin + '-' + element.yerlestigiKonum}
+                        </td>
+                        <td align='center'>
+                          {element.yerlesmesiGerekenFirin || element.yerlesmesiGerekenFirin !== ''
+                            ? element.yerlesmesiGerekenFirin
+                            : '-'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </Fragment>
+              ) : (
+                <div className='text-center'>Fırın Boştur!</div>
+              )}
+            </table>
+          </div>
+          <div className='px-2 py-4 space-y-2 flex flex-col items-center border border-slate-400 w-1/3'>
+            <h4>2. Fırın</h4>
+            <table className='w-full'>
+              <tr>
+                <th colSpan={'3'}>
+                  <h4>UST</h4>
+                </th>
+              </tr>
+              {firinListesi[2]['ust'] && firinListesi[2]['ust'].length > 0 ? (
+                <Fragment>
+                  <tr>
+                    <th align='center'>Ağaç No</th>
+                    <th align='center'>Yerleştiği Fırın</th>
+                    <th align='center'>Yerleşmesi Gereken</th>
+                  </tr>
+
+                  {firinListesi[2]['ust'].map((element) => {
+                    return (
+                      <tr>
+                        <td align='center'>{element.treeNo}</td>
+                        <td align='center'>
+                          {element.yerlestigiFirin + '-' + element.yerlestigiKonum}
+                        </td>
+                        <td align='center'>
+                          {element.yerlesmesiGerekenFirin || element.yerlesmesiGerekenFirin !== ''
+                            ? element.yerlesmesiGerekenFirin
+                            : '-'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </Fragment>
+              ) : (
+                <div className='text-center'>Fırın Boştur!</div>
+              )}
+            </table>
+            <table className='w-full'>
+              <tr>
+                <th colSpan={'3'}>
+                  <h4>ALT</h4>
+                </th>
+              </tr>
+              {firinListesi[2]['alt'].length > 0 ? (
+                <Fragment>
+                  <tr>
+                    <th align='center'>Ağaç No</th>
+                    <th align='center'>Yerleştiği Fırın</th>
+                    <th align='center'>Yerleşmesi Gereken</th>
+                  </tr>
+
+                  {firinListesi[2]['alt'].map((element) => {
+                    return (
+                      <tr>
+                        <td align='center'>{element.treeNo}</td>
+                        <td align='center'>
+                          {element.yerlestigiFirin + '-' + element.yerlestigiKonum}
+                        </td>
+                        <td align='center'>
+                          {element.yerlesmesiGerekenFirin || element.yerlesmesiGerekenFirin !== ''
+                            ? element.yerlesmesiGerekenFirin
+                            : '-'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </Fragment>
+              ) : (
+                <div className='text-center'>Fırın Boştur!</div>
+              )}
+            </table>
+          </div>
+          <div className='px-2 py-4 space-y-2 flex flex-col items-center border border-slate-400 w-1/3'>
+            <h4>3. Fırın</h4>
+            <table className='w-full'>
+              <tr>
+                <th colSpan={'3'}>
+                  <h4>UST</h4>
+                </th>
+              </tr>
+              {firinListesi[3]['ust']?.length > 0 ? (
+                <Fragment>
+                  <tr>
+                    <th align='center'>Ağaç No</th>
+                    <th align='center'>Yerleştiği Fırın</th>
+                    <th align='center'>Yerleşmesi Gereken</th>
+                  </tr>
+
+                  {firinListesi[3]['ust'].map((element) => {
+                    return (
+                      <tr>
+                        <td align='center'>{element.treeNo}</td>
+                        <td align='center'>
+                          {element.yerlestigiFirin + '-' + element.yerlestigiKonum}
+                        </td>
+                        <td align='center'>
+                          {element.yerlesmesiGerekenFirin || element.yerlesmesiGerekenFirin !== ''
+                            ? element.yerlesmesiGerekenFirin
+                            : '-'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </Fragment>
+              ) : (
+                <div className='text-center'>Fırın Boştur!</div>
+              )}
+            </table>
+            <table className='w-full'>
+              <tr>
+                <th colSpan={'3'}>
+                  <h3>ALT</h3>
+                </th>
+              </tr>
+              {firinListesi[3]['alt'].length > 0 ? (
+                <Fragment>
+                  <tr>
+                    <th align='center'>Ağaç No</th>
+                    <th align='center'>Yerleştiği Fırın</th>
+                    <th align='center'>Yerleşmesi Gereken</th>
+                  </tr>
+
+                  {firinListesi[3]['alt'].map((element) => {
+                    return (
+                      <tr>
+                        <td align='center'>{element.treeNo}</td>
+                        <td align='center'>
+                          {element.yerlestigiFirin + '-' + element.yerlestigiKonum}
+                        </td>
+                        <td align='center'>
+                          {element.yerlesmesiGerekenFirin || element.yerlesmesiGerekenFirin !== ''
+                            ? element.yerlesmesiGerekenFirin
+                            : '-'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </Fragment>
+              ) : (
+                <div className='text-center'>Fırın Boştur!</div>
+              )}
+            </table>
+          </div>
         </div>
       </section>
     </div>
@@ -208,19 +417,3 @@ function OvenMainPage() {
 }
 
 export default OvenMainPage;
-
-/*
-*const getJobGroups = async () => {
-      try {
-        const response = await axiosPrivate.get(Endpoints.JOBGROUP, {
-          signal: controller.signal,
-        });
-        isMounted && setJobGroups(response.data.jobGroupList);
-      } catch (err) {
-        console.error(err);
-        navigate("/login", { state: { from: location }, replace: true });
-      }
-    };,
-* 
-
-*/

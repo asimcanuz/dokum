@@ -1,7 +1,18 @@
 import { firinlarConstants } from '../constants/firinlarConstants';
 // TODO : ağaçları firinlara aktardım bazılarında hata olabilir. kontrol et. 17 den fazla ağaç varsa diğer firinlara aktarma işleminden devam et
-export const agaclariFirinla = (trees, checkedGroup) => {
-  let _firin = {
+
+export const agaclariFirinla = (trees, erkenGrupAcik, setTrees, checkedGroup) => {
+  var { newTree, firinListesi } = firinla(trees, erkenGrupAcik, checkedGroup);
+
+  // newTree ve firinListesi karşılaştır
+  //
+
+  setTrees(newTree);
+  return firinListesi;
+};
+
+const firinla = (trees, erkenGrupAcik, checkedGroup) => {
+  let firinListesi = {
     1: {
       ust: [],
       alt: [],
@@ -15,73 +26,52 @@ export const agaclariFirinla = (trees, checkedGroup) => {
       alt: [],
     },
   };
-  let acikKalanAgaclar = [];
 
-  if (checkedGroup === 'normal') {
-    trees.forEach((element) => {
-      const { treeNo, erkenFirinGrubunaEklendiMi, color, option, thick } = element;
-      const { colorName: renk } = color;
-      const { optionText: ayar } = option;
-      const { thickName: kalinlik } = thick;
-
-      // Önceden tanımlanmış kategorilerin sayısı
-      const categoryCount = Object.keys(firinlarConstants).length;
-
-      // Döngülerle her bir kategori için kontrol yapma
-      for (let i = 1; i <= categoryCount; i++) {
-        const category = firinlarConstants[i]; // 1,2,3
-        const keys = Object.keys(category); //alt ust
-
-        for (const key of keys) {
-          category[key].forEach((firin) => {
-            // alt ust
-            if (
-              (firin.ayar === ayar || firin.ayar === 'Hepsi') &&
-              (firin.renk === renk || firin.renk === 'Hepsi') &&
-              (firin.kalinlik === kalinlik || firin.kalinlik === 'Hepsi')
-            ) {
-              _firin[i][key].push(treeNo);
-            }
-          });
-        }
+  let newTree = trees.map((element) => {
+    const { color, option, thick } = element;
+    const { colorName: agacRenk } = color;
+    const { optionText: agacAyar } = option;
+    const { thickName: agacKalinlik } = thick;
+    //
+    let i = erkenGrupAcik ? 2 : 1;
+    for (i; i <= 3; i++) {
+      if (checkedGroup === 'erken' && i > 1) {
+        continue;
       }
-    });
-
-    // hiç bir firin içerisinde yer almayan ağaçları acikKalanAgaclar dizisine aktar.
-    trees.forEach((element) => {
-      const { treeId, treeNo } = element;
-      let isFound = false;
-
-      for (let i = 1; i <= 3; i++) {
-        const keys = Object.keys(_firin[i]);
-
-        for (const key of keys) {
-          if (_firin[i][key].includes(treeNo)) {
-            isFound = true;
-            break;
+      const category = firinlarConstants[i];
+      for (const konum of ['ust', 'alt']) {
+        for (const type of category[konum]) {
+          const { kalinlik, renk, ayar } = type;
+          if (
+            (ayar === agacAyar || ayar === 'Hepsi') &&
+            (renk === agacRenk || renk === 'Hepsi') &&
+            (kalinlik === agacKalinlik || kalinlik === 'Hepsi') &&
+            (element.yerlestigiFirin === undefined || element.yerlestigiFirin === null)
+          ) {
+            if (firinListesi[i][konum].length < 17) {
+              if (i === 1 && checkedGroup === 'erken') {
+                element.erkenFirinGrubunaEklendiMi = true;
+              }
+              if (checkedGroup === 'normal') {
+                element.erkenFirinGrubunaEklendiMi = false;
+              }
+              if (firinListesi[i][konum].length - 1 < 13) {
+                element.yerlestigiFirin = `${i}-${konum}`;
+                element.konum = `-`;
+              } else if (firinListesi[i][konum].length - 1 >= 13) {
+                element.yerlestigiFirin = `${i}-${konum} iç`;
+                element.konum = 'iç';
+              }
+              firinListesi[i][konum].push(element);
+            } else {
+              continue;
+            }
           }
         }
       }
-      if (!isFound) {
-        acikKalanAgaclar.push(treeId);
-      }
-    });
-  }
-
-  acikKalanAgaclar.forEach((element) => {
-    trees.forEach((tree) => {
-      if (tree.treeId === element) {
-        const { color, option, thick } = tree;
-        const { colorName: renk } = color;
-        const { optionText: ayar } = option;
-        const { thickName: kalınlık } = thick;
-
-        console.log(renk, ayar, kalınlık);
-      }
-    });
+    }
+    return element;
   });
-  
-  // Firinları kontrol et, bir firinin alt ve üst bolmesinde max 17 ağaç olacak. 17 den fazla ise diğer bolmeye aktar. 13 + 4 iç   -> 17
-  // Eğer aktarılan ağaçlar da 17 den fazla ise diğer firina aktar. Bu şekilde butun firinların alt ve ust bolmeleri dolacak.
-  // Eğer hepsi doluysa ağaçları acikKalanAgaclar dizisine aktar.
+
+  return { newTree, firinListesi };
 };

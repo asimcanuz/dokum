@@ -26,6 +26,12 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN,
       defaultValue: false,
     },
+    yerlestigiFirin: {
+      type: Sequelize.INTEGER,
+    },
+    yerlesmesiGerekenFirin: {
+      type: Sequelize.STRING,
+    },
   });
   return Tree;
 };

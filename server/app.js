@@ -17,20 +17,16 @@ const Role = db.role;
 const User = db.user;
 const Wax = db.wax;
 const Color = db.color;
-const Creator = db.creator;
-const Customer = db.customer;
-const Description = db.description;
 const Option = db.option;
-const Order = db.order;
 const Thick = db.thick;
 const TreeStatus = db.treeStatus;
+const Fırın = db.fırın;
 
 var app = express();
 
 app.use(logger("dev"));
 app.use(credentials);
 app.use(cors(corsOptions));
-// app.use(cors());
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -43,7 +39,8 @@ app.use(express.static(path.join(__dirname, "public")));
 //public routes for auth and refresh token
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/refresh", require("./routes/refresh.routes"));
-app.use("/api/reports", require("./routes/report.routes"));
+app.use("/api/oven", require("./routes/oven.routes"));
+
 // verify jwt middleware
 app.use(verifyJWT);
 // protected routes
@@ -63,6 +60,7 @@ app.use("/api/treeStatus", require("./routes/treeStatus.routes"));
 app.use("/api/finishDay", require("./routes/finishDay.routes"));
 app.use("/api/jobGroup", require("./routes/jobGroup.routes"));
 app.use("/api/tree", require("./routes/tree.routes"));
+app.use("/api/reports", require("./routes/report.routes"));
 
 // db.sequelize
 //   .sync({ force: true })
@@ -137,12 +135,36 @@ async function initDB() {
   await Option.create({ optionText: "Alloy" });
   await Option.create({ optionText: "Bronz" });
   await Option.create({ optionText: "Gümüş" });
-
   await Thick.create({ thickName: "Çok Kalın" });
   await Thick.create({ thickName: "Kalın" });
   await Thick.create({ thickName: "Orta" });
   await Thick.create({ thickName: "İnce" });
   await Thick.create({ thickName: "Çok İnce" });
+  await Fırın.create({
+    fırınSıra: 1,
+    fırınKonum: "ust",
+  });
+
+  await Fırın.create({
+    fırınSıra: 1,
+    fırınKonum: "alt",
+  });
+  await Fırın.create({
+    fırınSıra: 2,
+    fırınKonum: "ust",
+  });
+  await Fırın.create({
+    fırınSıra: 2,
+    fırınKonum: "alt",
+  });
+  await Fırın.create({
+    fırınSıra: 3,
+    fırınKonum: "ust",
+  });
+  await Fırın.create({
+    fırınSıra: 3,
+    fırınKonum: "alt",
+  });
 }
 
 module.exports = app;
