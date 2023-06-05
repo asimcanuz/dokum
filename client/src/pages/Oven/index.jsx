@@ -208,10 +208,12 @@ function OvenMainPage() {
                 disabled={!checkedGroup || allDisabled}
                 onClick={async () => {
                   if (checkedGroup === 'erken') {
+                    setErkenGrupDisabled(true)
                     await axiosPrivate.post(Endpoints.OVEN + '/erken', {
                       jobGroupId: selectedJobGroup,
                     });
                   } else if (checkedGroup === 'normal') {
+                    setAllDisabled(true)
                     await axiosPrivate.post(Endpoints.OVEN + '/normal', {
                       jobGroupId: selectedJobGroup,
                     });
@@ -260,7 +262,7 @@ function OvenMainPage() {
             erkenGrupDisabled={erkenGrupDisabled}
           />
         </div>
-        {trees && trees.length > 0 && (
+        
           <DataGrid
             dataSource={trees}
             showBorders={true}
@@ -274,8 +276,14 @@ function OvenMainPage() {
               dataField={'fırınId'}
               caption={'Yerleştiği Fırın'}
               cellRender={({ data }) => {
-                const selectedOven = Firinlar.find((firin) => firin.firinId === data.fırınId);
-                return selectedOven.firinSira + ' - ' + selectedOven.firinKonum;
+                
+                if (data.fırınId===null) {
+                  return JSON.stringify(data)
+                }
+                const selectedOven = Firinlar?.find((firin) => {
+                 return firin?.firinId === data?.fırınId});
+                
+                 return selectedOven?.firinSira + ' - ' + selectedOven?.firinKonum;
               }}
             />
             <Column dataField={'yerlesmesiGerekenFirin'} caption={'Yerleşmesi Gereken Fırın'} />
@@ -283,14 +291,13 @@ function OvenMainPage() {
               dataField={'erkenFirinGrubunaEklendiMi'}
               caption={'Fırın Tipi'}
               cellRender={({ data }) => {
-                return data.erkenFirinGrubunaEklendiMi ? 'Erken' : 'Normal';
+                return data?.erkenFirinGrubunaEklendiMi ? 'Erken' : 'Normal';
               }}
             />
             <Column dataField={'color.colorName'} caption={'Renk'} />
             <Column dataField={'option.optionText'} caption={'Ayar'} />
             <Column dataField={'thick.thickName'} caption={'Kalınlık'} />
           </DataGrid>
-        )}
       </section>
     </div>
   );
