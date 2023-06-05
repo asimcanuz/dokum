@@ -14,6 +14,26 @@ const firinListesi = {
       {
         kalinlik: "İnce",
         renk: "Yeşil",
+        ayar: "24 Ayar",
+      },
+      {
+        kalinlik: "İnce",
+        renk: "Yeşil",
+        ayar: "22 Ayar",
+      },
+      {
+        kalinlik: "İnce",
+        renk: "Yeşil",
+        ayar: "21 Ayar",
+      },
+      {
+        kalinlik: "İnce",
+        renk: "Yeşil",
+        ayar: "20 Ayar",
+      },
+      {
+        kalinlik: "İnce",
+        renk: "Yeşil",
         ayar: "18 Ayar",
       },
       {
@@ -51,23 +71,29 @@ const firinListesi = {
       {
         kalinlik: "Orta",
         renk: "Yeşil",
-        ayar: "18 Ayar",
-      },
-      {
-        kalinlik: "İnce",
-        renk: "Yeşil",
         ayar: "24 Ayar",
       },
       {
-        kalinlik: "İnce",
+        kalinlik: "Orta",
         renk: "Yeşil",
         ayar: "22 Ayar",
       },
       {
-        kalinlik: "İnce",
+        kalinlik: "Orta",
         renk: "Yeşil",
         ayar: "21 Ayar",
       },
+      {
+        kalinlik: "Orta",
+        renk: "Yeşil",
+        ayar: "20 Ayar",
+      },
+      {
+        kalinlik: "Orta",
+        renk: "Yeşil",
+        ayar: "18 Ayar",
+      },
+
       {
         kalinlik: "İnce",
         renk: "Yeşil",
@@ -150,13 +176,29 @@ const firinListesi = {
       {
         kalinlik: "Kalın",
         renk: "Yeşil",
-        ayar: "18 Ayar",
+        ayar: "24 Ayar",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Yeşil",
+        ayar: "22 Ayar",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Yeşil",
+        ayar: "21 Ayar",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Yeşil",
+        ayar: "20 Ayar",
       },
       {
         kalinlik: "Orta",
         renk: "Yeşil",
         ayar: "14 Ayar",
       },
+
       {
         kalinlik: "Kalın",
         renk: "Hepsi",
@@ -169,6 +211,11 @@ const firinListesi = {
       },
     ],
     alt: [
+      {
+        kalinlik: "Çok Kalın",
+        renk: "Kırmızı",
+        ayar: "Hepsi",
+      },
       {
         kalinlik: "Çok Kalın",
         renk: "Kırmızı",
@@ -206,6 +253,26 @@ const firinListesi = {
       {
         kalinlik: "İnce",
         renk: "Yeşil",
+        ayar: "24 Ayar",
+      },
+      {
+        kalinlik: "İnce",
+        renk: "Yeşil",
+        ayar: "22 Ayar",
+      },
+      {
+        kalinlik: "İnce",
+        renk: "Yeşil",
+        ayar: "21 Ayar",
+      },
+      {
+        kalinlik: "İnce",
+        renk: "Yeşil",
+        ayar: "20 Ayar",
+      },
+      {
+        kalinlik: "İnce",
+        renk: "Yeşil",
         ayar: "18 Ayar",
       },
       {
@@ -246,20 +313,26 @@ const firinListesi = {
         ayar: "18 Ayar",
       },
       {
-        kalinlik: "İnce",
+        kalinlik: "Orta",
         renk: "Yeşil",
         ayar: "24 Ayar",
       },
       {
-        kalinlik: "İnce",
+        kalinlik: "Orta",
         renk: "Yeşil",
         ayar: "22 Ayar",
       },
       {
-        kalinlik: "İnce",
+        kalinlik: "Orta",
         renk: "Yeşil",
         ayar: "21 Ayar",
       },
+      {
+        kalinlik: "Orta",
+        renk: "Yeşil",
+        ayar: "20 Ayar",
+      },
+
       {
         kalinlik: "İnce",
         renk: "Yeşil",

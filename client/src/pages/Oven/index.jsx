@@ -1,21 +1,17 @@
-import React, { useEffect, useMemo, Fragment } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Header from '../../components/Header';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import Button from '../../components/Button';
-import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
-
-const printList = () => {
-  var content = document.getElementById('treeList');
-  var pri = document.getElementById('ifmcontentstoprint').contentWindow;
-  pri.document.open();
-  pri.document.write(content.innerHTML);
-  pri.document.close();
-  pri.focus();
-  pri.print();
-};
+import OvenTable from './OvenTable';
+import { DataGrid } from 'devextreme-react';
+import { Column, Export } from 'devextreme-react/data-grid';
+import Firinlar from '../../constants/firinlar';
+import { Workbook } from 'exceljs';
+import { exportDataGrid } from 'devextreme/excel_exporter';
+import { saveAs } from 'file-saver';
 
 const initialFirinListesi = {
   1: {
@@ -43,6 +39,8 @@ function OvenMainPage() {
   const [checkedGroup, setCheckedGroup] = React.useState(null);
   const [firinListesi, setFirinListesi] = React.useState(initialFirinListesi);
   const [allDisabled, setAllDisabled] = React.useState(false);
+  const [trees, setTrees] = useState([]);
+
   useEffect(() => {
     const controller = new AbortController();
     let isMounted = true;
@@ -78,8 +76,29 @@ function OvenMainPage() {
       }
     };
 
+    const getTrees = async () => {
+      try {
+        const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
+          params: {
+            jobGroupId: selectedJobGroup,
+          },
+          signal: controller.signal,
+        });
+
+        if (isMounted) {
+          setTrees(res.data.trees);
+        }
+      } catch (error) {
+        console.error(error);
+        navigate('/login', { state: { from: location }, replace: true });
+      }
+    };
+
     getJobGroups();
-    selectedJobGroup && getFirinListesi();
+    if (selectedJobGroup) {
+      getFirinListesi();
+      getTrees();
+    }
 
     return () => {
       isMounted = false;
@@ -97,8 +116,30 @@ function OvenMainPage() {
       };
     });
   }, [jobGroups]);
+
   function onChangeValue(event) {
     setCheckedGroup(event.target.value);
+  }
+
+  const tableDivRef = useRef(null);
+
+  function onExporting(e) {
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet('Main sheet');
+
+    exportDataGrid({
+      component: e.component,
+      worksheet,
+      autoFilterEnabled: true,
+    }).then(() => {
+      workbook.xlsx.writeBuffer().then((buffer) => {
+        saveAs(
+          new Blob([buffer], { type: 'application/octet-stream' }),
+          selectedJobGroup + '-IsGrubuFirinListesi.xlsx',
+        );
+      });
+    });
+    e.cancel = true;
   }
 
   return (
@@ -194,223 +235,62 @@ function OvenMainPage() {
             </div>
           )}
         </div>
-        <button onClick={() => printList()}>yazdır!</button>
-        <div className='flex flex-row justify-between' id='treeList'>
-          <div className='px-2 py-4 space-y-2 flex flex-col items-center border border-slate-400 w-1/3'>
-            <h4>1. Fırın </h4>
-            {erkenGrupDisabled && <h4 className='text-red-900'>Erken Fırın</h4>}
-            <table className='w-full'>
-              <tr>
-                <th colSpan={'3'}>
-                  <h4>UST</h4>
-                </th>
-              </tr>
-
-              {firinListesi[1]['ust'] && firinListesi[1]['ust'].length > 0 ? (
-                <React.Fragment>
-                  <tr>
-                    <th align='center'>Ağaç No</th>
-                    <th align='center'>Yerleştiği Fırın</th>
-                    <th align='center'>Yerleşmesi Gereken</th>
-                  </tr>
-                  {firinListesi[1]['ust'].map((element) => {
-                    return (
-                      <tr>
-                        <td align='center'>{element.treeNo}</td>
-                        <td align='center'>
-                          {element.yerlestigiFirin + '-' + element.yerlestigiKonum}
-                        </td>
-                        <td align='center'>
-                          {element.yerlesmesiGerekenFirin || element.yerlesmesiGerekenFirin !== ''
-                            ? element.yerlesmesiGerekenFirin
-                            : '-'}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </React.Fragment>
-              ) : (
-                <div className='text-center'>Fırın Boştur!</div>
-              )}
-            </table>
-            <table className='w-full'>
-              <tr>
-                <th colSpan={'3'}>
-                  <h4>ALT</h4>
-                </th>
-              </tr>
-              {firinListesi[1]['alt'] && firinListesi[1]['alt'].length > 0 ? (
-                <Fragment>
-                  <tr>
-                    <th align='center'>Ağaç No</th>
-                    <th align='center'>Yerleştiği Fırın</th>
-                    <th align='center'>Yerleşmesi Gereken</th>
-                  </tr>
-
-                  {firinListesi[1]['alt'].map((element) => {
-                    return (
-                      <tr>
-                        <td align='center'>{element.treeNo}</td>
-                        <td align='center'>
-                          {element.yerlestigiFirin + '-' + element.yerlestigiKonum}
-                        </td>
-                        <td align='center'>
-                          {element.yerlesmesiGerekenFirin || element.yerlesmesiGerekenFirin !== ''
-                            ? element.yerlesmesiGerekenFirin
-                            : '-'}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </Fragment>
-              ) : (
-                <div className='text-center'>Fırın Boştur!</div>
-              )}
-            </table>
-          </div>
-          <div className='px-2 py-4 space-y-2 flex flex-col items-center border border-slate-400 w-1/3'>
-            <h4>2. Fırın</h4>
-            <table className='w-full'>
-              <tr>
-                <th colSpan={'3'}>
-                  <h4>UST</h4>
-                </th>
-              </tr>
-              {firinListesi[2]['ust'] && firinListesi[2]['ust'].length > 0 ? (
-                <Fragment>
-                  <tr>
-                    <th align='center'>Ağaç No</th>
-                    <th align='center'>Yerleştiği Fırın</th>
-                    <th align='center'>Yerleşmesi Gereken</th>
-                  </tr>
-
-                  {firinListesi[2]['ust'].map((element) => {
-                    return (
-                      <tr>
-                        <td align='center'>{element.treeNo}</td>
-                        <td align='center'>
-                          {element.yerlestigiFirin + '-' + element.yerlestigiKonum}
-                        </td>
-                        <td align='center'>
-                          {element.yerlesmesiGerekenFirin || element.yerlesmesiGerekenFirin !== ''
-                            ? element.yerlesmesiGerekenFirin
-                            : '-'}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </Fragment>
-              ) : (
-                <div className='text-center'>Fırın Boştur!</div>
-              )}
-            </table>
-            <table className='w-full'>
-              <tr>
-                <th colSpan={'3'}>
-                  <h4>ALT</h4>
-                </th>
-              </tr>
-              {firinListesi[2]['alt'].length > 0 ? (
-                <Fragment>
-                  <tr>
-                    <th align='center'>Ağaç No</th>
-                    <th align='center'>Yerleştiği Fırın</th>
-                    <th align='center'>Yerleşmesi Gereken</th>
-                  </tr>
-
-                  {firinListesi[2]['alt'].map((element) => {
-                    return (
-                      <tr>
-                        <td align='center'>{element.treeNo}</td>
-                        <td align='center'>
-                          {element.yerlestigiFirin + '-' + element.yerlestigiKonum}
-                        </td>
-                        <td align='center'>
-                          {element.yerlesmesiGerekenFirin || element.yerlesmesiGerekenFirin !== ''
-                            ? element.yerlesmesiGerekenFirin
-                            : '-'}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </Fragment>
-              ) : (
-                <div className='text-center'>Fırın Boştur!</div>
-              )}
-            </table>
-          </div>
-          <div className='px-2 py-4 space-y-2 flex flex-col items-center border border-slate-400 w-1/3'>
-            <h4>3. Fırın</h4>
-            <table className='w-full'>
-              <tr>
-                <th colSpan={'3'}>
-                  <h4>UST</h4>
-                </th>
-              </tr>
-              {firinListesi[3]['ust']?.length > 0 ? (
-                <Fragment>
-                  <tr>
-                    <th align='center'>Ağaç No</th>
-                    <th align='center'>Yerleştiği Fırın</th>
-                    <th align='center'>Yerleşmesi Gereken</th>
-                  </tr>
-
-                  {firinListesi[3]['ust'].map((element) => {
-                    return (
-                      <tr>
-                        <td align='center'>{element.treeNo}</td>
-                        <td align='center'>
-                          {element.yerlestigiFirin + '-' + element.yerlestigiKonum}
-                        </td>
-                        <td align='center'>
-                          {element.yerlesmesiGerekenFirin || element.yerlesmesiGerekenFirin !== ''
-                            ? element.yerlesmesiGerekenFirin
-                            : '-'}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </Fragment>
-              ) : (
-                <div className='text-center'>Fırın Boştur!</div>
-              )}
-            </table>
-            <table className='w-full'>
-              <tr>
-                <th colSpan={'3'}>
-                  <h3>ALT</h3>
-                </th>
-              </tr>
-              {firinListesi[3]['alt'].length > 0 ? (
-                <Fragment>
-                  <tr>
-                    <th align='center'>Ağaç No</th>
-                    <th align='center'>Yerleştiği Fırın</th>
-                    <th align='center'>Yerleşmesi Gereken</th>
-                  </tr>
-
-                  {firinListesi[3]['alt'].map((element) => {
-                    return (
-                      <tr>
-                        <td align='center'>{element.treeNo}</td>
-                        <td align='center'>
-                          {element.yerlestigiFirin + '-' + element.yerlestigiKonum}
-                        </td>
-                        <td align='center'>
-                          {element.yerlesmesiGerekenFirin || element.yerlesmesiGerekenFirin !== ''
-                            ? element.yerlesmesiGerekenFirin
-                            : '-'}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </Fragment>
-              ) : (
-                <div className='text-center'>Fırın Boştur!</div>
-              )}
-            </table>
-          </div>
+        <button
+          onClick={(e) => {
+            console.log(tableDivRef.current);
+            // pdf tabloları oluştur
+          }}
+        >
+          yazdır!
+        </button>
+        <div className='flex flex-row justify-between' ref={tableDivRef}>
+          <OvenTable
+            ovenList={firinListesi[1]}
+            ovenNumber={1}
+            erkenGrupDisabled={erkenGrupDisabled}
+          />
+          <OvenTable
+            ovenList={firinListesi[2]}
+            ovenNumber={2}
+            erkenGrupDisabled={erkenGrupDisabled}
+          />
+          <OvenTable
+            ovenList={firinListesi[3]}
+            ovenNumber={3}
+            erkenGrupDisabled={erkenGrupDisabled}
+          />
         </div>
+        {trees && trees.length > 0 && (
+          <DataGrid
+            dataSource={trees}
+            showBorders={true}
+            rowAlternationEnabled={true}
+            showRowLines={true}
+            onExporting={onExporting}
+          >
+            <Export enabled={true} />
+            <Column dataField={'treeNo'} caption={'Ağaç Numarası'} alignment={'center'} />
+            <Column
+              dataField={'fırınId'}
+              caption={'Yerleştiği Fırın'}
+              cellRender={({ data }) => {
+                const selectedOven = Firinlar.find((firin) => firin.firinId === data.fırınId);
+                return selectedOven.firinSira + ' - ' + selectedOven.firinKonum;
+              }}
+            />
+            <Column dataField={'yerlesmesiGerekenFirin'} caption={'Yerleşmesi Gereken Fırın'} />
+            <Column
+              dataField={'erkenFirinGrubunaEklendiMi'}
+              caption={'Fırın Tipi'}
+              cellRender={({ data }) => {
+                return data.erkenFirinGrubunaEklendiMi ? 'Erken' : 'Normal';
+              }}
+            />
+            <Column dataField={'color.colorName'} caption={'Renk'} />
+            <Column dataField={'option.optionText'} caption={'Ayar'} />
+            <Column dataField={'thick.thickName'} caption={'Kalınlık'} />
+          </DataGrid>
+        )}
       </section>
     </div>
   );

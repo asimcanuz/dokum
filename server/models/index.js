@@ -113,13 +113,20 @@ db.order.belongsTo(db.tree, {
 });
 
 //  order 1-1
+// db.creator.hasOne(db.order, {
+//   foreignKey: "createdBy",
+// });
+// db.creator.hasOne(db.order, {
+//   foreignKey: "updatedBy",
+// });
+//
+// db.order.belongsTo(db.creator, {
+//   foreignKey: "createdBy",
+// });
+// db.order.belongsTo(db.creator, {
+//   foreignKey: "updatedBy",
+// });
 
-db.creator.hasOne(db.order, {
-  foreignKey: "createdBy",
-});
-db.creator.hasOne(db.order, {
-  foreignKey: "updatedBy",
-});
 db.customer.hasOne(db.order, {
   foreignKey: "customerId",
 });
@@ -130,12 +137,7 @@ db.treeStatus.hasOne(db.order, {
   foreignKey: "statusId",
 });
 
-db.order.belongsTo(db.creator, {
-  foreignKey: "createdBy",
-});
-db.order.belongsTo(db.creator, {
-  foreignKey: "updatedBy",
-});
+
 db.order.belongsTo(db.customer, {
   foreignKey: "customerId",
 });

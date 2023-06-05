@@ -1,5 +1,5 @@
 .topToBtn {
-  @apply fixed bottom-10 right-6 z-20;
+  @apply fixed bottom-16 right-16 z-20;
 }
 
 .iconStyle {

@@ -84,7 +84,7 @@ const erkenFırınla = async (req, res) => {
             if (erkenFirinListesi.length > 13) {
               yerlesmesiGereken = `1-ust iç`;
             }
-            erkenFirinListesi.push();
+            erkenFirinListesi.push(obj);
           }
         }
       }
@@ -115,7 +115,7 @@ const erkenFırınla = async (req, res) => {
     );
   });
 
-  res.status(200).send({ message: "Fırınlama başarılı" });
+  res.status(200).send({ erkenFirinListesi, message: "Fırınlama başarılı" });
 };
 
 module.exports = erkenFırınla;

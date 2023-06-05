@@ -8,26 +8,26 @@ import { Endpoints } from '../../constants/Endpoints';
 import CalculatedMineralWeight from '../../utils/calculateMineralWeight';
 import calculateMineralWeight from '../../utils/calculateMineralWeight';
 import { DataGrid } from 'devextreme-react';
-import { Column, Editing, MasterDetail, Scrolling, Selection } from 'devextreme-react/data-grid';
+import {
+  Column,
+  Editing,
+  Export,
+  MasterDetail,
+  Scrolling,
+  Selection,
+} from 'devextreme-react/data-grid';
+import { Workbook } from 'exceljs';
+import { exportDataGrid } from 'devextreme/excel_exporter';
+import { saveAs } from 'file-saver';
 
 function TreeTable({
   setClickTree,
   todayTrees,
-  customers,
   descriptions,
-  treeStatuses,
-  creators,
   setUpdateClick,
   setTodayTrees,
-  clickTreeId,
   jobGroups,
   selectedJobGroup,
-  setSelectedJobGroup,
-  treeTableRef,
-  options,
-  thicks,
-  waxes,
-  colors,
 }) {
   const axiosPrivate = useAxiosPrivate();
   const [createLabel, setCreateLabel] = useState(false);
@@ -131,6 +131,25 @@ function TreeTable({
     handleSaveMineralWeight(e.data);
   }
 
+  function onExporting(e) {
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet('Main sheet');
+
+    exportDataGrid({
+      component: e.component,
+      worksheet,
+      autoFilterEnabled: true,
+    }).then(() => {
+      workbook.xlsx.writeBuffer().then((buffer) => {
+        saveAs(
+          new Blob([buffer], { type: 'application/octet-stream' }),
+          selectedJobGroup + '-IsGrubuAgacListesi.xlsx',
+        );
+      });
+    });
+    e.cancel = true;
+  }
+
   return (
     <div className='space-y-4'>
       <div className='flex flex-row justify-between items-center'>
@@ -158,11 +177,7 @@ function TreeTable({
           <span>Etiket Oluştur</span>
         </Button>
       </div>
-      {/*
-      TODO: 
-       * Form Editing: https://js.devexpress.com/Demos/WidgetsGallery/Demo/DataGrid/FormEditing/React/Light/
-       * PopUp Editing: https://js.devexpress.com/Demos/WidgetsGallery/Demo/DataGrid/PopupEditing/React/Light/
-      */}
+
       {todayTrees.length > 0 ? (
         <DataGrid
           id={'grid-container'}
@@ -176,7 +191,9 @@ function TreeTable({
           onRowDblClick={rowDblClick}
           onRowRemoving={onRowRemoving}
           onRowUpdated={onRowUpdate}
+          onExporting={onExporting}
         >
+          <Export enabled={true} />
           <Editing
             mode={'cell'}
             useIcons={true}
@@ -221,7 +238,6 @@ function TreeTable({
             }}
             allowEditing={false}
           />
-
           <Column
             caption={'Ağaç Tipi'}
             cellRender={({ data }) => {
@@ -237,7 +253,6 @@ function TreeTable({
             }}
             allowEditing={false}
           />
-
           <Column caption={'Mum Türü'} dataField={'wax.waxName'} allowEditing={false} />
           <Column caption={'Ayar'} dataField={'option.optionText'} allowEditing={false} />
           <Column caption={'Kalınlık'} dataField={'thick.thickName'} allowEditing={false} />

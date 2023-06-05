@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -20,6 +20,7 @@ function NewOrderTab({
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
+  const [loading, setLoading] = useState(true);
   const [order, setOrder] = React.useState({
     treeId: tree.agacId,
     customerId: '',
@@ -44,6 +45,7 @@ function NewOrderTab({
   async function addOrder() {
     const controller = new AbortController();
     try {
+      setLoading(false);
       if (order.customerId === '' || order.quantity === '') {
         throw new Error('Lütfen müşteri ve/veya adet alanlarını doldurunuz.');
       }
@@ -57,6 +59,9 @@ function NewOrderTab({
           jobGroupId: selectedJobGroup,
         },
       });
+      if (response.status === 200) {
+        setLoading(true);
+      }
 
       setTodayTrees(response.data.trees);
     } catch (error) {
@@ -140,7 +145,7 @@ function NewOrderTab({
       <div className='flex justify-end'>
         <Button
           appearance={'primary'}
-          disabled={Object.values(tree).includes('')}
+          disabled={Object.values(tree).includes('') ? false : !loading ? true : false}
           onClick={addOrder}
         >
           Sipariş Ekle

@@ -1,29 +1,19 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
-import ReactPDF, {
-  Page,
-  Text,
-  View,
-  Document,
-  StyleSheet,
-  PDFViewer,
-  PDFDownloadLink,
-  BlobProvider,
-  Font,
-} from "@react-pdf/renderer";
-import Button from "../../components/Button";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Endpoints } from "../../constants/Endpoints";
-import Modal from "../../components/Modal/Modal";
-import ModalHeader from "../../components/Modal/ModalHeader";
-import ModalBody from "../../components/Modal/ModalBody";
-import ModalFooter from "../../components/Modal/ModalFooter";
+import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { Page, Text, View, Document, StyleSheet, PDFViewer, Font } from '@react-pdf/renderer';
+import Button from '../../components/Button';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Endpoints } from '../../constants/Endpoints';
+import Modal from '../../components/Modal/Modal';
+import ModalHeader from '../../components/Modal/ModalHeader';
+import ModalBody from '../../components/Modal/ModalBody';
+import ModalFooter from '../../components/Modal/ModalFooter';
 
 const styles = StyleSheet.create({
   page: {
-    flexDirection: "row",
-    fontFamily: "Roboto",
-    fontSize: "13px",
+    flexDirection: 'row',
+    fontFamily: 'Roboto',
+    fontSize: '8pt',
   },
   section: {
     margin: 10,
@@ -33,8 +23,8 @@ const styles = StyleSheet.create({
 });
 // Register Font
 Font.register({
-  family: "Roboto",
-  src: "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf",
+  family: 'Roboto',
+  src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf',
 });
 
 const Box = ({ children }) => {
@@ -42,11 +32,15 @@ const Box = ({ children }) => {
     <View
       style={{
         // sayfanın 4 eşit parçasına bölünmesi için
-        border: "1px solid black",
-        width: "24%",
+        border: '1px solid black',
+        width: '24%',
         margin: 2,
-        display: "flex",
-        flexDirection: "column",
+        display: 'flex',
+        flexDirection: 'column',
+        textOverflow: 'hidden',
+        overflow: 'hidden',
+        height: '96px',
+        maxHeight: '96px',
       }}
     >
       {children}
@@ -57,9 +51,9 @@ const BoxItem = ({ children }) => {
   return (
     <View
       style={{
-        borderBottom: "1px solid black",
-        display: "flex",
-        alignItems: "center",
+        borderBottom: '1px solid black',
+        display: 'flex',
+        alignItems: 'center',
       }}
     >
       {children}
@@ -70,14 +64,15 @@ const BoxItem = ({ children }) => {
 const MyDocument = ({ data }) => {
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size='A4' style={styles.page}>
         <View
           style={{
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            padding: "8mm",
-            width: "100%",
+            display: 'flex',
+
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            padding: '8mm',
+            width: '100%',
           }}
         >
           {/* dinamik bir objeyi ekrana yazdır */}
@@ -89,108 +84,121 @@ const MyDocument = ({ data }) => {
               return (
                 <Box key={index}>
                   <BoxItem>
-                    <Text>
+                    <Text style={{ fontSize: '12pt' }}>
                       {key
-                        .slice(
-                          0,
-                          key.indexOf("#") === -1
-                            ? key.length
-                            : key.indexOf("#")
-                        )
+                        .slice(0, key.indexOf('#') === -1 ? key.length : key.indexOf('#'))
                         .toLocaleLowerCase()
                         .slice(0, 17)}
                     </Text>
                   </BoxItem>
                   <BoxItem>
-                    <Text>{key2}</Text>
+                    <Text style={{ fontSize: '9pt' }}>{key2}</Text>
                   </BoxItem>
 
                   <View
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      marginTop: "12px",
-                      width: "100%",
+                      display: 'flex',
+                      flexDirection: 'row',
+                      width: '100%',
+                      fontSize: '8pt',
+                      height: '100%',
                     }}
                   >
-                    <View style={{ width: "100%" }}>
+                    <View
+                      style={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                      }}
+                    >
                       <View
                         style={{
-                          borderBottom: "1px solid black",
-                          textAlign: "center",
-                          fontSize: "13px",
+                          borderBottom: '1px solid black',
+                          textAlign: 'center',
+                          fontSize: '8pt',
                         }}
                       >
                         <Text>B</Text>
                       </View>
-                      <View style={{ textAlign: "center", fontSize: "13px" }}>
+                      <View style={{ textAlign: 'center' }}>
                         <Text>
-                          {data[key][key2]["Beyaz"] !== undefined
-                            ? data[key][key2]["Beyaz"].map((item, index) => {
-                                return index ===
-                                  data[key][key2]["Beyaz"]?.length - 1
+                          {data[key][key2]['Beyaz'] !== undefined
+                            ? data[key][key2]['Beyaz'].map((item, index) => {
+                                if (index > 19) {
+                                  return '';
+                                }
+                                return index === data[key][key2]['Beyaz']?.length - 1
                                   ? item
-                                  : item + ",";
+                                  : index === 19
+                                  ? item
+                                  : item + ',';
                               })
-                            : ""}
+                            : ''}
                         </Text>
                       </View>
                     </View>
                     <View
                       style={{
-                        width: "100%",
-                        borderRight: "1px solid black",
-                        borderLeft: "1px solid black",
+                        width: '100%',
+                        borderRight: '1px solid black',
+                        borderLeft: '1px solid black',
                       }}
                     >
                       <View
                         style={{
-                          borderBottom: "1px solid black",
-                          textAlign: "center",
-                          fontSize: "13px",
+                          borderBottom: '1px solid black',
+                          textAlign: 'center',
                         }}
                       >
                         <Text>K</Text>
                       </View>
                       <View
                         style={{
-                          textAlign: "center",
-                          fontSize: "13px",
-                          overflow: "hidden",
+                          textAlign: 'center',
+                          fontSize: '8pt',
+                          overflow: 'hidden',
                         }}
                       >
                         <Text>
-                          {data[key][key2]["Kırmızı"] !== undefined
-                            ? data[key][key2]["Kırmızı"].map((item, index) => {
-                                return index ===
-                                  data[key][key2]["Kırmızı"]?.length - 1
+                          {data[key][key2]['Kırmızı'] !== undefined
+                            ? data[key][key2]['Kırmızı'].map((item, index) => {
+                                if (index > 19) {
+                                  return '';
+                                }
+                                return index === data[key][key2]['Kırmızı']?.length - 1
                                   ? item
-                                  : item + ",";
+                                  : index === 19
+                                  ? item
+                                  : item + ',';
                               })
-                            : ""}
+                            : ''}
                         </Text>
                       </View>
                     </View>
-                    <View style={{ width: "100%" }}>
+                    <View style={{ width: '100%' }}>
                       <View
                         style={{
-                          borderBottom: "1px solid black",
-                          textAlign: "center",
-                          fontSize: "13px",
+                          borderBottom: '1px solid black',
+                          textAlign: 'center',
                         }}
                       >
                         <Text>Y</Text>
                       </View>
-                      <View style={{ textAlign: "center", fontSize: "13px" }}>
+                      <View style={{ textAlign: 'center', flexGrow: 0 }}>
                         <Text>
-                          {data[key][key2]["Yeşil"] !== undefined
-                            ? data[key][key2]["Yeşil"].map((item, index) => {
-                                return index ===
-                                  data[key][key2]["Yeşil"]?.length - 1
+                          {data[key][key2]['Yeşil'] !== undefined
+                            ? data[key][key2]['Yeşil'].map((item, index) => {
+                                if (index > 19) {
+                                  return '';
+                                }
+
+                                return index === data[key][key2]['Yeşil']?.length - 1
                                   ? item
-                                  : item + ",";
+                                  : index === 19
+                                  ? item
+                                  : item + ',';
                               })
-                            : ""}
+                            : ''}
                         </Text>
                       </View>
                     </View>
@@ -268,18 +276,14 @@ export default function CreateLabel({ open, toggle, jobGroupId }) {
         // data'yı sırala
         var ordered = {};
         Object.keys(res.data.ordersByCustomer).forEach(function (key) {
-          Object.keys(res.data.ordersByCustomer[key]).forEach(function (
-            key2,
-            index
-          ) {
+          Object.keys(res.data.ordersByCustomer[key]).forEach(function (key2, index) {
             // key2 gelince yeni ordered[key] oluştur
             if (ordered[key] === undefined) {
               ordered[key] = {};
               ordered[key][key2] = res.data.ordersByCustomer[key][key2];
             } else {
               ordered[key + `#${index}#`] = {};
-              ordered[key + `#${index}#`][key2] =
-                res.data.ordersByCustomer[key][key2];
+              ordered[key + `#${index}#`][key2] = res.data.ordersByCustomer[key][key2];
             }
             // ordered key varsa yeni bir tane daha ekle
           });
@@ -298,7 +302,7 @@ export default function CreateLabel({ open, toggle, jobGroupId }) {
         setData(sortedObj);
       } catch (error) {
         console.error(error);
-        navigate("/login", { state: { from: location }, replace: true });
+        navigate('/login', { state: { from: location }, replace: true });
       }
     };
 
@@ -307,19 +311,19 @@ export default function CreateLabel({ open, toggle, jobGroupId }) {
   }, [jobGroupId]);
 
   return (
-    <Modal open={open} size={"normal"}>
-      <ModalHeader title={"Etiket Oluştur"} toogle={toggle} />
+    <Modal open={open} size={'normal'}>
+      <ModalHeader title={'Etiket Oluştur'} toogle={toggle} />
       <ModalBody>
         {Object.keys(data).length > 0 && (
           <Fragment>
-            <PDFViewer style={{ width: "720px", height: "720px" }}>
+            <PDFViewer style={{ width: '720px', height: '720px' }}>
               <MyDocument data={data} />
             </PDFViewer>
           </Fragment>
         )}
       </ModalBody>
       <ModalFooter>
-        <Button appearance={"danger"} onClick={toggle}>
+        <Button appearance={'danger'} onClick={toggle}>
           Kapat
         </Button>
       </ModalFooter>
