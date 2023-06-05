@@ -218,7 +218,7 @@ const firinListesi = {
       },
       {
         kalinlik: "Çok Kalın",
-        renk: "Kırmızı",
+        renk: "Beyaz",
         ayar: "Hepsi",
       },
       {
