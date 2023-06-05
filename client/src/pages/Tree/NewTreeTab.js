@@ -20,8 +20,8 @@ function NewTreeTab({
 }) {
   const initialState = {
     newTree: {
-      treeNo: '',
-      listeNo: '',
+      treeNo: 1,
+      listeNo: 1,
       agacAuto: false,
       listeAuto: false,
       renkId: '',
@@ -42,6 +42,7 @@ function NewTreeTab({
     treeStatuses: [],
   };
   const [newTree, setNewTree] = useState(initialState.newTree);
+  const [loading, setLoading] = useState(false);
   const [addNewTreeOptions, setAddNewTreeOptions] = useState({
     open: false,
     type: '',
@@ -64,6 +65,7 @@ function NewTreeTab({
   }
 
   const onFormSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
 
     let _agacNo = newTree?.treeNo;
@@ -74,9 +76,6 @@ function NewTreeTab({
       }
       if (newTree.agacAuto) {
         _agacNo = getBiggestNumber('treeNo') + 1;
-        // set New tree with prev State
-
-        // setNewTree({ ...newTree, treeNo: _agacNo });
       } else {
         todayTrees.forEach((tree) => {
           if (
@@ -130,7 +129,13 @@ function NewTreeTab({
       if (newTree.mumTurId === '') {
         throw new Error('Mum Turu Seçilmedi');
       }
-      setNewTree({ ...newTree, treeNo: _agacNo, listeNo: _listeNo });
+      setTimeout(() => {
+        setNewTree({ ...newTree, treeNo: _agacNo });
+        setTimeout(() => {
+          setNewTree({ ...newTree, listeNo: _listeNo });
+        },50);
+      }, 50);
+
       const treeDate = jobGroups.filter((jobGroup) => jobGroup.id === newTree.jobGroupId)[0].date;
 
       var treeBody = {
@@ -162,9 +167,14 @@ function NewTreeTab({
 
         signal: controller.signal,
       });
+      if (res.status === 200) {
+        setLoading(false);
+      }
       setTodayTrees(res.data.trees);
+
       controller.abort();
     } catch (err) {
+      setLoading(false);
       window.alert(err);
     }
   };
@@ -210,6 +220,7 @@ function NewTreeTab({
           />
         </div>
         <div className='flex flex-row items-center justify-between'>
+          {console.log(newTree)}
           <NumberBox
             label={'Agaç No'}
             labelMode={'floating'}
@@ -219,7 +230,6 @@ function NewTreeTab({
           />
           <CheckBox
             id='treeNoAuto'
-            htmlFor='treeNo'
             text={'Otomatik Artır'}
             value={newTree.agacAuto}
             onValueChanged={(e) => setNewTree({ ...newTree, agacAuto: !newTree.agacAuto })}
@@ -391,7 +401,7 @@ function NewTreeTab({
             checked={newTree.isImmediate}
           />
 
-          <Button type='submit' appearance={'primary'}>
+          <Button type='submit' appearance={'primary'} disabled={loading}>
             Agaç Ekle
           </Button>
         </div>
