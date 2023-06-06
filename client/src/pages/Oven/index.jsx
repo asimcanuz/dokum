@@ -12,6 +12,8 @@ import Firinlar from '../../constants/firinlar';
 import { Workbook } from 'exceljs';
 import { exportDataGrid } from 'devextreme/excel_exporter';
 import { saveAs } from 'file-saver';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import OvenPdf from './OvenPdf';
 
 const initialFirinListesi = {
   1: {
@@ -35,6 +37,7 @@ function OvenMainPage() {
 
   const [jobGroups, setJobGroups] = React.useState([]);
   const [selectedJobGroup, setSelectedJobGroup] = React.useState(null);
+  const [selectedJobGroupName, setSelectedJobGroupName] = React.useState(null);
   const [erkenGrupDisabled, setErkenGrupDisabled] = React.useState(false);
   const [checkedGroup, setCheckedGroup] = React.useState(null);
   const [firinListesi, setFirinListesi] = React.useState(initialFirinListesi);
@@ -86,7 +89,19 @@ function OvenMainPage() {
         });
 
         if (isMounted) {
-          setTrees(res.data.trees);
+          let trees = res.data.trees.map((tree, index) => {
+            tree.firinTipi = tree.erkenFirinGrubunaEklendiMi ? 'Erken' : 'Normal';
+            if (tree.fırın === null) {
+              tree.yerlesenFirin = '-';
+              tree.firinDurumu = 'Girmedi';
+            } else {
+              tree.yerlesenFirin = tree.fırın.fırınSıra + '-' + tree.fırın.fırınKonum;
+              tree.firinDurumu = 'Girdi';
+            }
+            return tree;
+          });
+
+          setTrees(trees);
         }
       } catch (error) {
         console.error(error);
@@ -110,7 +125,8 @@ function OvenMainPage() {
     return jobGroups.map((jobGroup) => {
       return {
         value: jobGroup.id,
-        label: 'No: ' + jobGroup.date,
+        label: 'No: ' + jobGroup.number,
+        name: jobGroup.number,
         erkenGrupOlusturulduMu: jobGroup.erkenFırınGrubuOlusturulduMu,
         normalFırınGrubuOlusturulduMu: jobGroup.normalFırınGrubuOlusturulduMu,
       };
@@ -146,12 +162,6 @@ function OvenMainPage() {
     <div>
       <section className='space-y-4'>
         <Header title='Fırın' description='Fırınlarınızı bu sayfadan yönetebilirsiniz.' />
-        <iframe
-          title='#'
-          id='ifmcontentstoprint'
-          style={{ height: 0, width: 0, position: 'absolute' }}
-        ></iframe>
-
         <div className='space-y-4'>
           {/* seçilen iş grubu erkenFırınGrubuOlusturulduMu false ise erken firin oluştur button disabled:false  */}
           <Select
@@ -159,13 +169,17 @@ function OvenMainPage() {
             options={jobGroupOptions}
             value={jobGroupOptions.filter((option) => option.value === selectedJobGroup)[0]}
             onChange={(e) => {
+              setSelectedJobGroupName(e.name);
               setErkenGrupDisabled(e.erkenGrupOlusturulduMu);
               setSelectedJobGroup(e.value);
+
               if (e.erkenGrupOlusturulduMu) {
                 setCheckedGroup('normal');
-              } else if (e.normalFırınGrubuOlusturulduMu) {
+              }
+              if (e.normalFırınGrubuOlusturulduMu) {
                 setAllDisabled(true);
-              } else {
+              }
+              if (!e.erkenGrupOlusturulduMu && !e.normalFırınGrubuOlusturulduMu) {
                 setFirinListesi(initialFirinListesi);
               }
               if (!e.normalFırınGrubuOlusturulduMu) {
@@ -174,7 +188,7 @@ function OvenMainPage() {
             }}
           />
 
-          {selectedJobGroup !== null && (
+          {selectedJobGroup !== null && !allDisabled && (
             <div
               style={{ display: allDisabled ? 'none' : 'block' }}
               className='space-y-4 mt-3 flex flex-col'
@@ -208,12 +222,13 @@ function OvenMainPage() {
                 disabled={!checkedGroup || allDisabled}
                 onClick={async () => {
                   if (checkedGroup === 'erken') {
-                    setErkenGrupDisabled(true)
+                    setErkenGrupDisabled(true);
                     await axiosPrivate.post(Endpoints.OVEN + '/erken', {
                       jobGroupId: selectedJobGroup,
                     });
                   } else if (checkedGroup === 'normal') {
-                    setAllDisabled(true)
+                    setAllDisabled(true);
+
                     await axiosPrivate.post(Endpoints.OVEN + '/normal', {
                       jobGroupId: selectedJobGroup,
                     });
@@ -237,14 +252,29 @@ function OvenMainPage() {
             </div>
           )}
         </div>
-        <button
-          onClick={(e) => {
-            console.log(tableDivRef.current);
-            // pdf tabloları oluştur
-          }}
-        >
-          yazdır!
-        </button>
+        {firinListesi[1].ust.length > 0 ||
+        firinListesi[1].alt.length ||
+        firinListesi[2].ust.length > 0 ||
+        firinListesi[2].alt.length ||
+        firinListesi[3].ust.length > 0 ||
+        firinListesi[3].alt.length ? (
+          <PDFDownloadLink
+            document={
+              <OvenPdf
+                firinListesi={firinListesi}
+                erkenGrupDisabled={erkenGrupDisabled}
+                selectedJobGroupName={selectedJobGroupName}
+              />
+            }
+            fileName={selectedJobGroup + '-FirinListesi.pdf'}
+          >
+            {({ blob, url, loading, error }) => (
+              <Button appearance={'primary'}>
+                {loading ? 'Dosya yükleniyor' : 'Fırın Listesi Pdf İndir'}
+              </Button>
+            )}
+          </PDFDownloadLink>
+        ) : null}
         <div className='flex flex-row justify-between' ref={tableDivRef}>
           <OvenTable
             ovenList={firinListesi[1]}
@@ -262,42 +292,48 @@ function OvenMainPage() {
             erkenGrupDisabled={erkenGrupDisabled}
           />
         </div>
-        
+
+        {firinListesi[1].ust.length > 0 ||
+        firinListesi[1].alt.length ||
+        firinListesi[2].ust.length > 0 ||
+        firinListesi[2].alt.length ||
+        firinListesi[3].ust.length > 0 ||
+        firinListesi[3].alt.length ? (
           <DataGrid
             dataSource={trees}
             showBorders={true}
-            rowAlternationEnabled={true}
+            rowAlternationEnabled={false}
             showRowLines={true}
+            keyExpr={'treeId'}
             onExporting={onExporting}
+            onRowPrepared={function (e) {
+              if (e.rowType === 'data' && e.data.fırınId === null) {
+                e.rowElement.style.backgroundColor = '#f87171';
+                e.rowElement.style.color = 'white';
+              }
+            }}
           >
             <Export enabled={true} />
             <Column dataField={'treeNo'} caption={'Ağaç Numarası'} alignment={'center'} />
-            <Column
-              dataField={'fırınId'}
-              caption={'Yerleştiği Fırın'}
-              cellRender={({ data }) => {
-                
-                if (data.fırınId===null) {
-                  return JSON.stringify(data)
-                }
-                const selectedOven = Firinlar?.find((firin) => {
-                 return firin?.firinId === data?.fırınId});
-                
-                 return selectedOven?.firinSira + ' - ' + selectedOven?.firinKonum;
-              }}
-            />
+            <Column dataField={'yerlesenFirin'} caption={'Yerleştiği Fırın'} />
             <Column dataField={'yerlesmesiGerekenFirin'} caption={'Yerleşmesi Gereken Fırın'} />
-            <Column
-              dataField={'erkenFirinGrubunaEklendiMi'}
-              caption={'Fırın Tipi'}
-              cellRender={({ data }) => {
-                return data?.erkenFirinGrubunaEklendiMi ? 'Erken' : 'Normal';
-              }}
-            />
+            <Column dataField={'firinTipi'} caption={'Fırın Tipi'} />
             <Column dataField={'color.colorName'} caption={'Renk'} />
             <Column dataField={'option.optionText'} caption={'Ayar'} />
             <Column dataField={'thick.thickName'} caption={'Kalınlık'} />
+            <Column
+              dataField={'firinDurumu'}
+              caption={'Fırına Girdi mi?'}
+              cellRender={(data) => {
+                return (
+                  <div style={{ color: data.value === 'Girdi' ? '#22c55e' : null }}>
+                    {data.value}
+                  </div>
+                );
+              }}
+            />
           </DataGrid>
+        ) : null}
       </section>
     </div>
   );

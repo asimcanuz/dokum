@@ -2,7 +2,14 @@ const db = require("../../models");
 const Order = db.order;
 
 const addOrder = async (req, res) => {
-  const { treeId, customerId, quantity, descriptionId, createdBy } = req.body;
+  const {
+    treeId,
+    customerId,
+    quantity,
+    descriptionId,
+    createdBy,
+    isImmediate,
+  } = req.body;
   await Order.create({
     customerId,
     descriptionId,
@@ -12,6 +19,7 @@ const addOrder = async (req, res) => {
     createdBy,
     updatedBy: createdBy,
     statusId: 1,
+    isImmediate,
   })
     .then(async (createdOrder) => {
       // müşteri adet ve ağaç tipi bilgilerini güncelle

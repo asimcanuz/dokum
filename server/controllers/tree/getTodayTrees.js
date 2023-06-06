@@ -29,6 +29,7 @@ const getTodayTrees = async (req, res) => {
       { model: db.thick },
       { model: db.color },
       { model: db.treeStatus },
+      { model: db.fırın },
       {
         model: db.order,
         include: [{ model: db.customer }, { model: db.description }],

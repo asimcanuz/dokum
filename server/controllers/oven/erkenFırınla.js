@@ -81,9 +81,7 @@ const erkenFırınla = async (req, res) => {
               firinId:
                 konum === "ust" ? firinlar[0].fırınId : firinlar[1].fırınId,
             };
-            if (erkenFirinListesi.length > 13) {
-              yerlesmesiGereken = `1-ust iç`;
-            }
+
             erkenFirinListesi.push(obj);
           }
         }

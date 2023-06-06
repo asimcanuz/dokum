@@ -22,6 +22,10 @@ module.exports = (sequelize, Sequelize) => {
     updatedBy: {
       type: Sequelize.INTEGER,
     },
+    isImmediate: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    },
   });
   return Order;
 };

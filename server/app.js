@@ -71,8 +71,8 @@ app.use("/api/reports", require("./routes/report.routes"));
 //   .catch((err) => {
 //     console.log("Failed to sync db: " + err.message);
 //   });
-db.sequelize.sync({ alter: true });
-// db.sequelize.sync();
+// db.sequelize.sync({ alter: true });
+db.sequelize.sync();
 
 async function initDB() {
   await Role.create({

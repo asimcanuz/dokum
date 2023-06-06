@@ -7,6 +7,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
+import { CheckBox } from 'devextreme-react';
 
 function NewOrderTab({
   clickTree: tree,
@@ -27,6 +28,7 @@ function NewOrderTab({
     descriptionId: null,
     quantity: '',
     createdBy: auth.auth.id,
+    isImmediate: false,
   });
   useEffect(() => {
     setOrder({ ...order, treeId: tree.agacId });
@@ -65,6 +67,7 @@ function NewOrderTab({
 
       setTodayTrees(response.data.trees);
     } catch (error) {
+      setLoading(true);
       alert(error.message);
       if (error.response.status === 401) {
         navigate('/login', { state: { from: location }, replace: true });
@@ -142,7 +145,17 @@ function NewOrderTab({
           />
         </div>
       </div>
-      <div className='flex justify-end'>
+      <div className='flex justify-between flex-row items-end'>
+        <CheckBox
+          id={'isImmediate'}
+          name={'isImmediate'}
+          text={'Acil mi?'}
+          onValueChanged={(e) => {
+            setOrder({ ...order, isImmediate: e.value });
+          }}
+          checked={order.isImmediate}
+        />
+
         <Button
           appearance={'primary'}
           disabled={Object.values(tree).includes('') ? false : !loading ? true : false}

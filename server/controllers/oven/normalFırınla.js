@@ -109,12 +109,12 @@ async function normalFırınla(req, res) {
               normalFırınListesi[i][konum].length >= 13 &&
               normalFırınListesi[i][konum].length < 17
             ) {
-              element.yerlestigiFirin = `${i}-${konum} iç`;
+              element.yerlestigiFirin = `${i}-${konum} `;
 
               normalFırınListesi[i][konum].push({
                 treeId: treeId,
                 firinId: firinId,
-                konum: "iç",
+                konum: "",
               });
               yerlesenFirinListesiId.push(treeId);
 

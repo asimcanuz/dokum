@@ -9,7 +9,6 @@ const sequelize = new Sequelize(
     host: dbConfig.HOST,
     dialect: dbConfig.dialect,
     operatorsAliases: false,
-
     pool: {
       max: dbConfig.pool.max,
       min: dbConfig.pool.min,
@@ -136,7 +135,6 @@ db.description.hasOne(db.order, {
 db.treeStatus.hasOne(db.order, {
   foreignKey: "statusId",
 });
-
 
 db.order.belongsTo(db.customer, {
   foreignKey: "customerId",

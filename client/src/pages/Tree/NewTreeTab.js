@@ -133,7 +133,7 @@ function NewTreeTab({
         setNewTree({ ...newTree, treeNo: _agacNo });
         setTimeout(() => {
           setNewTree({ ...newTree, listeNo: _listeNo });
-        },50);
+        }, 50);
       }, 50);
 
       const treeDate = jobGroups.filter((jobGroup) => jobGroup.id === newTree.jobGroupId)[0].date;
@@ -267,9 +267,19 @@ function NewTreeTab({
                     key={color.colorId}
                     className={`${
                       newTree.renkId === color.colorId ? 'bg-gray-300 dark:bg-slate-800' : ''
-                    } p-1 hover:cursor-pointer`}
+                    } p-1  ${
+                      newTree.ayarId === 10 || newTree.ayarId === 11 || newTree.ayarId === 12
+                        ? 'cursor-not-allowed'
+                        : 'hover:cursor-pointer'
+                    }
+                    
+                    `}
                     onClick={() => {
-                      setNewTree({ ...newTree, renkId: color.colorId });
+                      if (newTree.ayarId === 10 || newTree.ayarId === 11 || newTree.ayarId === 12) {
+                        return;
+                      } else {
+                        setNewTree({ ...newTree, renkId: color.colorId });
+                      }
                     }}
                   >
                     {Capitalize(color.colorName)}
@@ -296,7 +306,16 @@ function NewTreeTab({
                       newTree.ayarId === option.optionId ? 'bg-gray-300 dark:bg-slate-800' : ''
                     } p-1 hover:cursor-pointer`}
                     onClick={() => {
-                      setNewTree({ ...newTree, ayarId: option.optionId });
+                      console.log(option);
+                      if (
+                        option.optionText === 'Bronz' ||
+                        option.optionText === 'Alloy' ||
+                        option.optionText === 'Gümüş'
+                      ) {
+                        setNewTree({ ...newTree, renkId: 3, ayarId: option.optionId });
+                      } else {
+                        setNewTree({ ...newTree, ayarId: option.optionId });
+                      }
                     }}
                   >
                     {Capitalize(option.optionText)}

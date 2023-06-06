@@ -202,49 +202,7 @@ const MyDocument = ({ data }) => {
                         </Text>
                       </View>
                     </View>
-                    {/* {Object.keys(data[key][key2]).map((key3, index) => {
-                      const length = Object.keys(data[key][key2]).length;
-                      let borderStyle = {};
-                      let bottomBorderStyle = {};
-                      if (index !== 0) {
-                        borderStyle = {
-                          borderBottom: "1px solid black",
-                          borderLeft: "1px solid black",
-                          textAlign: "center",
-                          fontSize: "13px",
-                        };
-                        bottomBorderStyle = {
-                          borderLeft: "1px solid black",
-                          textAlign: "center",
-                          fontSize: "13px",
-                        };
-                      } else {
-                        borderStyle = {
-                          borderBottom: "1px solid black",
-                          textAlign: "center",
-                          fontSize: "13px",
-                        };
-                        bottomBorderStyle = {
-                          textAlign: "center",
-                          fontSize: "13px",
-                        };
-                      }
-
-                      return (
-                        <View key={index} style={{ width: "100%" }}>
-                          <View style={borderStyle}>
-                            <Text>{key3.substring(0, 1)}</Text>
-                          </View>
-                          <View style={bottomBorderStyle}>
-                            <Text>{data[key][key2][key3]}</Text>
-                          </View>
-                        </View>
-                      );
-                    })} */}
                   </View>
-                  {/* <BoxItem>
-                    <Text>{key3}</Text>
-                  </BoxItem> */}
                 </Box>
               );
             });

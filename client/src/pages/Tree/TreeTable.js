@@ -242,10 +242,18 @@ function TreeTable({
             caption={'Ağaç Tipi'}
             cellRender={({ data }) => {
               if (Object.keys(data.orders).length > 0) {
-                if (data.orders.length === 1) {
-                  return data.orders[0].customer.customername;
+                let name = data.orders[0].customer.customerName;
+                let shuffle = false;
+
+                data.orders.forEach((order) => {
+                  if (order.customer.customerName !== name) {
+                    shuffle = true;
+                  }
+                });
+                if (shuffle) {
+                  return 'Karışık';
                 } else {
-                  return 'karışık';
+                  return name;
                 }
               } else {
                 return <div>-</div>;
@@ -343,6 +351,22 @@ function treeMasterDetail(data, axiosPrivate, descriptions) {
         />
         <Column dataField={'customer.customerName'} caption={'Müşteri Adı'} allowEditing={false} />
         <Column dataField={'quantity'} caption={'Adet'} allowEditing={false} />
+        <Column
+          dataField={'isImmediate'}
+          caption={'Acil Mi'}
+          cellRender={({ value }) =>
+            value ? (
+              <div className='bg-red-100 rounded-lg text-base text-red-700' role='alert'>
+                Evet
+              </div>
+            ) : (
+              <div className='bg-blue-100 rounded-lg text-base text-blue-700' role='alert'>
+                Hayır
+              </div>
+            )
+          }
+          allowEditing={false}
+        />
         <Column
           dataField={'descriptionId'}
           caption={'Açıklama'}
