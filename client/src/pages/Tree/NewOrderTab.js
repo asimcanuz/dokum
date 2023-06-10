@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import Select from 'react-select';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -8,6 +8,7 @@ import { Endpoints } from '../../constants/Endpoints';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { CheckBox } from 'devextreme-react';
+import ErrorModal from '../../components/ErrorModal';
 
 function NewOrderTab({
   clickTree: tree,
@@ -19,9 +20,12 @@ function NewOrderTab({
 }) {
   const auth = useAuth();
   const axiosPrivate = useAxiosPrivate();
-  const navigate = useNavigate();
-  const location = useLocation();
   const [loading, setLoading] = useState(true);
+  const [errorModal, setErrorModal] = useState({
+    visible: false,
+    message: '',
+    title: '',
+  });
   const [order, setOrder] = React.useState({
     treeId: tree.agacId,
     customerId: '',
@@ -47,6 +51,9 @@ function NewOrderTab({
   async function addOrder() {
     const controller = new AbortController();
     try {
+      if (!tree.agacId) {
+        throw new Error('Lütfen ağaç seçiniz!');
+      }
       setLoading(false);
       if (order.customerId === '' || order.quantity === '') {
         throw new Error('Lütfen müşteri ve/veya adet alanlarını doldurunuz.');
@@ -68,103 +75,127 @@ function NewOrderTab({
       setTodayTrees(response.data.trees);
     } catch (error) {
       setLoading(true);
-      alert(error.message);
-      if (error.response.status === 401) {
-        navigate('/login', { state: { from: location }, replace: true });
-      }
+
+      setErrorModal({
+        visible: true,
+        message: error.message,
+        title: 'Sipariş Ekleme Hatası',
+      });
+
+      // alert(error.message);
+      // if (error.response.status === 401) {
+      //   navigate('/login', { state: { from: location }, replace: true });
+      // }
     }
     controller.abort();
   }
 
   return (
-    <section className='flex flex-col space-y-4 '>
-      <div className='grid grid-cols-4 gap-4'>
-        <div className='flex flex-col '>
-          <p className='font-bold text-red-400'>Id</p>
-          <p className='text-blue-600'>{tree.agacId}</p>
-        </div>
-        <div className='flex flex-col'>
-          <p className='font-bold text-red-400'>Agaç No</p>
-          <p className='text-blue-600'>{tree.agacNo}</p>
-        </div>
-        <div className='flex flex-col'>
-          <p className='font-bold text-red-400'>Liste No</p>
-          <p className='text-blue-600'>{tree.listeNo}</p>
-        </div>
-        <div className='flex flex-col'>
-          <p className='font-bold text-red-400'>Ağaçtaki Sipariş Adeti</p>
-          <p className='text-blue-600'>{tree.siparisSayisi}</p>
-        </div>
-        <div className='flex flex-col'>
-          <p className='font-bold text-red-400'>Renk</p>
-          <p className='text-blue-600'>{tree.renk}</p>
-        </div>
-        <div className='flex flex-col'>
-          <p className='font-bold text-red-400'>Ayar</p>
-          <p className='text-blue-600'>{tree.ayar}</p>
-        </div>
-        <div className='flex flex-col'>
-          <p className='font-bold text-red-400'>Kalınlık</p>
-          <p className='text-blue-600'>{tree.kalinlik}</p>
-        </div>
-        <div className='flex flex-col'>
-          <p className='font-bold text-red-400'>Ağaçtaki Müşteri Adeti</p>
-          <p className='text-blue-600'>{tree.musteriSayisi}</p>
-        </div>
-      </div>
-      <div className='grid grid-rows-3'>
-        <div className='flex flex-col'>
-          <p>Müşteri</p>
-          <Select
-            options={customerOptions}
-            onChange={({ value }) => {
-              setOrder({ ...order, customerId: value });
-            }}
-          />
-        </div>
-        <div className='flex flex-col'>
-          <p>Adet</p>
-          <Input
-            type={'text'}
-            value={order.quantity}
-            onChange={(e) => setOrder({ ...order, quantity: e.target.value })}
-          />
-        </div>
-        <div className='flex flex-col space-y-4'>
-          <div className='flex flex-row justify-between '>
-            <p>Açıklama</p>
-            <p className='flex flex-row justify-between items-center text-blue-600 hover:cursor-pointer hover:animate-pulse'>
-              <AiOutlinePlus /> <span>Yeni Açıklama</span>
-            </p>
+    <Fragment>
+      <section className='flex flex-col space-y-4 '>
+        <div className='grid grid-cols-4 gap-4'>
+          <div className='flex flex-col '>
+            <p className='font-bold text-red-400'>Id</p>
+            <p className='text-blue-600'>{tree.agacId}</p>
           </div>
-          <Select
-            options={descriptionOptions}
-            onChange={({ value }) => {
-              setOrder({ ...order, descriptionId: value });
-            }}
-          />
+          <div className='flex flex-col'>
+            <p className='font-bold text-red-400'>Agaç No</p>
+            <p className='text-blue-600'>{tree.agacNo}</p>
+          </div>
+          <div className='flex flex-col'>
+            <p className='font-bold text-red-400'>Liste No</p>
+            <p className='text-blue-600'>{tree.listeNo}</p>
+          </div>
+          <div className='flex flex-col'>
+            <p className='font-bold text-red-400'>Ağaçtaki Sipariş Adeti</p>
+            <p className='text-blue-600'>{tree.siparisSayisi}</p>
+          </div>
+          <div className='flex flex-col'>
+            <p className='font-bold text-red-400'>Renk</p>
+            <p className='text-blue-600'>{tree.renk}</p>
+          </div>
+          <div className='flex flex-col'>
+            <p className='font-bold text-red-400'>Ayar</p>
+            <p className='text-blue-600'>{tree.ayar}</p>
+          </div>
+          <div className='flex flex-col'>
+            <p className='font-bold text-red-400'>Kalınlık</p>
+            <p className='text-blue-600'>{tree.kalinlik}</p>
+          </div>
+          <div className='flex flex-col'>
+            <p className='font-bold text-red-400'>Ağaçtaki Müşteri Adeti</p>
+            <p className='text-blue-600'>{tree.musteriSayisi}</p>
+          </div>
         </div>
-      </div>
-      <div className='flex justify-between flex-row items-end'>
-        <CheckBox
-          id={'isImmediate'}
-          name={'isImmediate'}
-          text={'Acil mi?'}
-          onValueChanged={(e) => {
-            setOrder({ ...order, isImmediate: e.value });
+        <div className='grid grid-rows-3'>
+          <div className='flex flex-col'>
+            <p>Müşteri</p>
+            <Select
+              options={customerOptions}
+              onChange={({ value }) => {
+                setOrder({ ...order, customerId: value });
+              }}
+            />
+          </div>
+          <div className='flex flex-col'>
+            <p>Adet</p>
+            <Input
+              type={'text'}
+              value={order.quantity}
+              onChange={(e) => setOrder({ ...order, quantity: e.target.value })}
+            />
+          </div>
+          <div className='flex flex-col space-y-4'>
+            <div className='flex flex-row justify-between '>
+              <p>Açıklama</p>
+              <p className='flex flex-row justify-between items-center text-blue-600 hover:cursor-pointer hover:animate-pulse'>
+                <AiOutlinePlus /> <span>Yeni Açıklama</span>
+              </p>
+            </div>
+            <Select
+              options={descriptionOptions}
+              onChange={({ value }) => {
+                setOrder({ ...order, descriptionId: value });
+              }}
+            />
+          </div>
+        </div>
+        <div className='flex justify-between flex-row items-end'>
+          <CheckBox
+            id={'isImmediate'}
+            name={'isImmediate'}
+            text={'Acil mi?'}
+            onValueChanged={(e) => {
+              setOrder({ ...order, isImmediate: e.value });
+            }}
+            checked={order.isImmediate}
+          />
+          <Button
+            appearance={'primary'}
+            disabled={Object.values(tree).includes('') ? false : !loading ? true : false}
+            onClick={addOrder}
+          >
+            Sipariş Ekle
+          </Button>
+        </div>
+        {console.log(errorModal)}
+      </section>{' '}
+      {errorModal.visible && (
+        <ErrorModal
+          title={errorModal.title}
+          visible={errorModal.visible}
+          onCancel={() => {
+            setErrorModal({
+              message: '',
+              title: '',
+              visible: false,
+            });
           }}
-          checked={order.isImmediate}
-        />
-
-        <Button
-          appearance={'primary'}
-          disabled={Object.values(tree).includes('') ? false : !loading ? true : false}
-          onClick={addOrder}
         >
-          Sipariş Ekle
-        </Button>
-      </div>
-    </section>
+          <p>{errorModal.message}</p>
+        </ErrorModal>
+      )}
+    </Fragment>
   );
 }
 

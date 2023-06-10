@@ -5,6 +5,7 @@ import { Endpoints } from '../../constants/Endpoints';
 import { Capitalize } from '../../utils/Capitalize';
 import AddNewTreeOptions from './AddNewTreeOptions';
 import { CheckBox, NumberBox, SelectBox, TextBox } from 'devextreme-react';
+import ErrorModal from '../../components/ErrorModal';
 
 function NewTreeTab({
   colors,
@@ -47,6 +48,11 @@ function NewTreeTab({
     open: false,
     type: '',
   });
+  const [errorModal, setErrorModal] = useState({
+    visible: false,
+    message: '',
+    title: '',
+  });
   const axiosPrivate = useAxiosPrivate();
 
   function getBiggestNumber(key) {
@@ -71,7 +77,7 @@ function NewTreeTab({
     let _agacNo = newTree?.treeNo;
     let _listeNo = newTree?.listeNo;
     try {
-      if (newTree.jobGroupId === '') {
+      if (!newTree.jobGroupId) {
         throw new Error('İş grubu seçilmedi!');
       }
       if (newTree.agacAuto) {
@@ -82,11 +88,7 @@ function NewTreeTab({
             tree['treeNo'] === Number(newTree.treeNo) &&
             tree['jobGroupId'] === selectedJobGroup
           ) {
-            throw new Error(
-              `Tekrar eden bir Agaç numarası girdiniz!. ${
-                getBiggestNumber('treeNo') + 1
-              } numarasını girebilirsiniz. `,
-            );
+            throw new Error(`Tekrar eden bir Agaç numarası girdiniz!`);
           }
         });
       }
@@ -99,11 +101,7 @@ function NewTreeTab({
             tree['listNo'] === Number(newTree.listeNo) &&
             tree['jobGroupId'] === selectedJobGroup
           ) {
-            throw new Error(
-              `Tekrar eden bir Liste numarası girdiniz!. ${
-                getBiggestNumber('listNo') + 1
-              } numarasını girebilirsiniz. `,
-            );
+            throw new Error(`Tekrar eden bir Liste numarası girdiniz!`);
           }
         });
       }
@@ -129,12 +127,6 @@ function NewTreeTab({
       if (newTree.mumTurId === '') {
         throw new Error('Mum Turu Seçilmedi');
       }
-      setTimeout(() => {
-        setNewTree({ ...newTree, treeNo: _agacNo });
-        setTimeout(() => {
-          setNewTree({ ...newTree, listeNo: _listeNo });
-        }, 50);
-      }, 50);
 
       const treeDate = jobGroups.filter((jobGroup) => jobGroup.id === newTree.jobGroupId)[0].date;
 
@@ -154,10 +146,27 @@ function NewTreeTab({
         desc: newTree.desc,
       };
 
-      await axiosPrivate.post(Endpoints.TREE.MAIN, treeBody, {
+      let insertTreeReq = await axiosPrivate.post(Endpoints.TREE.MAIN, treeBody, {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
       });
+      console.log('insertTree', insertTreeReq);
+      if (insertTreeReq.status === 200) {
+        setTimeout(() => {
+          setNewTree({
+            ...newTree,
+            treeNo: 1,
+            listeNo: 1,
+            renkId: '',
+            ayarId: '',
+            kalınlıkId: '',
+            hazırlayanId: '',
+            mumTurId: '',
+            desc: '',
+            isImmediate: false,
+          });
+        }, 300);
+      }
 
       const controller = new AbortController();
       const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
@@ -168,14 +177,18 @@ function NewTreeTab({
         signal: controller.signal,
       });
       if (res.status === 200) {
-        setLoading(false);
+        await setLoading(false);
       }
       setTodayTrees(res.data.trees);
 
       controller.abort();
     } catch (err) {
       setLoading(false);
-      window.alert(err);
+      setErrorModal({
+        visible: true,
+        message: err.message,
+        title: 'Ağaç Ekleme Hatası',
+      });
     }
   };
 
@@ -193,6 +206,7 @@ function NewTreeTab({
           <p className='col-span-12 md:col-span-1 items-center flex flex-row justify-center'>
             İş Grubu
           </p>
+          {console.log(newTree)}
           <div className='col-span-12 md:col-span-5'>
             <SelectBox
               className='hover:cursor-pointer text-sm'
@@ -433,6 +447,21 @@ function NewTreeTab({
           toggle={() => setAddNewTreeOptions({ open: false, type: '' })}
         />
       ) : null}
+      {errorModal.visible && (
+        <ErrorModal
+          title={errorModal.title}
+          visible={errorModal.visible}
+          onCancel={() => {
+            setErrorModal({
+              message: '',
+              title: '',
+              visible: false,
+            });
+          }}
+        >
+          <p>{errorModal.message}</p>
+        </ErrorModal>
+      )}
     </>
   );
 }

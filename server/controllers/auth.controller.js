@@ -66,7 +66,7 @@ exports.signin = async (req, res) => {
       },
       envConfig.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "30s",
+        expiresIn: "2m",
       }
     );
     // create refresh token

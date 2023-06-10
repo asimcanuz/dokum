@@ -121,6 +121,49 @@ function OvenMainPage() {
     };
   }, [selectedJobGroup]);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    let isMounted = true;
+    const getTrees = async () => {
+      try {
+        const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
+          params: {
+            jobGroupId: selectedJobGroup,
+          },
+          signal: controller.signal,
+        });
+
+        if (isMounted) {
+          let trees = res.data.trees.map((tree, index) => {
+            tree.firinTipi = tree.erkenFirinGrubunaEklendiMi ? 'Erken' : 'Normal';
+            if (tree.fırın === null) {
+              tree.yerlesenFirin = '-';
+              tree.firinDurumu = 'Girmedi';
+            } else {
+              tree.yerlesenFirin = tree.fırın.fırınSıra + '-' + tree.fırın.fırınKonum;
+              tree.firinDurumu = 'Girdi';
+            }
+            return tree;
+          });
+
+          setTrees(trees);
+        }
+      } catch (error) {
+        console.error(error);
+        navigate('/login', { state: { from: location }, replace: true });
+      }
+    };
+
+    if (selectedJobGroup) {
+      getTrees();
+    }
+
+    return () => {
+      isMounted = false;
+      !isMounted && controller.abort();
+    };
+  }, [firinListesi]);
+
   const jobGroupOptions = useMemo(() => {
     return jobGroups.map((jobGroup) => {
       return {
@@ -233,18 +276,20 @@ function OvenMainPage() {
                       jobGroupId: selectedJobGroup,
                     });
                   }
-                  const res = await axiosPrivate.post(
-                    Endpoints.OVEN + '/query',
-                    { jobGroupId: selectedJobGroup },
-                    {
-                      headers: { 'Content-Type': 'application/json' },
-                      withCredentials: true,
-                    },
-                  );
+                  setTimeout(async () => {
+                    const res = await axiosPrivate.post(
+                      Endpoints.OVEN + '/query',
+                      { jobGroupId: selectedJobGroup },
+                      {
+                        headers: { 'Content-Type': 'application/json' },
+                        withCredentials: true,
+                      },
+                    );
 
-                  if (res.status === 200) {
-                    setFirinListesi(res.data.firinListesi);
-                  }
+                    if (res.status === 200) {
+                      setFirinListesi(res.data.firinListesi);
+                    }
+                  }, 500);
                 }}
               >
                 Oluştur
