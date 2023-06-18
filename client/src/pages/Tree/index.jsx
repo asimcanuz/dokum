@@ -1,49 +1,49 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
-import Header from "../../components/Header";
-import Tabs from "../../components/Tabs";
+import React, { Fragment, useEffect, useRef, useState } from 'react';
+import Header from '../../components/Header';
+import Tabs from '../../components/Tabs';
 
-import { Endpoints } from "../../constants/Endpoints";
-import { useLocation, useNavigate } from "react-router-dom";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import NewTreeTab from "./NewTreeTab";
-import TreeTable from "./TreeTable";
-import NewOrderTab from "./NewOrderTab";
-import UpdateTreeModal from "./UpdateTreeModal";
-import NewJobGroup from "./NewJobGroup";
+import { Endpoints } from '../../constants/Endpoints';
+import { useLocation, useNavigate } from 'react-router-dom';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import NewTreeTab from './NewTreeTab';
+import TreeTable from './TreeTable';
+import NewOrderTab from './NewOrderTab';
+import UpdateTreeModal from './UpdateTreeModal';
+import NewJobGroup from './NewJobGroup';
 
 const tabs = {
-  agac: "tree",
-  siparis: "order",
-  isGrubu: "jobGroup"
+  agac: 'tree',
+  siparis: 'order',
+  isGrubu: 'jobGroup',
 };
 const tabList = [
   {
-    name: "İş Grubu",
-    id: "jobGroup"
+    name: 'İş Grubu',
+    id: 'jobGroup',
   },
   {
-    name: "Ağaç",
-    id: "tree"
+    name: 'Ağaç',
+    id: 'tree',
   },
   {
-    name: "Sipariş",
-    id: "order"
-  }
+    name: 'Sipariş',
+    id: 'order',
+  },
 ];
 const initUpdateClick = {
   open: false,
-  active: "",
-  colorId: "",
-  creatorId: "",
-  date: "",
-  isImmediate: "",
-  listNo: "",
-  optionId: "",
-  processId: "",
-  thickId: "",
-  treeNo: "",
-  treeStatusId: "",
-  waxId: ""
+  active: '',
+  colorId: '',
+  creatorId: '',
+  date: '',
+  isImmediate: '',
+  listNo: '',
+  optionId: '',
+  processId: '',
+  thickId: '',
+  treeNo: '',
+  treeStatusId: '',
+  waxId: '',
 };
 
 function TreePage() {
@@ -75,9 +75,9 @@ function TreePage() {
       try {
         const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
           params: {
-            jobGroupId: selectedJobGroup
+            jobGroupId: selectedJobGroup,
           },
-          signal: controller.signal
+          signal: controller.signal,
         });
 
         if (isMounted) {
@@ -85,22 +85,22 @@ function TreePage() {
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", { state: { from: location }, replace: true });
+        navigate('/login', { state: { from: location }, replace: true });
       }
     };
     const getOptions = async () => {
       try {
         const response = await axiosPrivate.get(Endpoints.OPTION, {
-          signal: controller.signal
+          signal: controller.signal,
         });
         if (isMounted) {
           setOptions(response.data.options);
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", {
+        navigate('/login', {
           state: { from: location },
-          replace: true
+          replace: true,
         });
       }
     };
@@ -108,7 +108,7 @@ function TreePage() {
     const getCreator = async () => {
       try {
         const response = await axiosPrivate.get(Endpoints.CREATOR, {
-          signal: controller.signal
+          signal: controller.signal,
         });
 
         if (isMounted) {
@@ -116,32 +116,32 @@ function TreePage() {
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", {
+        navigate('/login', {
           state: { from: location },
-          replace: true
+          replace: true,
         });
       }
     };
     const getThick = async () => {
       try {
         const response = await axiosPrivate.get(Endpoints.THICK, {
-          signal: controller.signal
+          signal: controller.signal,
         });
         if (isMounted) {
           setThicks(response.data.thicks);
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", {
+        navigate('/login', {
           state: { from: location },
-          replace: true
+          replace: true,
         });
       }
     };
     const getWax = async () => {
       try {
         const response = await axiosPrivate.get(Endpoints.WAX, {
-          signal: controller.signal
+          signal: controller.signal,
         });
 
         if (isMounted) {
@@ -149,16 +149,16 @@ function TreePage() {
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", {
+        navigate('/login', {
           state: { from: location },
-          replace: true
+          replace: true,
         });
       }
     };
     const getTreeStatus = async () => {
       try {
         const response = await axiosPrivate.get(Endpoints.TREESTATUS, {
-          signal: controller.signal
+          signal: controller.signal,
         });
 
         if (isMounted) {
@@ -166,9 +166,9 @@ function TreePage() {
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", {
+        navigate('/login', {
           state: { from: location },
-          replace: true
+          replace: true,
         });
       }
     };
@@ -176,7 +176,7 @@ function TreePage() {
     const getColors = async () => {
       try {
         const response = await axiosPrivate.get(Endpoints.COLOR, {
-          signal: controller.signal
+          signal: controller.signal,
         });
 
         if (isMounted) {
@@ -184,48 +184,48 @@ function TreePage() {
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", {
+        navigate('/login', {
           state: { from: location },
-          replace: true
+          replace: true,
         });
       }
     };
     const getDescriptions = async () => {
       try {
         const response = await axiosPrivate.get(Endpoints.DESCRIPTION, {
-          signal: controller.signal
+          signal: controller.signal,
         });
         if (isMounted) {
           setDescriptions(response.data.descriptions);
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", {
+        navigate('/login', {
           state: { from: location },
-          replace: true
+          replace: true,
         });
       }
     };
     const getCustomers = async () => {
       try {
         const response = await axiosPrivate.get(Endpoints.CUSTOMERS.GET_ALL, {
-          signal: controller.signal
+          signal: controller.signal,
         });
         isMounted && setCustomers(response.data.customers);
       } catch (err) {
         console.error(err);
-        navigate("/login", { state: { from: location }, replace: true });
+        navigate('/login', { state: { from: location }, replace: true });
       }
     };
     const getJobGroups = async () => {
       try {
         const response = await axiosPrivate.get(Endpoints.JOBGROUP, {
-          signal: controller.signal
+          signal: controller.signal,
         });
         isMounted && setJobGroups(response.data.jobGroupList);
       } catch (err) {
         console.error(err);
-        navigate("/login", { state: { from: location }, replace: true });
+        navigate('/login', { state: { from: location }, replace: true });
       }
     };
 
@@ -250,8 +250,8 @@ function TreePage() {
     const fetchData = async () => {
       const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
         params: {
-          jobGroupId: selectedJobGroup
-        }
+          jobGroupId: selectedJobGroup,
+        },
       });
       treeTableRef.current = res.data.trees;
       setTodayTrees(res.data.trees);
@@ -260,19 +260,12 @@ function TreePage() {
   }, [selectedJobGroup]);
   return (
     <Fragment>
-      <section className="space-y-2">
-        <Header
-          title={"Ağaç Girişi"}
-          description={"Döküme girecek ağaç girişleri"}
-        />
-        <div className="grid grid-cols-12 mt-4 gap-x-4 gap-y-4">
-          <div className="col-span-12 lg:col-span-3 max-w-lg">
-            <Tabs
-              tabsList={tabList}
-              setSelected={setSelectedTab}
-              selectedTab={selectedTab}
-            />
-            <div className="px-6 py-4">
+      <section className='space-y-2'>
+        <Header title={'Ağaç Girişi'} description={'Döküme girecek ağaç girişleri'} />
+        <div className='grid grid-cols-12 mt-4 gap-x-4 gap-y-4'>
+          <div className='col-span-12 lg:col-span-3 max-w-lg'>
+            <Tabs tabsList={tabList} setSelected={setSelectedTab} selectedTab={selectedTab} />
+            <div className='px-6 py-4'>
               {selectedTab === tabs.agac ? (
                 <NewTreeTab
                   colors={colors}
@@ -291,11 +284,11 @@ function TreePage() {
               ) : selectedTab === tabs.siparis ? (
                 <NewOrderTab
                   clickTree={clickTree}
-                  setClickTree={setClickTree}
                   customers={customers}
                   descriptions={descriptions}
                   setTodayTrees={setTodayTrees}
                   selectedJobGroup={selectedJobGroup}
+                  setDescriptions={setDescriptions}
                 />
               ) : (
                 <NewJobGroup
@@ -307,7 +300,7 @@ function TreePage() {
               )}
             </div>
           </div>
-          <div className="col-span-12 lg:col-span-9">
+          <div className='col-span-12 lg:col-span-9'>
             <TreeTable
               setClickTree={setClickTree}
               todayTrees={todayTrees}

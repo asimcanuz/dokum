@@ -40,6 +40,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/refresh", require("./routes/refresh.routes"));
 app.use("/api/oven", require("./routes/oven.routes"));
+app.use("/api/order", require("./routes/order.routes"));
+app.use("/api/jobGroup", require("./routes/jobGroup.routes"));
 
 // verify jwt middleware
 app.use(verifyJWT);
@@ -48,7 +50,6 @@ app.use("/api/customertracking", require("./routes/customerTracking.routes"));
 app.use("/api/createLabel", require("./routes/createLabel.routes"));
 app.use("/api/users", require("./routes/user.routes"));
 app.use("/api/customers", require("./routes/customer.routes"));
-app.use("/api/order", require("./routes/order.routes"));
 app.use("/api/color", require("./routes/color.routes"));
 app.use("/api/creator", require("./routes/creator.routes"));
 app.use("/api/description", require("./routes/description.routes"));
@@ -58,7 +59,6 @@ app.use("/api/tree", require("./routes/tree.routes"));
 app.use("/api/wax", require("./routes/wax.routes"));
 app.use("/api/treeStatus", require("./routes/treeStatus.routes"));
 app.use("/api/finishDay", require("./routes/finishDay.routes"));
-app.use("/api/jobGroup", require("./routes/jobGroup.routes"));
 app.use("/api/tree", require("./routes/tree.routes"));
 app.use("/api/reports", require("./routes/report.routes"));
 

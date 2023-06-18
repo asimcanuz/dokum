@@ -4,7 +4,7 @@ const Order = db.order;
 const deleteOrder = async (req, res) => {
   const { orderId } = req.body;
 
-  const treeId = await Order.findOne({
+  await Order.findOne({
     where: {
       orderId,
     },
@@ -25,12 +25,30 @@ const deleteOrder = async (req, res) => {
         include: [{ model: db.customer }],
       });
 
+      // check other order is Immediate
+
       const customers = [];
+      let isImmediate = false;
       orders.forEach((order) => {
+        if (order.isImmediate) {
+          isImmediate = true;
+        }
+
         if (!customers.includes(order.customer.customerName)) {
           customers.push(order.customer.customerName);
         }
       });
+
+      await db.tree.update(
+        {
+          isImmediate: isImmediate,
+        },
+        {
+          where: {
+            treeId,
+          },
+        }
+      );
       if (customers.length > 1) {
         await db.tree.update(
           {

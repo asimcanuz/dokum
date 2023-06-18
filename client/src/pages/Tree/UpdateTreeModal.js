@@ -1,18 +1,16 @@
-import React from "react";
-import Modal from "../../components/Modal/Modal";
-import ModalHeader from "../../components/Modal/ModalHeader";
-import ModalBody from "../../components/Modal/ModalBody";
-import ModalFooter from "../../components/Modal/ModalFooter";
-import Button from "../../components/Button";
-import Input from "../../components/Input";
-import { useFormik } from "formik";
-import CheckBox from "../../components/Input/CheckBox";
-import Select from "react-select";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { Endpoints } from "../../constants/Endpoints";
-import { useLocation, useNavigate } from "react-router-dom";
-import ReactDatePicker from "react-datepicker";
-import { locale } from "../../utils/DatePickerLocale";
+import React from 'react';
+import Modal from '../../components/Modal/Modal';
+import ModalHeader from '../../components/Modal/ModalHeader';
+import ModalBody from '../../components/Modal/ModalBody';
+import ModalFooter from '../../components/Modal/ModalFooter';
+import Button from '../../components/Button';
+import Input from '../../components/Input';
+import { useFormik } from 'formik';
+import CheckBox from '../../components/Input/CheckBox';
+import Select from 'react-select';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { Endpoints } from '../../constants/Endpoints';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function UpdateTreeModal({
   updateClick,
@@ -85,7 +83,7 @@ function UpdateTreeModal({
           controller.abort();
         } catch (error) {
           console.error(error);
-          navigate("/login", { state: { from: location }, replace: true });
+          navigate('/login', { state: { from: location }, replace: true });
         }
       } catch (error) {}
 
@@ -120,201 +118,191 @@ function UpdateTreeModal({
   // todayTrees
   // descriptions
   return (
-    <Modal open={updateClick.open} size={"large"}>
-      <ModalHeader title={"Agacı Güncelle"} toogle={() => toggle()} />
+    <Modal open={updateClick.open} size={'large'}>
+      <ModalHeader title={'Agacı Güncelle'} toogle={() => toggle()} />
       <ModalBody>
-        <div className="flex flex-col">
+        <div className='flex flex-col'>
           <form>
-            <div className="flex flex-col">
-              <div className="flex flex-row justify-between space-x-4">
+            <div className='flex flex-col'>
+              <div className='flex flex-row justify-between space-x-4'>
                 <div>
-                  <label htmlFor="treeNo">Ağaç Numarası</label>
+                  <label htmlFor='treeNo'>Ağaç Numarası</label>
                   <Input
-                    id="treeNo"
-                    name="treeNo"
-                    type={"text"}
+                    id='treeNo'
+                    name='treeNo'
+                    type={'text'}
                     value={formik.values.treeNo}
                     onChange={formik.handleChange}
                   />
                 </div>
                 <div>
-                  <label htmlFor="listNo">Liste Numarası</label>
+                  <label htmlFor='listNo'>Liste Numarası</label>
                   <Input
-                    id="listNo"
-                    name="listNo"
-                    type={"text"}
+                    id='listNo'
+                    name='listNo'
+                    type={'text'}
                     value={formik.values.listNo}
                     onChange={formik.handleChange}
                   />
                 </div>
-                <div className="flex  justify-center items-center">
+                <div className='flex  justify-center items-center'>
                   <CheckBox
-                    id={"isImmediate"}
-                    name={"isImmediate"}
-                    label={"Acil Mi?"}
+                    id={'isImmediate'}
+                    name={'isImmediate'}
+                    label={'Acil Mi?'}
                     onChange={(e) => {
-                      formik.setFieldValue("isImmediate", e.target.checked);
+                      formik.setFieldValue('isImmediate', e.target.checked);
                     }}
                     checked={formik.values.isImmediate}
                     // checked
                   />
                 </div>
               </div>
-              <div className="flex flex-row justify-between space-x-4">
-                <div className="w-full">
-                  <label htmlFor="waxId">Mum Türü</label>
+              <div className='flex flex-row justify-between space-x-4'>
+                <div className='w-full'>
+                  <label htmlFor='waxId'>Mum Türü</label>
                   <Select
-                    type="select"
-                    id="waxId"
-                    name="waxId"
-                    className="w-full"
+                    type='select'
+                    id='waxId'
+                    name='waxId'
+                    className='w-full'
                     styles={{
                       control: (provided) => ({
                         ...provided,
-                        height: "40px",
-                        minHeight: "40px",
+                        height: '40px',
+                        minHeight: '40px',
                         minWidth: "Math.ceil(100 / 3) + '%'",
                       }),
                     }}
                     options={waxOpts}
-                    value={waxOpts.find(
-                      (wax) => wax.value === formik.values.waxId
-                    )}
+                    value={waxOpts.find((wax) => wax.value === formik.values.waxId)}
                     onChange={(e) => {
-                      formik.setFieldValue("waxId", e.value);
+                      formik.setFieldValue('waxId', e.value);
                     }}
                   />
                 </div>
-                <div className="w-full">
-                  <label htmlFor="thickId">Kalınlık</label>
+                <div className='w-full'>
+                  <label htmlFor='thickId'>Kalınlık</label>
                   <Select
-                    type="select"
-                    id="thickId"
-                    name="thickId"
-                    className="w-full"
+                    type='select'
+                    id='thickId'
+                    name='thickId'
+                    className='w-full'
                     styles={{
                       control: (provided) => ({
                         ...provided,
-                        height: "40px",
-                        minHeight: "40px",
+                        height: '40px',
+                        minHeight: '40px',
                         minWidth: "Math.ceil(100 / 3) + '%'",
                       }),
                     }}
                     options={thickOpts}
-                    value={thickOpts.find(
-                      (thick) => thick.value === formik.values.thickId
-                    )}
+                    value={thickOpts.find((thick) => thick.value === formik.values.thickId)}
                     onChange={(e) => {
-                      formik.setFieldValue("thickId", e.value);
+                      formik.setFieldValue('thickId', e.value);
                     }}
                   />
                 </div>
-                <div className="w-full">
-                  <label htmlFor="colorId">Renk</label>
+                <div className='w-full'>
+                  <label htmlFor='colorId'>Renk</label>
                   <Select
-                    type="select"
-                    id="colorId"
-                    name="colorId"
-                    className="w-full"
+                    type='select'
+                    id='colorId'
+                    name='colorId'
+                    className='w-full'
                     styles={{
                       control: (provided) => ({
                         ...provided,
-                        height: "40px",
-                        minHeight: "40px",
+                        height: '40px',
+                        minHeight: '40px',
                         minWidth: "Math.ceil(100 / 3) + '%'",
                       }),
                     }}
                     options={colorOpts}
-                    value={colorOpts.find(
-                      (color) => color.value === formik.values.colorId
-                    )}
+                    value={colorOpts.find((color) => color.value === formik.values.colorId)}
                     onChange={(e) => {
-                      formik.setFieldValue("colorId", e.value);
+                      formik.setFieldValue('colorId', e.value);
                     }}
                   />
                 </div>
               </div>
-              <div className="flex flex-row justify-between space-x-4">
-                <div className="w-full">
-                  <label htmlFor="optionId">Ayar</label>
+              <div className='flex flex-row justify-between space-x-4'>
+                <div className='w-full'>
+                  <label htmlFor='optionId'>Ayar</label>
                   <Select
-                    type="select"
-                    id="optionId"
-                    name="optionId"
-                    className="w-full"
+                    type='select'
+                    id='optionId'
+                    name='optionId'
+                    className='w-full'
                     styles={{
                       control: (provided) => ({
                         ...provided,
-                        height: "40px",
-                        minHeight: "40px",
+                        height: '40px',
+                        minHeight: '40px',
                         minWidth: "Math.ceil(100 / 3) + '%'",
                       }),
                     }}
                     options={optionsOpts}
-                    value={optionsOpts.find(
-                      (opts) => opts.value === formik.values.optionId
-                    )}
+                    value={optionsOpts.find((opts) => opts.value === formik.values.optionId)}
                     onChange={(e) => {
-                      formik.setFieldValue("optionId", e.value);
+                      formik.setFieldValue('optionId', e.value);
                     }}
                   />
                 </div>
-                <div className="w-full">
-                  <label htmlFor="creatorId">Hazırlayan</label>
+                <div className='w-full'>
+                  <label htmlFor='creatorId'>Hazırlayan</label>
                   <Select
-                    type="select"
-                    id="creatorId"
-                    name="creatorId"
-                    className="w-full"
+                    type='select'
+                    id='creatorId'
+                    name='creatorId'
+                    className='w-full'
                     styles={{
                       control: (provided) => ({
                         ...provided,
-                        height: "40px",
-                        minHeight: "40px",
+                        height: '40px',
+                        minHeight: '40px',
                         minWidth: "Math.ceil(100 / 3) + '%'",
                       }),
                     }}
                     options={creatorOpts}
-                    value={creatorOpts.find(
-                      (creator) => creator.value === formik.values.creatorId
-                    )}
+                    value={creatorOpts.find((creator) => creator.value === formik.values.creatorId)}
                     onChange={(e) => {
-                      formik.setFieldValue("creatorId", e.value);
+                      formik.setFieldValue('creatorId', e.value);
                     }}
                   />
                 </div>
-                <div className="w-full">
-                  <label htmlFor="treeStatusId">Ağaç Durumu</label>
+                <div className='w-full'>
+                  <label htmlFor='treeStatusId'>Ağaç Durumu</label>
                   <Select
-                    type="select"
-                    id="treeStatusId"
-                    name="treeStatusId"
-                    className="w-full"
+                    type='select'
+                    id='treeStatusId'
+                    name='treeStatusId'
+                    className='w-full'
                     styles={{
                       control: (provided) => ({
                         ...provided,
-                        height: "40px",
-                        minHeight: "40px",
+                        height: '40px',
+                        minHeight: '40px',
                         minWidth: "Math.ceil(100 / 3) + '%'",
                       }),
                     }}
                     options={treeStatusOpts}
                     value={treeStatusOpts.find(
-                      (status) => status.value === formik.values.treeStatusId
+                      (status) => status.value === formik.values.treeStatusId,
                     )}
                     onChange={(e) => {
-                      formik.setFieldValue("treeStatusId", e.value);
+                      formik.setFieldValue('treeStatusId', e.value);
                     }}
                   />
                 </div>
               </div>
-              <div className="flex flex-row justify-between space-x-4">
-                <div className="w-full">
-                  <label htmlFor="desc">Ağaç Açıklaması</label>
+              <div className='flex flex-row justify-between space-x-4'>
+                <div className='w-full'>
+                  <label htmlFor='desc'>Ağaç Açıklaması</label>
                   <Input
-                    id="desc"
-                    name="desc"
-                    type={"text"}
+                    id='desc'
+                    name='desc'
+                    type={'text'}
                     value={formik.values.desc}
                     onChange={formik.handleChange}
                   />
@@ -325,11 +313,11 @@ function UpdateTreeModal({
         </div>
       </ModalBody>
       <ModalFooter>
-        <Button appearance={"danger"} onClick={() => toggle()}>
+        <Button appearance={'danger'} onClick={() => toggle()}>
           İptal
         </Button>
         <Button
-          appearance={"success"}
+          appearance={'success'}
           onClick={async () => {
             await formik.handleSubmit();
 

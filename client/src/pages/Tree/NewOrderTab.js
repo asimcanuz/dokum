@@ -1,14 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import Select from 'react-select';
-import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { AiOutlinePlus } from 'react-icons/ai';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
-import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
-import { CheckBox } from 'devextreme-react';
+import { CheckBox, NumberBox, SelectBox } from 'devextreme-react';
 import ErrorModal from '../../components/ErrorModal';
+import AddNewDescriptionModal from './AddNewDescriptionModal';
 
 function NewOrderTab({
   clickTree: tree,
@@ -16,7 +15,7 @@ function NewOrderTab({
   descriptions,
   setTodayTrees,
   selectedJobGroup,
-  setClickTree,
+  setDescriptions,
 }) {
   const auth = useAuth();
   const axiosPrivate = useAxiosPrivate();
@@ -34,6 +33,9 @@ function NewOrderTab({
     createdBy: auth.auth.id,
     isImmediate: false,
   });
+
+  const [modalOpen, setModalOpen] = useState(false);
+
   useEffect(() => {
     setOrder({ ...order, treeId: tree.agacId });
   }, [tree]);
@@ -127,35 +129,61 @@ function NewOrderTab({
             <p className='text-blue-600'>{tree.musteriSayisi}</p>
           </div>
         </div>
+
         <div className='grid grid-rows-3'>
           <div className='flex flex-col'>
-            <p>Müşteri</p>
-            <Select
-              options={customerOptions}
-              onChange={({ value }) => {
-                setOrder({ ...order, customerId: value });
+            <SelectBox
+              className='hover:cursor-pointer text-sm'
+              dataSource={customerOptions}
+              displayExpr={'label'}
+              valueExpr='value'
+              label='Müşteri'
+              labelMode='floating'
+              value={
+                customerOptions?.filter((option) => option.value === order.customerId)[0]?.value
+              }
+              onValueChanged={(e) => {
+                setOrder({ ...order, customerId: e.value });
               }}
             />
           </div>
           <div className='flex flex-col'>
-            <p>Adet</p>
-            <Input
-              type={'text'}
+            <NumberBox
+              label={'Adet'}
+              labelMode={'floating'}
               value={order.quantity}
-              onChange={(e) => setOrder({ ...order, quantity: e.target.value })}
+              min='1'
+              onValueChanged={(e) => {
+                console.log(e);
+                if (parseInt(e.value) <= 0) {
+                }
+                setOrder({ ...order, quantity: e.value });
+              }}
             />
           </div>
           <div className='flex flex-col space-y-4'>
-            <div className='flex flex-row justify-between '>
-              <p>Açıklama</p>
-              <p className='flex flex-row justify-between items-center text-blue-600 hover:cursor-pointer hover:animate-pulse'>
+            <div className='flex flex-row justify-end'>
+              <p
+                onClick={() => {
+                  setModalOpen(true);
+                }}
+                className='flex flex-row justify-between items-center text-blue-600 hover:cursor-pointer hover:animate-pulse'
+              >
                 <AiOutlinePlus /> <span>Yeni Açıklama</span>
               </p>
             </div>
-            <Select
-              options={descriptionOptions}
-              onChange={({ value }) => {
-                setOrder({ ...order, descriptionId: value });
+            <SelectBox
+              className='hover:cursor-pointer text-sm'
+              dataSource={descriptionOptions}
+              displayExpr={'label'}
+              valueExpr='value'
+              label='Açıklama'
+              labelMode='floating'
+              value={
+                descriptionOptions?.filter((desc) => desc.value === order.descriptionId)[0]?.value
+              }
+              onValueChanged={(e) => {
+                setOrder({ ...order, descriptionId: e.value });
               }}
             />
           </div>
@@ -194,6 +222,14 @@ function NewOrderTab({
         >
           <p>{errorModal.message}</p>
         </ErrorModal>
+      )}
+      {modalOpen && (
+        <AddNewDescriptionModal
+          visible={modalOpen}
+          onVisibleHandler={() => setModalOpen(false)}
+          setDescriptions={setDescriptions}
+          descriptions={descriptions}
+        />
       )}
     </Fragment>
   );

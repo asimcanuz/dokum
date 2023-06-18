@@ -90,3 +90,5 @@ lerna-debug.log
 # System Files
 .DS_Store
 Thumbs.db
+server/env/development.env
+server/env/production.env

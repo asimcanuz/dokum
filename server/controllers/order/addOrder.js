@@ -38,6 +38,19 @@ const addOrder = async (req, res) => {
           customers.push(order.customer.customerName);
         }
       });
+
+      if (isImmediate) {
+        await db.tree.update(
+          {
+            isImmediate: true,
+          },
+          {
+            where: {
+              treeId,
+            },
+          }
+        );
+      }
       if (customers.length > 1) {
         await db.tree.update(
           {

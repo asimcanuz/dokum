@@ -33,7 +33,6 @@ function NewTreeTab({
       desc: '',
       date: new Date(),
       jobGroupId: selectedJobGroup,
-      isImmediate: false,
     },
     descriptions: [],
     options: [],
@@ -140,7 +139,6 @@ function NewTreeTab({
         listNo: _listeNo,
         treeNo: _agacNo,
         treeStatusId: 1,
-        isImmediate: newTree.isImmediate,
         active: true,
         jobGroupId: newTree.jobGroupId,
         desc: newTree.desc,
@@ -150,7 +148,6 @@ function NewTreeTab({
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
       });
-      console.log('insertTree', insertTreeReq);
       if (insertTreeReq.status === 200) {
         setTimeout(() => {
           setNewTree({
@@ -163,7 +160,6 @@ function NewTreeTab({
             hazırlayanId: '',
             mumTurId: '',
             desc: '',
-            isImmediate: false,
           });
         }, 300);
       }
@@ -423,17 +419,7 @@ function NewTreeTab({
             </ul>
           </div>
         </div>
-        <div className='flex justify-between flex-row items-end'>
-          <CheckBox
-            id={'isImmediate'}
-            name={'isImmediate'}
-            text={'Acil mi?'}
-            onValueChanged={(e) => {
-              setNewTree({ ...newTree, isImmediate: e.value });
-            }}
-            checked={newTree.isImmediate}
-          />
-
+        <div className='flex justify-end items-end'>
           <Button type='submit' appearance={'primary'} disabled={loading}>
             Agaç Ekle
           </Button>

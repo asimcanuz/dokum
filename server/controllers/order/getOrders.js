@@ -1,8 +1,6 @@
 const moment = require("moment");
 const db = require("../../models");
-const getPagination = require("../../utils/getPagination");
 const Order = db.order;
-const Op = db.Sequelize.Op;
 
 const getOrders = async (req, res) => {
   // bağlı olduğu ağaç active false ise getirme

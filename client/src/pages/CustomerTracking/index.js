@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Header from "../../components/Header";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { Endpoints } from "../../constants/Endpoints";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useGlobalFilter, useTable } from "react-table";
-import { FaSort } from "react-icons/fa";
-import { statusColorStyle } from "../../utils/StatusColor";
-import Alert from "../../components/Alert/Alert";
-import Select from "react-select";
-import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
+import React, { useEffect, useMemo, useState } from 'react';
+import Header from '../../components/Header';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { Endpoints } from '../../constants/Endpoints';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useGlobalFilter, useTable } from 'react-table';
+import { FaSort } from 'react-icons/fa';
+import { statusColorStyle } from '../../utils/StatusColor';
+import Alert from '../../components/Alert/Alert';
+import Select from 'react-select';
+import GlobalFilter from '../../components/GlobalFilter/GlobalFilter';
 
 function CustomerTrackingPage() {
   const axiosPrivate = useAxiosPrivate();
@@ -17,7 +17,7 @@ function CustomerTrackingPage() {
 
   const [customersTracking, setCustomerTracking] = useState([]);
   const [jobGroups, setJobGroups] = useState([]);
-  const [selectedJobGroup, setSelectedJobGroup] = useState("");
+  const [selectedJobGroup, setSelectedJobGroup] = useState('');
   const setCustomerTrackingData = (data) => {
     var ordered = {};
     var newArr = [];
@@ -50,18 +50,14 @@ function CustomerTrackingPage() {
     Object.keys(sortedObj).forEach(function (key) {
       Object.keys(sortedObj[key]).forEach(function (key2) {
         let newArrItem = {
-          accountNumber: sortedObj[key][key2][0]["customer"]["accountNumber"],
-          customer: key.slice(
-            0,
-            key.indexOf("#") === -1 ? key.length : key.indexOf("#")
-          ),
+          accountNumber: sortedObj[key][key2][0]['customer']['accountNumber'],
+          customer: key.slice(0, key.indexOf('#') === -1 ? key.length : key.indexOf('#')),
           option: key2,
         };
 
         Object.keys(sortedObj[key][key2]).forEach(function (key3) {
           // tree color'a göre grupla
-          const colorName =
-            sortedObj[key][key2][key3]["tree"]["color"]["colorName"];
+          const colorName = sortedObj[key][key2][key3]['tree']['color']['colorName'];
 
           if (newArrItem[colorName] === undefined) {
             newArrItem[colorName] = [];
@@ -70,12 +66,11 @@ function CustomerTrackingPage() {
           if (newArrItem[colorName].length > 0) {
             //treeId aynıysa quantity'yi topla
             if (
-              newArrItem[colorName][newArrItem[colorName].length - 1].tree
-                .treeId === sortedObj[key][key2][key3].tree.treeId
+              newArrItem[colorName][newArrItem[colorName].length - 1].tree.treeId ===
+              sortedObj[key][key2][key3].tree.treeId
             ) {
-              newArrItem[colorName][
-                newArrItem[colorName].length - 1
-              ].quantity += sortedObj[key][key2][key3].quantity;
+              newArrItem[colorName][newArrItem[colorName].length - 1].quantity +=
+                sortedObj[key][key2][key3].quantity;
               return;
             }
           }
@@ -99,25 +94,28 @@ function CustomerTrackingPage() {
         isMounted && setJobGroups(response.data.jobGroupList);
       } catch (err) {
         console.error(err);
-        navigate("/login", { state: { from: location }, replace: true });
+        navigate('/login', { state: { from: location }, replace: true });
       }
     };
 
     const getCustomerTracking = async () => {
       try {
         const response = await axiosPrivate.get(Endpoints.CUSTOMERTRACKING, {
+          params: {
+            jobGroupId: selectedJobGroup,
+          },
           signal: controller.signal,
         });
         isMounted && setCustomerTrackingData(response.data);
       } catch (err) {
         console.error(err);
-        navigate("/login", { state: { from: location }, replace: true });
+        navigate('/login', { state: { from: location }, replace: true });
       }
     };
     getJobGroups();
-    var interval = null;
 
-    if (selectedJobGroup !== "") {
+    var interval = null;
+    if (selectedJobGroup !== '') {
       getCustomerTracking();
       interval = setInterval(() => {
         getCustomerTracking();
@@ -134,41 +132,36 @@ function CustomerTrackingPage() {
   const tableColumns = useMemo(
     () => [
       {
-        Header: "Hesap No",
-        accessor: "accountNumber",
+        Header: 'Hesap No',
+        accessor: 'accountNumber',
       },
       {
-        Header: "Müşteri",
-        accessor: "customer",
+        Header: 'Müşteri',
+        accessor: 'customer',
       },
       {
-        Header: "Ayar",
-        accessor: "option",
+        Header: 'Ayar',
+        accessor: 'option',
       },
       {
-        Header: "Beyaz Ağaç",
-        accessor: "",
+        Header: 'Beyaz Ağaç',
+        accessor: '',
         Cell: ({ row }) => {
           if (row.original?.Beyaz !== undefined) {
             return row.original.Beyaz.map((item) => {
               // son item değilse
-              var borderClass = "";
-              if (
-                row.original.Beyaz.indexOf(item) !==
-                row.original.Beyaz.length - 1
-              ) {
-                borderClass =
-                  "border-b  border-dashed border-spacing-2 border-black";
+              var borderClass = '';
+              if (row.original.Beyaz.indexOf(item) !== row.original.Beyaz.length - 1) {
+                borderClass = 'border-b  border-dashed border-spacing-2 border-black';
               }
               return (
-                <div
-                  className={`d-flex flex-col justify-between ${borderClass} py-2 }`}
-                >
+                <div className={`d-flex flex-col justify-between ${borderClass} py-2 }`}>
                   {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${
                     item.tree.treeStatus.treeStatusName
-                  }, Urun Miktarı = ${
-                    item.quantity
-                  }, Islem Tarihi = ${item.updatedAt.slice(0, 10)}`}
+                  }, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt.slice(
+                    0,
+                    10,
+                  )}`}
                 </div>
               );
             });
@@ -176,29 +169,24 @@ function CustomerTrackingPage() {
         },
       },
       {
-        Header: "Kırmızı Ağaç",
-        accessor: "",
+        Header: 'Kırmızı Ağaç',
+        accessor: '',
         Cell: ({ row }) => {
           if (row.original?.Kırmızı !== undefined) {
             return row.original.Kırmızı.map((item) => {
               // son item değilse
-              var borderClass = "";
-              if (
-                row.original.Kırmızı.indexOf(item) !==
-                row.original.Kırmızı.length - 1
-              ) {
-                borderClass =
-                  "border-b  border-dashed border-spacing-2 border-black";
+              var borderClass = '';
+              if (row.original.Kırmızı.indexOf(item) !== row.original.Kırmızı.length - 1) {
+                borderClass = 'border-b  border-dashed border-spacing-2 border-black';
               }
               return (
-                <div
-                  className={`d-flex flex-col justify-between ${borderClass} py-2`}
-                >
+                <div className={`d-flex flex-col justify-between ${borderClass} py-2`}>
                   {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${
                     item.tree.treeStatus.treeStatusName
-                  }, Urun Miktarı = ${
-                    item.quantity
-                  }, Islem Tarihi = ${item.updatedAt.slice(0, 10)}`}
+                  }, Urun Miktarı = ${item.quantity}, Islem Zamanı = ${item.updatedAt.slice(
+                    0,
+                    10,
+                  )}`}
                 </div>
               );
             });
@@ -206,28 +194,23 @@ function CustomerTrackingPage() {
         },
       },
       {
-        Header: "Yeşil Ağaç",
-        accessor: "",
+        Header: 'Yeşil Ağaç',
+        accessor: '',
         Cell: ({ row }) => {
           if (row.original?.Yeşil !== undefined) {
             return row.original.Yeşil.map((item) => {
-              var borderClass = "";
-              if (
-                row.original.Yeşil.indexOf(item) !==
-                row.original.Yeşil.length - 1
-              ) {
-                borderClass =
-                  "border-b  border-dashed border-spacing-2 border-black";
+              var borderClass = '';
+              if (row.original.Yeşil.indexOf(item) !== row.original.Yeşil.length - 1) {
+                borderClass = 'border-b  border-dashed border-spacing-2 border-black';
               }
               return (
-                <div
-                  className={`d-flex flex-col justify-between ${borderClass} py-2`}
-                >
+                <div className={`d-flex flex-col justify-between ${borderClass} py-2`}>
                   {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${
                     item.tree.treeStatus.treeStatusName
-                  }, Urun Miktarı = ${
-                    item.quantity
-                  }, Islem Tarihi = ${item.updatedAt.slice(0, 10)}`}
+                  }, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt.slice(
+                    0,
+                    10,
+                  )}`}
                 </div>
               );
             });
@@ -235,7 +218,7 @@ function CustomerTrackingPage() {
         },
       },
     ],
-    [customersTracking]
+    [customersTracking, selectedJobGroup],
   );
 
   const {
@@ -255,56 +238,51 @@ function CustomerTrackingPage() {
       autoResetGlobalFilter: false,
       autoResetAll: false,
     },
-    useGlobalFilter
+    useGlobalFilter,
   );
 
   const getCellColor = (statusArray) => {
-    if (statusArray.includes("Hazırlanıyor")) {
-      return statusColorStyle("Hazırlanıyor");
-    } else if (statusArray.includes("Dökümde")) {
-      return statusColorStyle("Dökümde");
-    } else if (statusArray.includes("Döküldü")) {
-      return statusColorStyle("Döküldü");
-    } else if (statusArray.includes("Kesimde")) {
-      return statusColorStyle("Kesimde");
+    if (statusArray.includes('Hazırlanıyor')) {
+      return statusColorStyle('Hazırlanıyor');
+    } else if (statusArray.includes('Dökümde')) {
+      return statusColorStyle('Dökümde');
+    } else if (statusArray.includes('Döküldü')) {
+      return statusColorStyle('Döküldü');
+    } else if (statusArray.includes('Kesimde')) {
+      return statusColorStyle('Kesimde');
     } else {
-      return statusColorStyle("");
+      return statusColorStyle('');
     }
   };
   const jobGroupOptions = useMemo(() => {
     return jobGroups.map((jobGroup) => {
       return {
         value: jobGroup.id,
-        label: "No: " + jobGroup.number + " (" + jobGroup.date + ")",
+        label: 'No: ' + jobGroup.number + ' (' + jobGroup.date + ')',
       };
     });
   }, [jobGroups]);
 
   const getJobGroupValue = () => {
-    if (selectedJobGroup !== "") {
-      return jobGroupOptions.find(
-        (option) => option.value === selectedJobGroup
-      );
+    if (selectedJobGroup !== '') {
+      return jobGroupOptions.find((option) => option.value === selectedJobGroup);
     } else {
       return null;
     }
   };
 
   return (
-    <div className="space-y-4">
-      <Header
-        title={"Müşteri Takip"}
-        description={"Müşterilerinin takibini gerçekleştir"}
-      />
+    <div className='space-y-4'>
+      <Header title={'Müşteri Takip'} description={'Müşterilerinin takibini gerçekleştir'} />
       <Select
-        className="w-1/2"
+        className='w-1/2'
         value={getJobGroupValue()}
         options={jobGroupOptions}
         onChange={(e) => {
           setSelectedJobGroup(e.value);
         }}
       />
-      <div className="overflow-x-scroll">
+      <div className='overflow-x-scroll'>
         {customersTracking?.length > 0 ? (
           <div>
             <GlobalFilter
@@ -314,33 +292,26 @@ function CustomerTrackingPage() {
             />
             <table
               {...getTableProps()}
-              className="min-w-full divide-y divide-gray-200 mt-2 border-collapse border border-slate-500"
+              className='min-w-full divide-y divide-gray-200 mt-2 border-collapse border border-slate-500'
             >
-              <thead className="bg-gray-50">
+              <thead className='bg-gray-50'>
                 {headerGroups.map((headerGroup) => (
                   <tr {...headerGroup.getHeaderGroupProps()}>
                     {headerGroup.headers.map((column) => (
                       <th
                         {...column.getHeaderProps()}
-                        className="py-3 text-xs font-bold text-left text-gray-500 uppercase border border-slate-600 "
+                        className='py-3 text-xs font-bold text-left text-gray-500 uppercase border border-slate-600 '
                       >
-                        <div className="flex flex-1 items-center">
-                          {column.render("Header")}
-                          {column.isSorted ? (
-                            <FaSort className="text-xs ml-4" />
-                          ) : (
-                            ""
-                          )}
+                        <div className='flex flex-1 items-center'>
+                          {column.render('Header')}
+                          {column.isSorted ? <FaSort className='text-xs ml-4' /> : ''}
                         </div>
                       </th>
                     ))}
                   </tr>
                 ))}
               </thead>
-              <tbody
-                {...getTableBodyProps()}
-                className="divide-y divide-gray-200 "
-              >
+              <tbody {...getTableBodyProps()} className='divide-y divide-gray-200 '>
                 {rows.map((row) => {
                   prepareRow(row);
 
@@ -350,40 +321,40 @@ function CustomerTrackingPage() {
                       className={`px-6 py-4 text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-nowrap `}
                     >
                       {row.cells.map((cell) => {
-                        let backgroundColor = "";
+                        let backgroundColor = '';
                         if (
-                          cell.column.Header.split(" ")[0] === "Kırmızı" &&
-                          row.original["Kırmızı"] !== undefined &&
-                          row.original["Kırmızı"].length > 0
+                          cell.column.Header.split(' ')[0] === 'Kırmızı' &&
+                          row.original['Kırmızı'] !== undefined &&
+                          row.original['Kırmızı'].length > 0
                         ) {
                           let arr = [];
-                          row.original["Kırmızı"].forEach((item) => {
+                          row.original['Kırmızı'].forEach((item) => {
                             const { treeStatusName } = item.tree.treeStatus;
                             arr.push(treeStatusName);
                           });
                           backgroundColor = getCellColor(arr);
                         }
                         if (
-                          cell.column.Header.split(" ")[0] === "Beyaz" &&
-                          row.original["Beyaz"] !== undefined &&
-                          row.original["Beyaz"].length > 0
+                          cell.column.Header.split(' ')[0] === 'Beyaz' &&
+                          row.original['Beyaz'] !== undefined &&
+                          row.original['Beyaz'].length > 0
                         ) {
                           let arr = [];
 
-                          row.original["Beyaz"].forEach((item) => {
+                          row.original['Beyaz'].forEach((item) => {
                             const { treeStatusName } = item.tree.treeStatus;
                             arr.push(treeStatusName);
                           });
                           backgroundColor = getCellColor(arr);
                         }
                         if (
-                          cell.column.Header.split(" ")[0] === "Yeşil" &&
-                          row.original["Yeşil"] !== undefined &&
-                          row.original["Yeşil"].length > 0
+                          cell.column.Header.split(' ')[0] === 'Yeşil' &&
+                          row.original['Yeşil'] !== undefined &&
+                          row.original['Yeşil'].length > 0
                         ) {
                           let arr = [];
 
-                          row.original["Yeşil"].forEach((item) => {
+                          row.original['Yeşil'].forEach((item) => {
                             const { treeStatusName } = item.tree.treeStatus;
                             arr.push(treeStatusName);
                           });
@@ -398,9 +369,9 @@ function CustomerTrackingPage() {
                                 backgroundColor: backgroundColor,
                               },
                             })}
-                            className="border border-slate-200 "
+                            className='border border-slate-200 '
                           >
-                            {cell.render("Cell")}
+                            {cell.render('Cell')}
                           </td>
                         );
                       })}
@@ -411,7 +382,7 @@ function CustomerTrackingPage() {
             </table>
           </div>
         ) : (
-          <Alert apperance={"danger"}>Aktif Ağaç bulunamadı</Alert>
+          <Alert apperance={'danger'}>Aktif Ağaç bulunamadı</Alert>
         )}
       </div>
     </div>

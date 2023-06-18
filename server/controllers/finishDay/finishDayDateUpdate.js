@@ -5,13 +5,14 @@ const Op = Sequelize.Op;
 const Tree = db.tree;
 
 const finishDayDateUpdate = async (req, res) => {
-  const { treeId, jobGroupId } = req.body;
+  const { treeId, jobGroupId, listNo } = req.body;
 
   // gelen treeId'ye ait tarihi update et
   const _tree = await Tree.update(
     {
       jobGroupId: jobGroupId,
       isOld: true,
+      listNo: parseInt(listNo),
     },
     {
       where: {

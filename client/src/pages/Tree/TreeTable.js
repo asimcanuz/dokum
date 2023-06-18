@@ -19,6 +19,7 @@ import {
 import { Workbook } from 'exceljs';
 import { exportDataGrid } from 'devextreme/excel_exporter';
 import { saveAs } from 'file-saver';
+import { statusColorStyle } from '../../utils/StatusColor';
 
 function TreeTable({
   setClickTree,
@@ -139,6 +140,9 @@ function TreeTable({
       component: e.component,
       worksheet,
       autoFilterEnabled: true,
+      customizeCell: ({ gridCell, excelCell }) => {
+        console.log(gridCell, excelCell);
+      },
     }).then(() => {
       workbook.xlsx.writeBuffer().then((buffer) => {
         saveAs(
@@ -146,6 +150,7 @@ function TreeTable({
           selectedJobGroup + '-IsGrubuAgacListesi.xlsx',
         );
       });
+      console.log('excel');
     });
     e.cancel = true;
   }
@@ -192,6 +197,12 @@ function TreeTable({
           onRowRemoving={onRowRemoving}
           onRowUpdated={onRowUpdate}
           onExporting={onExporting}
+          onRowPrepared={function (e) {
+            if (e.rowType === 'data') {
+              const bgColor = statusColorStyle(e.data.treeStatus.treeStatusName);
+              e.rowElement.style.backgroundColor = bgColor;
+            }
+          }}
         >
           <Export enabled={true} />
           <Editing
@@ -222,6 +233,7 @@ function TreeTable({
             allowEditing={false}
           />
           <Column
+            dataField={'customerQuantity'}
             caption={'Müşteri Adeti'}
             cellRender={({ data }) => {
               if (Object.keys(data.orders).length > 0) {
@@ -239,6 +251,7 @@ function TreeTable({
             allowEditing={false}
           />
           <Column
+            dataField={'treeType'}
             caption={'Ağaç Tipi'}
             cellRender={({ data }) => {
               if (Object.keys(data.orders).length > 0) {
@@ -287,7 +300,13 @@ function TreeTable({
           <Column caption={'Mum Ağırlık'} dataField={'waxWeight'} />
           <MasterDetail
             render={(e) => {
-              return treeMasterDetail(e.data, axiosPrivate, descriptions);
+              return treeMasterDetail(
+                e.data,
+                axiosPrivate,
+                descriptions,
+                selectedJobGroup,
+                setTodayTrees,
+              );
             }}
           />
         </DataGrid>
@@ -307,11 +326,11 @@ function TreeTable({
   );
 }
 
-function treeMasterDetail(data, axiosPrivate, descriptions) {
+function treeMasterDetail(data, axiosPrivate, descriptions, selectedJobGroup, setTodayTrees) {
   let orders = data.orders;
 
-  function onRowRemoving({ data }) {
-    axiosPrivate.delete(
+  async function onRowRemoving({ data }) {
+    await axiosPrivate.delete(
       Endpoints.ORDER,
       {
         data: { orderId: data.orderId },
@@ -321,6 +340,12 @@ function treeMasterDetail(data, axiosPrivate, descriptions) {
         withCredentials: true,
       },
     );
+    let treeRes = await axiosPrivate.get(Endpoints.TREE.TODAY, {
+      params: {
+        jobGroupId: selectedJobGroup,
+      },
+    });
+    setTodayTrees(treeRes.data.trees);
   }
 
   return (

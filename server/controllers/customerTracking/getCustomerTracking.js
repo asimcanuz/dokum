@@ -10,10 +10,13 @@ const Option = db.option;
 const Color = db.color;
 
 const getCustomerTracking = async (req, res) => {
+  const { jobGroupId } = req.query;
+
   const _trees = await Tree.findAll({
     where: {
       active: true,
       finished: false,
+      jobGroupId: jobGroupId,
     },
   });
 
