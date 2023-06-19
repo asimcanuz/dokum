@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '../../components/Button';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
@@ -6,6 +6,8 @@ import { Capitalize } from '../../utils/Capitalize';
 import AddNewTreeOptions from './AddNewTreeOptions';
 import { CheckBox, NumberBox, SelectBox, TextBox } from 'devextreme-react';
 import ErrorModal from '../../components/ErrorModal';
+
+// TODO: Buraya tekrar bak. Agac Numarası state ile güncellenmiyor. Şuanda çalışıyor ama bozuk
 
 function NewTreeTab({
   colors,
@@ -54,22 +56,27 @@ function NewTreeTab({
   });
   const axiosPrivate = useAxiosPrivate();
 
-  function getBiggestNumber(key) {
-    if (!todayTrees || todayTrees.length === 0) {
-      return 0;
-    }
-
-    let biggest = Number(todayTrees[0][key]);
-
-    todayTrees.forEach((tree) => {
-      if (biggest < tree[key]) {
-        biggest = Number(tree[key]);
+  useEffect(() => {
+    if (loading === true) {
+      if (newTree.agacAuto) {
+        setNewTree({
+          ...newTree,
+          treeNo: newTree.treeNo + 1,
+          listeNo: newTree.listeNo + 1,
+          renkId: '',
+          ayarId: '',
+          kalınlıkId: '',
+          hazırlayanId: '',
+          mumTurId: '',
+          desc: '',
+        });
       }
-    });
-    return biggest;
-  }
+    }
+  }, [loading]);
 
   const onFormSubmit = async (e) => {
+    const controller = new AbortController();
+
     setLoading(true);
     e.preventDefault();
 
@@ -79,31 +86,14 @@ function NewTreeTab({
       if (!newTree.jobGroupId) {
         throw new Error('İş grubu seçilmedi!');
       }
-      if (newTree.agacAuto) {
-        _agacNo = getBiggestNumber('treeNo') + 1;
-      } else {
-        todayTrees.forEach((tree) => {
-          if (
-            tree['treeNo'] === Number(newTree.treeNo) &&
-            tree['jobGroupId'] === selectedJobGroup
-          ) {
-            throw new Error(`Tekrar eden bir Agaç numarası girdiniz!`);
-          }
-        });
-      }
-
-      if (newTree.listeAuto) {
-        _listeNo = getBiggestNumber('listNo') + 1;
-      } else {
-        todayTrees.forEach((tree) => {
-          if (
-            tree['listNo'] === Number(newTree.listeNo) &&
-            tree['jobGroupId'] === selectedJobGroup
-          ) {
-            throw new Error(`Tekrar eden bir Liste numarası girdiniz!`);
-          }
-        });
-      }
+      todayTrees.forEach((tree) => {
+        if (tree['listNo'] === Number(newTree.listeNo) && tree['jobGroupId'] === selectedJobGroup) {
+          throw new Error(`Tekrar eden bir Liste numarası girdiniz!`);
+        }
+        if (tree['treeNo'] === Number(newTree.treeNo) && tree['jobGroupId'] === selectedJobGroup) {
+          throw new Error(`Tekrar eden bir Agaç numarası girdiniz!`);
+        }
+      });
 
       if (newTree.agacNo === '' && newTree.agacAuto === false) {
         throw new Error('Agaç Numarası Girilmedi!');
@@ -144,27 +134,37 @@ function NewTreeTab({
         desc: newTree.desc,
       };
 
+      if (newTree.agacAuto) {
+        _agacNo = parseInt(_agacNo) + 1;
+      }
+      if (newTree.listeAuto) {
+        _listeNo = parseInt(_listeNo) + 1;
+      }
+
       let insertTreeReq = await axiosPrivate.post(Endpoints.TREE.MAIN, treeBody, {
+        signal: controller.signal,
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
       });
       if (insertTreeReq.status === 200) {
         setTimeout(() => {
           setNewTree({
-            ...newTree,
-            treeNo: 1,
-            listeNo: 1,
+            listeNo: _listeNo,
             renkId: '',
             ayarId: '',
             kalınlıkId: '',
             hazırlayanId: '',
             mumTurId: '',
             desc: '',
+            treeNo: _agacNo,
+            agacAuto: newTree.agacAuto,
+            date: newTree.date,
+            jobGroupId: newTree.jobGroupId,
+            listeAuto: newTree.listeAuto,
           });
         }, 300);
       }
 
-      const controller = new AbortController();
       const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
         params: {
           jobGroupId: selectedJobGroup,
@@ -231,13 +231,16 @@ function NewTreeTab({
         <div className='flex flex-row items-center justify-between'>
           <NumberBox
             label={'Agaç No'}
+            name={'treeNo'}
+            id={'treeNo'}
             labelMode={'floating'}
             value={newTree?.treeNo}
-            min='0'
+            min='1'
             onValueChanged={(e) => setNewTree({ ...newTree, treeNo: e.value })}
           />
           <CheckBox
-            id='treeNoAuto'
+            id={'treeNoAuto'}
+            name={'treeNoAuto'}
             text={'Otomatik Artır'}
             value={newTree.agacAuto}
             onValueChanged={(e) => setNewTree({ ...newTree, agacAuto: !newTree.agacAuto })}
@@ -248,7 +251,7 @@ function NewTreeTab({
             label={'Liste No'}
             labelMode={'floating'}
             value={newTree?.listeNo}
-            min='0'
+            min='1'
             onValueChanged={(e) => setNewTree({ ...newTree, listeNo: e.value })}
           />
           <CheckBox
