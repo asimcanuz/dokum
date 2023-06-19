@@ -18,7 +18,7 @@ const getJobGroupListNo = async (req, res) => {
   let treeNoList = trees.map((tree) => tree.treeNo);
 
   if (!trees) res.status(401).send({ message: "Trees Not Found!" });
-  res.status(200).send(treeNoList);
+  return res.status(200).send(treeNoList);
 };
 
 module.exports = getJobGroupListNo;

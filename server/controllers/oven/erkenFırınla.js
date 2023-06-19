@@ -62,7 +62,7 @@ const erkenFırınla = async (req, res) => {
     const { optionText: agacAyar } = option;
     const { thickName: agacKalinlik } = thick;
 
-    for (const konum of ["alt", "ust"]) {
+    for (const konum of ["ust", "alt"]) {
       for (const type of erkenFirinGirebilecekler[konum]) {
         const { kalinlik, renk, ayar } = type;
 
@@ -73,17 +73,32 @@ const erkenFırınla = async (req, res) => {
           (element.yerlestigiFirin === undefined ||
             element.yerlestigiFirin === null)
         ) {
+          if (konum === "ust") {
+            let ustFirinSayisi = erkenFirinListesi.filter((erkenFirin) => {
+              if (erkenFirin.firinId === firinlar[0].fırınId) {
+                return erkenFirin.firinId;
+              }
+            });
+            if (Object.keys(ustFirinSayisi).length >= 17) break;
+
+            // if (ustFirinSayisi >= 17) continue;
+          }
+          if (konum === "alt") {
+            let altFirinSayisi = erkenFirinListesi.filter((erkenFirin) => {
+              if (erkenFirin.firinId === firinlar[1].fırınId) {
+                return erkenFirin.firinId;
+              }
+            });
+            if (Object.keys(altFirinSayisi).length >= 17) break;
+          }
+
           element.yerlestigiFirin =
             konum === "ust" ? firinlar[0].fırınId : firinlar[1].fırınId;
-          if (erkenFirinListesi?.length < 17) {
-            let obj = {
-              treeId: treeId,
-              firinId:
-                konum === "ust" ? firinlar[0].fırınId : firinlar[1].fırınId,
-            };
-
-            erkenFirinListesi.push(obj);
-          }
+          let obj = {
+            treeId: treeId,
+            firinId: element.yerlestigiFirin,
+          };
+          erkenFirinListesi.push(obj);
         }
       }
     }

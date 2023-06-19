@@ -25,10 +25,12 @@ exports.signup = async (req, res) => {
     roleId,
   })
     .then((user) => {
-      res.status(200).send({ message: "User was registered successfully!" });
+      return res
+        .status(200)
+        .send({ message: "User was registered successfully!" });
     })
     .catch((err) => {
-      res.status(500).send({ message: err.message });
+      return res.status(500).send({ message: err.message });
     });
 };
 
@@ -98,7 +100,7 @@ exports.signin = async (req, res) => {
       // sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000, // 24hr to ms
     });
-    res.status(200).send({
+    return res.status(200).send({
       id: foundUser.userId,
       username: foundUser.username,
       email: foundUser.email,
@@ -145,5 +147,5 @@ exports.logout = async (req, res) => {
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
   });
-  res.sendStatus(204);
+  return res.sendStatus(204);
 };

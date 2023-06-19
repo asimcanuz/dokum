@@ -26,7 +26,7 @@ const getJobGroupList = async (req, res) => {
   });
 
   if (!jobGroupList) res.status(401).send();
-  res.status(200).send({ jobGroupList });
+  return res.status(200).send({ jobGroupList });
 };
 
 module.exports = getJobGroupList;

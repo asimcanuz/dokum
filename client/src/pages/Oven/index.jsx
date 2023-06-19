@@ -38,11 +38,12 @@ function OvenMainPage() {
   const [selectedJobGroup, setSelectedJobGroup] = React.useState(null);
   const [selectedJobGroupName, setSelectedJobGroupName] = React.useState(null);
   const [erkenGrupDisabled, setErkenGrupDisabled] = React.useState(false);
-  const [checkedGroup, setCheckedGroup] = React.useState(null);
+  const [checkedGroup, setCheckedGroup] = React.useState(false);
   const [firinListesi, setFirinListesi] = React.useState(initialFirinListesi);
   const [allDisabled, setAllDisabled] = React.useState(false);
   const [trees, setTrees] = useState([]);
   const [treeLoading, setTreeLoading] = useState(false);
+
   useEffect(() => {
     const controller = new AbortController();
     let isMounted = true;
@@ -114,58 +115,67 @@ function OvenMainPage() {
 
     getJobGroups();
     if (selectedJobGroup) {
-      getFirinListesi();
+      getFirinListesi().then(() => {
+        getTrees();
+      });
+
       getTrees();
     }
-
-    return () => {
-      isMounted = false;
-      !isMounted && controller.abort();
-    };
   }, [selectedJobGroup]);
 
   useEffect(() => {
-    const controller = new AbortController();
-    let isMounted = true;
-    const getTrees = async () => {
-      try {
-        const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
-          params: {
-            jobGroupId: selectedJobGroup,
-          },
-          signal: controller.signal,
-        });
-
-        if (isMounted) {
-          let trees = res.data.trees.map((tree, index) => {
-            tree.firinTipi = tree.erkenFirinGrubunaEklendiMi ? 'Erken' : 'Normal';
-            if (tree.fırın === null) {
-              tree.yerlesenFirin = '-';
-              tree.firinDurumu = 'Girmedi';
-            } else {
-              tree.yerlesenFirin = tree.fırın.fırınSıra + '-' + tree.fırın.fırınKonum;
-              tree.firinDurumu = 'Girdi';
-            }
-            tree.siraNo = index + 1;
-            return tree;
+    if (
+      firinListesi[1].ust.length > 0 ||
+      firinListesi[1].alt.length ||
+      firinListesi[2].ust.length > 0 ||
+      firinListesi[2].alt.length ||
+      firinListesi[3].ust.length > 0 ||
+      firinListesi[3].alt.length
+    ) {
+      const controller = new AbortController();
+      let isMounted = true;
+      const getTrees = async () => {
+        try {
+          const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
+            params: {
+              jobGroupId: selectedJobGroup,
+            },
+            signal: controller.signal,
           });
 
-          setTrees(trees);
+          if (isMounted) {
+            let index = 1;
+            let trees = res.data.trees.map((tree) => {
+              tree.firinTipi = tree.erkenFirinGrubunaEklendiMi ? 'Erken' : 'Normal';
+              if (tree.fırın === null) {
+                tree.yerlesenFirin = '-';
+                tree.firinDurumu = 'Girmedi';
+              } else {
+                tree.yerlesenFirin = tree.fırın.fırınSıra + '-' + tree.fırın.fırınKonum;
+                tree.firinDurumu = 'Girdi';
+              }
+              tree['siraNo'] = index;
+              index += 1;
+              return tree;
+            });
+
+            setTrees(trees);
+          }
+        } catch (error) {
+          console.error(error);
+          navigate('/login', { state: { from: location }, replace: true });
         }
-      } catch (error) {
-        console.error(error);
-        navigate('/login', { state: { from: location }, replace: true });
+      };
+
+      if (selectedJobGroup) {
+        getTrees();
       }
-    };
 
-    if (selectedJobGroup) {
-      getTrees();
+      return () => {
+        isMounted = false;
+        !isMounted && controller.abort();
+      };
     }
-
-    return () => {
-      isMounted = false;
-      !isMounted && controller.abort();
-    };
   }, [firinListesi]);
 
   const jobGroupOptions = useMemo(() => {

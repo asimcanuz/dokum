@@ -38,7 +38,7 @@ const handleRefreshToken = async (req, res) => {
       }
     );
 
-    res.json({ role, username, id, accessToken });
+    return res.json({ role, username, id, accessToken });
   });
 };
 

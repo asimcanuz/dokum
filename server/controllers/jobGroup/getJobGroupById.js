@@ -15,7 +15,7 @@ const getJobGroupById = async (req, res) => {
   });
 
   if (!jobGroup) res.status(401).send();
-  res.status(200).send({ jobGroup });
+  return res.status(200).send({ jobGroup });
 };
 
 module.exports = getJobGroupById;

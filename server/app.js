@@ -41,8 +41,6 @@ app.use("/api/oven", require("./routes/oven.routes"));
 
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/refresh", require("./routes/refresh.routes"));
-app.use("/api/order", require("./routes/order.routes"));
-app.use("/api/jobGroup", require("./routes/jobGroup.routes"));
 
 // verify jwt middleware
 app.use(verifyJWT);
@@ -62,7 +60,8 @@ app.use("/api/treeStatus", require("./routes/treeStatus.routes"));
 app.use("/api/finishDay", require("./routes/finishDay.routes"));
 app.use("/api/tree", require("./routes/tree.routes"));
 app.use("/api/reports", require("./routes/report.routes"));
-
+app.use("/api/order", require("./routes/order.routes"));
+app.use("/api/jobGroup", require("./routes/jobGroup.routes"));
 // db.sequelize
 //   .sync({ force: true })
 //   .then(() => {

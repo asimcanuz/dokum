@@ -17,7 +17,7 @@ const updateErkenFirin = async (req, res) => {
       },
     }
   );
-  res.status(200).send({
+  return res.status(200).send({
     message: "Update Success",
   });
 };
