@@ -8,7 +8,6 @@ import Button from '../../components/Button';
 import OvenTable from './OvenTable';
 import { DataGrid } from 'devextreme-react';
 import { Column, Export } from 'devextreme-react/data-grid';
-import Firinlar from '../../constants/firinlar';
 import { Workbook } from 'exceljs';
 import { exportDataGrid } from 'devextreme/excel_exporter';
 import { saveAs } from 'file-saver';

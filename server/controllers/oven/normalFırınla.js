@@ -185,6 +185,7 @@ async function normalFırınla(req, res) {
       }
     }
   });
+
   //birinci fırın kontroller
   let ust1length = normalFırınListesi[1].ust.length;
   let alt1length = normalFırınListesi[1].alt.length;
@@ -200,30 +201,28 @@ async function normalFırınla(req, res) {
       if (alt1length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt1length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenBirUstLength -= eklenebilecekElemanSayisi;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[1].ust[index] === undefined) break;
             yerlesmeyenBirUstLength--;
             yerlesmeyenListesi[1].ust[index].konum = "1-ust";
             yerlesmeyenListesi[1].ust[index].firinId = firin1alt;
             normalFırınListesi[1].alt.push(yerlesmeyenListesi[1].ust[index]);
-            delete yerlesmeyenListesi[1].ust[index];
           }
+          yerlesmeyenListesi[1].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
+
     if (yerlesmeyenBirUstLength > 0) {
       if (ust3length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust3length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenBirUstLength -= ust3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[1].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[1].ust[index] === undefined) continue;
             yerlesmeyenBirUstLength--;
             yerlesmeyenListesi[1].ust[index].firinId = firin3ust;
             normalFırınListesi[3].ust.push(yerlesmeyenListesi[1].ust[index]);
-            delete yerlesmeyenListesi[1].ust[index];
           }
+          yerlesmeyenListesi[1].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -231,33 +230,30 @@ async function normalFırınla(req, res) {
       if (alt3length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt3length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenBirUstLength -= alt3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[1].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[1].ust[index] === undefined) continue;
             yerlesmeyenBirUstLength--;
             yerlesmeyenListesi[1].ust[index].konum = "1-ust";
             yerlesmeyenListesi[1].ust[index].firinId = firin3alt;
-
             normalFırınListesi[3].alt.push(yerlesmeyenListesi[1].ust[index]);
-            delete yerlesmeyenListesi[1].ust[index];
           }
+          yerlesmeyenListesi[1].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
+
     if (yerlesmeyenBirUstLength > 0) {
       if (ust2length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenBirUstLength -= ust2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[1].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[1].ust[index] === undefined) continue;
             yerlesmeyenBirUstLength--;
             yerlesmeyenListesi[1].ust[index].konum = "1-ust";
             yerlesmeyenListesi[1].ust[index].firinId = firin2ust;
-
             normalFırınListesi[2].ust.push(yerlesmeyenListesi[1].ust[index]);
-            delete yerlesmeyenListesi[1].ust[index];
           }
+          yerlesmeyenListesi[1].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -265,16 +261,14 @@ async function normalFırınla(req, res) {
       if (alt2length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenBirUstLength -= alt2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[1].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[1].ust[index] === undefined) continue;
             yerlesmeyenBirUstLength--;
             yerlesmeyenListesi[1].ust[index].konum = "1-ust";
             yerlesmeyenListesi[1].ust[index].firinId = firin2alt;
-
             normalFırınListesi[2].alt.push(yerlesmeyenListesi[1].ust[index]);
-            delete yerlesmeyenListesi[1].ust[index];
           }
+          yerlesmeyenListesi[1].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -285,16 +279,15 @@ async function normalFırınla(req, res) {
       if (ust1length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust1length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenBirAltLength -= eklenebilecekElemanSayisi;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[1].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[1].alt[index] === undefined) continue;
             yerlesmeyenBirAltLength--;
             yerlesmeyenListesi[1].alt[index].konum = "1-alt";
             yerlesmeyenListesi[1].alt[index].firinId = firin1ust;
 
             normalFırınListesi[1].ust.push(yerlesmeyenListesi[1].alt[index]);
-            delete yerlesmeyenListesi[1].alt[index];
           }
+          yerlesmeyenListesi[1].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -304,14 +297,14 @@ async function normalFırınla(req, res) {
         if (eklenebilecekElemanSayisi > 0) {
           yerlesmeyenBirAltLength -= ust3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[1].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[1].alt[index] === undefined) continue;
             yerlesmeyenBirAltLength--;
             yerlesmeyenListesi[1].alt[index].konum = "1-alt";
             yerlesmeyenListesi[1].alt[index].firinId = firin3ust;
 
             normalFırınListesi[3].ust.push(yerlesmeyenListesi[1].alt[index]);
-            delete yerlesmeyenListesi[1].alt[index];
           }
+          yerlesmeyenListesi[1].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -319,16 +312,15 @@ async function normalFırınla(req, res) {
       if (alt3length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt3length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenBirAltLength -= alt3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[1].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[1].alt[index] === undefined) continue;
             yerlesmeyenBirAltLength--;
             yerlesmeyenListesi[1].alt[index].konum = "1-alt";
             yerlesmeyenListesi[1].alt[index].firinId = firin3alt;
 
             normalFırınListesi[3].alt.push(yerlesmeyenListesi[1].alt[index]);
-            delete yerlesmeyenListesi[1].alt[index];
           }
+          yerlesmeyenListesi[1].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -336,16 +328,15 @@ async function normalFırınla(req, res) {
       if (ust2length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenBirAltLength -= ust2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[1].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[1].alt[index] === undefined) continue;
             yerlesmeyenBirAltLength--;
             yerlesmeyenListesi[1].alt[index].konum = "1-alt";
             yerlesmeyenListesi[1].alt[index].firinId = firin2ust;
 
             normalFırınListesi[2].ust.push(yerlesmeyenListesi[1].alt[index]);
-            delete yerlesmeyenListesi[1].alt[index];
           }
+          yerlesmeyenListesi[1].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -353,16 +344,15 @@ async function normalFırınla(req, res) {
       if (alt2length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenBirAltLength -= alt2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[1].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[1].alt[index] === undefined) continue;
             yerlesmeyenBirAltLength--;
             yerlesmeyenListesi[1].alt[index].konum = "1-alt";
             yerlesmeyenListesi[1].alt[index].firinId = firin2alt;
 
             normalFırınListesi[2].alt.push(yerlesmeyenListesi[1].alt[index]);
-            delete yerlesmeyenListesi[1].alt[index];
           }
+          yerlesmeyenListesi[1].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -373,16 +363,15 @@ async function normalFırınla(req, res) {
       if (alt2length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiUstLength -= alt2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[2].ust[index] === undefined) continue;
             yerlesmeyenIkiUstLength--;
             yerlesmeyenListesi[2].ust[index].konum = "2-ust";
             yerlesmeyenListesi[2].ust[index].firinId = firin2alt;
 
             normalFırınListesi[2].alt.push(yerlesmeyenListesi[2].ust[index]);
-            delete yerlesmeyenListesi[2].ust[index];
           }
+          yerlesmeyenListesi[2].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -390,16 +379,15 @@ async function normalFırınla(req, res) {
       if (ust3length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust3length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiUstLength -= ust3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[2].ust[index] === undefined) continue;
             yerlesmeyenIkiUstLength--;
             yerlesmeyenListesi[2].ust[index].konum = "2-ust";
             yerlesmeyenListesi[2].ust[index].firinId = firin3ust;
 
             normalFırınListesi[3].ust.push(yerlesmeyenListesi[2].ust[index]);
-            delete yerlesmeyenListesi[2].ust[index];
           }
+          yerlesmeyenListesi[2].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -407,16 +395,15 @@ async function normalFırınla(req, res) {
       if (alt3length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt3length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiUstLength -= alt3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[2].ust[index] === undefined) continue;
             yerlesmeyenIkiUstLength--;
             yerlesmeyenListesi[2].ust[index].konum = "2-ust";
             yerlesmeyenListesi[2].ust[index].firinId = firin3alt;
 
             normalFırınListesi[3].alt.push(yerlesmeyenListesi[2].ust[index]);
-            delete yerlesmeyenListesi[2].ust[index];
           }
+          yerlesmeyenListesi[2].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -424,16 +411,15 @@ async function normalFırınla(req, res) {
       if (ust1length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust1length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiUstLength -= eklenebilecekElemanSayisi;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[2].ust[index] === undefined) continue;
             yerlesmeyenIkiUstLength--;
             yerlesmeyenListesi[2].ust[index].konum = "2-ust";
             yerlesmeyenListesi[2].ust[index].firinId = firin1ust;
 
             normalFırınListesi[1].ust.push(yerlesmeyenListesi[2].ust[index]);
-            delete yerlesmeyenListesi[2].ust[index];
           }
+          yerlesmeyenListesi[2].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -441,16 +427,15 @@ async function normalFırınla(req, res) {
       if (alt1length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt1length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiUstLength -= eklenebilecekElemanSayisi;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[2].ust[index] === undefined) continue;
             yerlesmeyenIkiUstLength--;
             yerlesmeyenListesi[2].ust[index].konum = "2-ust";
             yerlesmeyenListesi[2].ust[index].firinId = firin1alt;
 
             normalFırınListesi[1].alt.push(yerlesmeyenListesi[2].ust[index]);
-            delete yerlesmeyenListesi[2].ust[index];
           }
+          yerlesmeyenListesi[2].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -461,16 +446,15 @@ async function normalFırınla(req, res) {
       if (ust2length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiAltLength -= ust2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[2].alt[index] === undefined) continue;
             yerlesmeyenIkiAltLength--;
             yerlesmeyenListesi[2].alt[index].konum = "2-alt";
             yerlesmeyenListesi[2].alt[index].firinId = firin2ust;
 
             normalFırınListesi[2].ust.push(yerlesmeyenListesi[2].alt[index]);
-            delete yerlesmeyenListesi[2].alt[index];
           }
+          yerlesmeyenListesi[2].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -478,16 +462,15 @@ async function normalFırınla(req, res) {
       if (ust3length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust3length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiAltLength -= ust3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[2].alt[index] === undefined) continue;
             yerlesmeyenIkiAltLength--;
             yerlesmeyenListesi[2].alt[index].konum = "2-alt";
             yerlesmeyenListesi[2].alt[index].firinId = firin3ust;
 
             normalFırınListesi[3].ust.push(yerlesmeyenListesi[2].alt[index]);
-            delete yerlesmeyenListesi[2].alt[index];
           }
+          yerlesmeyenListesi[2].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -495,16 +478,15 @@ async function normalFırınla(req, res) {
       if (alt3length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt3length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiAltLength -= alt3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[2].alt[index] === undefined) continue;
             yerlesmeyenIkiAltLength--;
             yerlesmeyenListesi[2].alt[index].konum = "2-alt";
             yerlesmeyenListesi[2].alt[index].firinId = firin3alt;
 
             normalFırınListesi[3].alt.push(yerlesmeyenListesi[2].alt[index]);
-            delete yerlesmeyenListesi[2].alt[index];
           }
+          yerlesmeyenListesi[2].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -512,16 +494,15 @@ async function normalFırınla(req, res) {
       if (ust1length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust1length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiAltLength -= eklenebilecekElemanSayisi;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[2].alt[index] === undefined) continue;
             yerlesmeyenIkiAltLength--;
             yerlesmeyenListesi[2].alt[index].konum = "2-alt";
             yerlesmeyenListesi[2].alt[index].firinId = firin1ust;
 
             normalFırınListesi[1].ust.push(yerlesmeyenListesi[2].alt[index]);
-            delete yerlesmeyenListesi[2].alt[index];
           }
+          yerlesmeyenListesi[2].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -529,16 +510,15 @@ async function normalFırınla(req, res) {
       if (alt1length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt1length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiAltLength -= eklenebilecekElemanSayisi;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[2].alt[index] === undefined) continue;
             yerlesmeyenIkiAltLength--;
             yerlesmeyenListesi[2].alt[index].konum = "2-alt";
             yerlesmeyenListesi[2].alt[index].firinId = firin1alt;
 
             normalFırınListesi[1].alt.push(yerlesmeyenListesi[2].alt[index]);
-            delete yerlesmeyenListesi[2].alt[index];
           }
+          yerlesmeyenListesi[2].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -551,14 +531,14 @@ async function normalFırınla(req, res) {
         if (eklenebilecekElemanSayisi > 0) {
           yerlesmeyenUcUstLength -= alt3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[3].ust[index] === undefined) continue;
             yerlesmeyenUcUstLength--;
             yerlesmeyenListesi[3].ust[index].konum = "3-ust";
             yerlesmeyenListesi[3].ust[index].firinId = firin3alt;
 
             normalFırınListesi[3].alt.push(yerlesmeyenListesi[3].ust[index]);
-            delete yerlesmeyenListesi[3].ust[index];
           }
+          yerlesmeyenListesi[3].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -566,16 +546,15 @@ async function normalFırınla(req, res) {
       if (ust2length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenUcUstLength -= ust2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[3].ust[index] === undefined) continue;
             yerlesmeyenUcUstLength--;
             yerlesmeyenListesi[3].ust[index].konum = "3-ust";
             yerlesmeyenListesi[3].ust[index].firinId = firin2ust;
 
             normalFırınListesi[2].ust.push(yerlesmeyenListesi[3].alt[index]);
-            delete yerlesmeyenListesi[3].alt[index];
           }
+          yerlesmeyenListesi[3].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -583,16 +562,15 @@ async function normalFırınla(req, res) {
       if (ust1length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust1length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenUcUstLength -= eklenebilecekElemanSayisi;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[3].ust[index] === undefined) continue;
             yerlesmeyenUcUstLength--;
             yerlesmeyenListesi[3].ust[index].konum = "3-ust";
             yerlesmeyenListesi[3].ust[index].firinId = firin1ust;
 
             normalFırınListesi[1].ust.push(yerlesmeyenListesi[3].ust[index]);
-            delete yerlesmeyenListesi[3].ust[index];
           }
+          yerlesmeyenListesi[3].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -602,14 +580,14 @@ async function normalFırınla(req, res) {
         if (eklenebilecekElemanSayisi > 0) {
           yerlesmeyenUcUstLength -= eklenebilecekElemanSayisi;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[3].ust[index] === undefined) continue;
             yerlesmeyenUcUstLength--;
             yerlesmeyenListesi[3].ust[index].konum = "3-ust";
             yerlesmeyenListesi[3].ust[index].firinId = firin1alt;
 
             normalFırınListesi[1].alt.push(yerlesmeyenListesi[3].ust[index]);
-            delete yerlesmeyenListesi[3].ust[index];
           }
+          yerlesmeyenListesi[3].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -617,16 +595,15 @@ async function normalFırınla(req, res) {
       if (alt2length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenUcUstLength -= alt2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[3].ust[index] === undefined) continue;
             yerlesmeyenUcUstLength--;
             yerlesmeyenListesi[3].ust[index].konum = "3-ust";
             yerlesmeyenListesi[3].ust[index].firinId = firin2alt;
 
             normalFırınListesi[2].alt.push(yerlesmeyenListesi[3].ust[index]);
-            delete yerlesmeyenListesi[3].ust[index];
           }
+          yerlesmeyenListesi[3].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -637,16 +614,15 @@ async function normalFırınla(req, res) {
       if (ust1length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust1length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenUcAltLength -= eklenebilecekElemanSayisi;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[3].alt[index] === undefined) continue;
             yerlesmeyenUcAltLength--;
             yerlesmeyenListesi[3].alt[index].konum = "3-alt";
             yerlesmeyenListesi[3].alt[index].firinId = firin1ust;
 
             normalFırınListesi[1].ust.push(yerlesmeyenListesi[3].alt[index]);
-            delete yerlesmeyenListesi[3].alt[index];
           }
+          yerlesmeyenListesi[3].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -654,16 +630,15 @@ async function normalFırınla(req, res) {
       if (alt1length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt1length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenUcAltLength -= eklenebilecekElemanSayisi;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[3].alt[index] === undefined) continue;
             yerlesmeyenUcAltLength--;
             yerlesmeyenListesi[3].alt[index].konum = "3-alt";
             yerlesmeyenListesi[3].alt[index].firinId = firin1alt;
 
             normalFırınListesi[1].alt.push(yerlesmeyenListesi[3].alt[index]);
-            delete yerlesmeyenListesi[3].alt[index];
           }
+          yerlesmeyenListesi[3].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -671,16 +646,15 @@ async function normalFırınla(req, res) {
       if (alt2length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenUcAltLength -= alt2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[3].alt[index] === undefined) continue;
             yerlesmeyenUcAltLength--;
             yerlesmeyenListesi[3].alt[index].konum = "3-alt";
             yerlesmeyenListesi[3].alt[index].firinId = firin2alt;
 
             normalFırınListesi[2].alt.push(yerlesmeyenListesi[3].alt[index]);
-            delete yerlesmeyenListesi[3].alt[index];
           }
+          yerlesmeyenListesi[3].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -688,16 +662,15 @@ async function normalFırınla(req, res) {
       if (alt3length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt3length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenUcAltLength -= alt3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[3].alt[index] === undefined) continue;
             yerlesmeyenUcAltLength--;
             yerlesmeyenListesi[3].alt[index].konum = "3-alt";
             yerlesmeyenListesi[3].alt[index].firinId = firin3ust;
 
             normalFırınListesi[3].ust.push(yerlesmeyenListesi[3].alt[index]);
-            delete yerlesmeyenListesi[3].alt[index];
           }
+          yerlesmeyenListesi[3].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -705,16 +678,15 @@ async function normalFırınla(req, res) {
       if (ust2length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenUcAltLength -= ust2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[3].alt[index] === undefined) continue;
             yerlesmeyenUcAltLength--;
             yerlesmeyenListesi[3].alt[index].konum = "3-alt";
             yerlesmeyenListesi[3].alt[index].firinId = firin2ust;
 
             normalFırınListesi[2].ust.push(yerlesmeyenListesi[3].alt[index]);
-            delete yerlesmeyenListesi[3].alt[index];
           }
+          yerlesmeyenListesi[3].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -725,16 +697,15 @@ async function normalFırınla(req, res) {
       if (alt2length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiUstLength -= alt2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[2].ust[index] === undefined) continue;
             yerlesmeyenIkiUstLength--;
             yerlesmeyenListesi[2].ust[index].konum = "2-ust";
             yerlesmeyenListesi[2].ust[index].firinId = firin2alt;
 
             normalFırınListesi[2].alt.push(yerlesmeyenListesi[2].ust[index]);
-            delete yerlesmeyenListesi[2].ust[index];
           }
+          yerlesmeyenListesi[2].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -742,16 +713,15 @@ async function normalFırınla(req, res) {
       if (ust3length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust3length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiUstLength -= ust3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[2].ust[index] === undefined) continue;
             yerlesmeyenIkiUstLength--;
             yerlesmeyenListesi[2].ust[index].konum = "2-ust";
             yerlesmeyenListesi[2].ust[index].firinId = firin3ust;
 
             normalFırınListesi[3].ust.push(yerlesmeyenListesi[2].ust[index]);
-            delete yerlesmeyenListesi[2].ust[index];
           }
+          yerlesmeyenListesi[2].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -759,16 +729,15 @@ async function normalFırınla(req, res) {
       if (alt3length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt3length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiUstLength -= alt3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[2].ust[index] === undefined) continue;
             yerlesmeyenIkiUstLength--;
             yerlesmeyenListesi[2].ust[index].konum = "2-ust";
             yerlesmeyenListesi[2].ust[index].firinId = firin3alt;
 
             normalFırınListesi[3].alt.push(yerlesmeyenListesi[2].ust[index]);
-            delete yerlesmeyenListesi[2].ust[index];
           }
+          yerlesmeyenListesi[2].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -779,16 +748,15 @@ async function normalFırınla(req, res) {
       if (ust2length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiAltLength -= ust2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[2].alt[index] === undefined) continue;
             yerlesmeyenIkiAltLength--;
             yerlesmeyenListesi[2].alt[index].konum = "2-alt";
             yerlesmeyenListesi[2].alt[index].firinId = firin2alt;
 
             normalFırınListesi[2].ust.push(yerlesmeyenListesi[2].alt[index]);
-            delete yerlesmeyenListesi[2].alt[index];
           }
+          yerlesmeyenListesi[2].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -796,16 +764,15 @@ async function normalFırınla(req, res) {
       if (ust3length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust3length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiAltLength -= ust3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[2].alt[index] === undefined) continue;
             yerlesmeyenIkiAltLength--;
             yerlesmeyenListesi[2].alt[index].konum = "2-alt";
             yerlesmeyenListesi[2].alt[index].firinId = firin3ust;
 
             normalFırınListesi[3].ust.push(yerlesmeyenListesi[2].alt[index]);
-            delete yerlesmeyenListesi[2].alt[index];
           }
+          yerlesmeyenListesi[2].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -813,16 +780,15 @@ async function normalFırınla(req, res) {
       if (alt3length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt3length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenIkiAltLength -= alt3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[2].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[2].alt[index] === undefined) continue;
             yerlesmeyenIkiAltLength--;
             yerlesmeyenListesi[2].alt[index].konum = "2-alt";
             yerlesmeyenListesi[2].alt[index].firinId = firin3alt;
 
             normalFırınListesi[3].alt.push(yerlesmeyenListesi[2].alt[index]);
-            delete yerlesmeyenListesi[2].alt[index];
           }
+          yerlesmeyenListesi[2].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -834,14 +800,14 @@ async function normalFırınla(req, res) {
         let eklenebilecekElemanSayisi = 17 - alt3length;
         if (eklenebilecekElemanSayisi > 0) {
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[3].ust[index] === undefined) continue;
             yerlesmeyenUcUstLength--;
             yerlesmeyenListesi[3].ust[index].konum = "3-ust";
             yerlesmeyenListesi[3].ust[index].firinId = firin3alt;
 
             normalFırınListesi[3].alt.push(yerlesmeyenListesi[3].ust[index]);
-            delete yerlesmeyenListesi[3].ust[index];
           }
+          yerlesmeyenListesi[3].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -849,15 +815,14 @@ async function normalFırınla(req, res) {
       if (ust2length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenUcUstLength -= ust2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[3].ust[index] === undefined) continue;
             yerlesmeyenUcUstLength--;
             yerlesmeyenListesi[3].ust[index].konum = "3-ust";
             yerlesmeyenListesi[3].ust[index].firinId = firin2ust;
             normalFırınListesi[2].ust.push(yerlesmeyenListesi[3].ust[index]);
-            delete yerlesmeyenListesi[3].ust[index];
           }
+          yerlesmeyenListesi[3].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -867,13 +832,13 @@ async function normalFırınla(req, res) {
         if (eklenebilecekElemanSayisi > 0) {
           yerlesmeyenUcUstLength -= alt2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].ust[index] === undefined) break;
+            if (yerlesmeyenListesi[3].ust[index] === undefined) continue;
             yerlesmeyenUcUstLength--;
             yerlesmeyenListesi[3].ust[index].konum = "3-ust";
             yerlesmeyenListesi[3].ust[index].firinId = firin2alt;
             normalFırınListesi[2].alt.push(yerlesmeyenListesi[3].ust[index]);
-            delete yerlesmeyenListesi[3].ust[index];
           }
+          yerlesmeyenListesi[3].ust.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -885,15 +850,14 @@ async function normalFırınla(req, res) {
         let eklenebilecekElemanSayisi = 17 - ust3length;
 
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenUcAltLength -= ust3length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[3].alt[index] === undefined) continue;
             yerlesmeyenUcUstLength--;
             yerlesmeyenListesi[3].alt[index].konum = "3-alt";
             yerlesmeyenListesi[3].alt[index].firinId = firin3ust;
             normalFırınListesi[3].ust.push(yerlesmeyenListesi[3].alt[index]);
-            delete yerlesmeyenListesi[3].alt[index];
           }
+          yerlesmeyenListesi[3].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -901,15 +865,14 @@ async function normalFırınla(req, res) {
       if (ust2length < 17) {
         let eklenebilecekElemanSayisi = 17 - ust2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenUcAltLength -= ust2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[3].alt[index] === undefined) continue;
             yerlesmeyenUcUstLength--;
             yerlesmeyenListesi[3].alt[index].konum = "3-alt";
             yerlesmeyenListesi[3].alt[index].firinId = firin2ust;
             normalFırınListesi[2].ust.push(yerlesmeyenListesi[3].alt[index]);
-            delete yerlesmeyenListesi[3].alt[index];
           }
+          yerlesmeyenListesi[3].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
@@ -917,15 +880,14 @@ async function normalFırınla(req, res) {
       if (alt2length < 17) {
         let eklenebilecekElemanSayisi = 17 - alt2length;
         if (eklenebilecekElemanSayisi > 0) {
-          yerlesmeyenUcAltLength -= alt2length;
           for (let index = 0; index < eklenebilecekElemanSayisi; index++) {
-            if (yerlesmeyenListesi[3].alt[index] === undefined) break;
+            if (yerlesmeyenListesi[3].alt[index] === undefined) continue;
             yerlesmeyenUcUstLength--;
             yerlesmeyenListesi[3].alt[index].konum = "3-alt";
             yerlesmeyenListesi[3].alt[index].firinId = firin2alt;
             normalFırınListesi[2].alt.push(yerlesmeyenListesi[3].alt[index]);
-            delete yerlesmeyenListesi[3].alt[index];
           }
+          yerlesmeyenListesi[3].alt.splice(0, eklenebilecekElemanSayisi);
         }
       }
     }
