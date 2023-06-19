@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import Header from "../../components/Header";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Endpoints } from "../../constants/Endpoints";
-import Button from "../../components/Button";
-import { AiOutlineDelete, AiOutlinePlus, AiOutlineSave } from "react-icons/ai";
-import Alert from "../../components/Alert/Alert";
-import EditableText from "../../components/Input/EditableText";
+import React, { useEffect, useRef, useState } from 'react';
+import Header from '../../components/Header';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Endpoints } from '../../constants/Endpoints';
+import Button from '../../components/Button';
+import { AiOutlineDelete, AiOutlinePlus, AiOutlineSave } from 'react-icons/ai';
+import Alert from '../../components/Alert/Alert';
+import EditableText from '../../components/Input/EditableText';
 
 // TODO : icon renkleri düzenle
 function ConfigurationsPage() {
@@ -45,7 +45,7 @@ function ConfigurationsPage() {
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", {
+        navigate('/login', {
           state: { from: location },
           replace: true,
         });
@@ -62,7 +62,7 @@ function ConfigurationsPage() {
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", {
+        navigate('/login', {
           state: { from: location },
           replace: true,
         });
@@ -81,7 +81,7 @@ function ConfigurationsPage() {
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", {
+        navigate('/login', {
           state: { from: location },
           replace: true,
         });
@@ -98,7 +98,7 @@ function ConfigurationsPage() {
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", {
+        navigate('/login', {
           state: { from: location },
           replace: true,
         });
@@ -116,7 +116,7 @@ function ConfigurationsPage() {
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", {
+        navigate('/login', {
           state: { from: location },
           replace: true,
         });
@@ -153,7 +153,7 @@ function ConfigurationsPage() {
         }
       } catch (error) {
         console.error(error);
-        navigate("/login", {
+        navigate('/login', {
           state: { from: location },
           replace: true,
         });
@@ -181,9 +181,9 @@ function ConfigurationsPage() {
         Endpoints.WAX,
         { waxName: name },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.WAX, {
         signal: controller.signal,
@@ -193,7 +193,7 @@ function ConfigurationsPage() {
       waxesRef.current = response.data.waxes;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -208,9 +208,9 @@ function ConfigurationsPage() {
         Endpoints.WAX,
         { waxId: id, waxName: name },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.WAX, {
         signal: controller.signal,
@@ -220,7 +220,7 @@ function ConfigurationsPage() {
       waxesRef.current = response.data.waxes;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -235,9 +235,9 @@ function ConfigurationsPage() {
         Endpoints.WAX,
         { data: { waxId: id } },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.WAX, {
         signal: controller.signal,
@@ -247,7 +247,7 @@ function ConfigurationsPage() {
       waxesRef.current = response.data.waxes;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -265,9 +265,9 @@ function ConfigurationsPage() {
         Endpoints.OPTION,
         { optionText: text },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.OPTION, {
         signal: controller.signal,
@@ -277,7 +277,7 @@ function ConfigurationsPage() {
       optionsRef.current = response.data.options;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -292,9 +292,9 @@ function ConfigurationsPage() {
         Endpoints.OPTION,
         { optionId: id, optionText: text },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.OPTION, {
         signal: controller.signal,
@@ -304,7 +304,7 @@ function ConfigurationsPage() {
       optionsRef.current = response.data.options;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -319,9 +319,9 @@ function ConfigurationsPage() {
         Endpoints.OPTION,
         { data: { optionId: id } },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.OPTION, {
         signal: controller.signal,
@@ -331,7 +331,7 @@ function ConfigurationsPage() {
       optionsRef.current = response.data.options;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -349,9 +349,9 @@ function ConfigurationsPage() {
         Endpoints.THICK,
         { thickName: name },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.THICK, {
         signal: controller.signal,
@@ -361,7 +361,7 @@ function ConfigurationsPage() {
       thicksRef.current = response.data.thicks;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -376,9 +376,9 @@ function ConfigurationsPage() {
         Endpoints.THICK,
         { thickId: id, thickName: name },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.THICK, {
         signal: controller.signal,
@@ -388,7 +388,7 @@ function ConfigurationsPage() {
       thicksRef.current = response.data.thicks;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -403,9 +403,9 @@ function ConfigurationsPage() {
         Endpoints.THICK,
         { data: { thickId: id } },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.THICK, {
         signal: controller.signal,
@@ -415,7 +415,7 @@ function ConfigurationsPage() {
       thicksRef.current = response.data.thicks;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -433,9 +433,9 @@ function ConfigurationsPage() {
         Endpoints.COLOR,
         { colorName: name },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.COLOR, {
         signal: controller.signal,
@@ -445,7 +445,7 @@ function ConfigurationsPage() {
       colorsRef.current = response.data.colors;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -459,9 +459,9 @@ function ConfigurationsPage() {
         Endpoints.COLOR,
         { colorId: id, colorName: name },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.COLOR, {
         signal: controller.signal,
@@ -471,7 +471,7 @@ function ConfigurationsPage() {
       colorsRef.current = response.data.colors;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -486,9 +486,9 @@ function ConfigurationsPage() {
         Endpoints.COLOR,
         { data: { colorId: id } },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.COLOR, {
         signal: controller.signal,
@@ -498,7 +498,7 @@ function ConfigurationsPage() {
       colorsRef.current = response.data.colors;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -516,9 +516,9 @@ function ConfigurationsPage() {
         Endpoints.DESCRIPTION,
         { descriptionText: text },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.DESCRIPTION, {
         signal: controller.signal,
@@ -528,7 +528,7 @@ function ConfigurationsPage() {
       descriptionsRef.current = response.data.descriptions;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -542,9 +542,9 @@ function ConfigurationsPage() {
         Endpoints.DESCRIPTION,
         { descriptionId: id, descriptionText: text },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.DESCRIPTION, {
         signal: controller.signal,
@@ -554,7 +554,7 @@ function ConfigurationsPage() {
       descriptionsRef.current = response.data.descriptions;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -569,9 +569,9 @@ function ConfigurationsPage() {
         Endpoints.DESCRIPTION,
         { data: { descriptionId: id } },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.DESCRIPTION, {
         signal: controller.signal,
@@ -581,7 +581,7 @@ function ConfigurationsPage() {
       descriptionsRef.current = response.data.descriptions;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -599,9 +599,9 @@ function ConfigurationsPage() {
         Endpoints.CREATOR,
         { creatorName: name },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.CREATOR, {
         signal: controller.signal,
@@ -611,7 +611,7 @@ function ConfigurationsPage() {
       creatorsRef.current = response.data.creators;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -625,9 +625,9 @@ function ConfigurationsPage() {
         Endpoints.CREATOR,
         { creatorId: id, creatorName: name },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.CREATOR, {
         signal: controller.signal,
@@ -637,7 +637,7 @@ function ConfigurationsPage() {
       creatorsRef.current = response.data.creators;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -652,9 +652,9 @@ function ConfigurationsPage() {
         Endpoints.CREATOR,
         { data: { creatorId: id } },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
-        }
+        },
       );
       const response = await axiosPrivate.get(Endpoints.CREATOR, {
         signal: controller.signal,
@@ -664,7 +664,7 @@ function ConfigurationsPage() {
       creatorsRef.current = response.data.creators;
     } catch (error) {
       console.error(error);
-      navigate("/login", {
+      navigate('/login', {
         state: { from: location },
         replace: true,
       });
@@ -757,35 +757,33 @@ function ConfigurationsPage() {
   //#endregion creators requests
 
   return (
-    <div className="space-y-4 ">
+    <div className='space-y-4 '>
       <Header
-        title={"Konfigürasyonlar"}
-        description={
-          "Uygulamanın bazı konfigürasyon ayarlarını buradan yapabilirsiniz."
-        }
+        title={'Konfigürasyonlar'}
+        description={'Uygulamanın bazı konfigürasyon ayarlarını buradan yapabilirsiniz.'}
       />
-      <div className="grid grid-flow-row-dense grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-x-4 gap-y-4 ">
+      <div className='grid grid-flow-row-dense grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-x-4 gap-y-4 '>
         {/* #region Mum Türü */}
-        <div className="px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4  ">
-          <h4 className="text-lg">Mum Türü</h4>
+        <div className='px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4  '>
+          <h4 className='text-lg'>Mum Türü</h4>
           <Button
-            appearance={"primary"}
+            appearance={'primary'}
             onClick={async (e) => {
               const lastWaxId = waxes[waxes.length - 1]?.waxId + 1 || 1;
               const newWaxItem = {
                 waxId: lastWaxId,
-                waxName: "Yeni Mum türü",
+                waxName: 'Yeni Mum türü',
               };
               setWaxes([...waxes, newWaxItem]);
               saveWax(newWaxItem.waxName);
             }}
           >
-            <AiOutlinePlus color="white" size={"16px"} />
+            <AiOutlinePlus color='white' size={'16px'} />
             Yeni Mum Türü Ekle
           </Button>
           {waxes.length > 0 ? (
-            <div className="flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth">
-              <div className="grid grid-flow-row-dense grid-cols-2 gap-2 border-b border-gray-600 py-4 ">
+            <div className='flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth'>
+              <div className='grid grid-flow-row-dense grid-cols-2 gap-2 border-b border-gray-600 py-4 '>
                 <p>Mum Türü</p>
                 <p>İşlemler</p>
               </div>
@@ -795,52 +793,49 @@ function ConfigurationsPage() {
                     key={wax.waxId}
                     className={` grid grid-flow-row-dense grid-cols-2 gap-2 border-b border-gray-600 py-4`}
                   >
-                    <div className="flex items-center justify-between">
+                    <div className='flex items-center justify-between'>
                       <EditableText
                         id={wax.waxId}
-                        type={"text"}
+                        type={'text'}
                         value={wax.waxName}
                         onChange={(e) => {
                           let newWaxList = [...waxes];
-                          let _wax = newWaxList.find(
-                            (w) => w.waxId === wax.waxId
-                          );
+                          let _wax = newWaxList.find((w) => w.waxId === wax.waxId);
                           _wax.waxName = e.target.value;
                           setWaxes(newWaxList);
                         }}
                         onKeyPress={(e) => {
-                          if (e.key === "Enter") {
+                          if (e.key === 'Enter') {
                             updateWax(wax.waxId, wax.waxName);
                           }
                         }}
                       />
                     </div>
-                    <div className="flex flex-row space-x-4 ">
+                    <div className='flex flex-row space-x-4 '>
                       <AiOutlineSave
-                        size={"24px"}
-                        className="hover:cursor-pointer hover:animate-pulse "
+                        size={'24px'}
+                        className='hover:cursor-pointer hover:animate-pulse '
                         onClick={() => {
                           updateWax(wax.waxId, wax.waxName);
                         }}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
+                        data-bs-toggle='tooltip'
+                        data-bs-placement='right'
                         title={
-                          waxesRef.current.find(
-                            (wref) => wref.waxId === wax.waxId
-                          )?.waxName === undefined
-                            ? "Kaydet"
-                            : "Güncelle"
+                          waxesRef.current.find((wref) => wref.waxId === wax.waxId)?.waxName ===
+                          undefined
+                            ? 'Kaydet'
+                            : 'Güncelle'
                         }
                       />
                       <AiOutlineDelete
-                        size={"24px"}
-                        className="hover:cursor-pointer hover:animate-pulse "
+                        size={'24px'}
+                        className='hover:cursor-pointer hover:animate-pulse '
                         onClick={() => {
                           deleteWax(wax.waxId);
                         }}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
-                        title="Tooltip on right"
+                        data-bs-toggle='tooltip'
+                        data-bs-placement='right'
+                        title='Tooltip on right'
                       />
                     </div>
                   </div>
@@ -848,32 +843,31 @@ function ConfigurationsPage() {
               })}
             </div>
           ) : (
-            <Alert apperance={"warning"}>Veriler Henüz Girilmemiş!</Alert>
+            <Alert apperance={'warning'}>Veriler Henüz Girilmemiş!</Alert>
           )}
         </div>
         {/* #endregion Mum Türü */}
         {/* #region Ayar */}
-        <div className="px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4 ">
-          <h4 className="text-lg">Ayar</h4>
+        <div className='px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4 '>
+          <h4 className='text-lg'>Ayar</h4>
           <Button
-            appearance={"primary"}
+            appearance={'primary'}
             onClick={() => {
-              const lastOptionId =
-                options[options.length - 1]?.optionId + 1 || 1;
+              const lastOptionId = options[options.length - 1]?.optionId + 1 || 1;
               const newOptionItem = {
                 optionId: lastOptionId,
-                optionText: "Yeni Ayar Türü",
+                optionText: 'Yeni Ayar Türü',
               };
               setOptions([...options, newOptionItem]);
               saveOption(newOptionItem.optionText);
             }}
           >
-            <AiOutlinePlus color="white" size={"16px"} />
+            <AiOutlinePlus color='white' size={'16px'} />
             Yeni Ayar Ekle
           </Button>
           {options.length > 0 ? (
-            <div className="flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth">
-              <div className="grid grid-flow-row-dense grid-cols-2 gap-2 border-b border-gray-600 py-4">
+            <div className='flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth'>
+              <div className='grid grid-flow-row-dense grid-cols-2 gap-2 border-b border-gray-600 py-4'>
                 <p>Ayar Türü</p>
                 <p>İşlemler</p>
               </div>
@@ -883,52 +877,49 @@ function ConfigurationsPage() {
                     key={option.optionId}
                     className={` grid grid-flow-row-dense grid-cols-2 gap-2 border-b border-gray-600 py-4`}
                   >
-                    <div className="flex items-center justify-between">
+                    <div className='flex items-center justify-between'>
                       <EditableText
                         id={option.optionId}
-                        type={"text"}
+                        type={'text'}
                         value={option.optionText}
                         onChange={(e) => {
                           let newOptionList = [...options];
-                          let _option = newOptionList.find(
-                            (o) => o.optionId === option.optionId
-                          );
+                          let _option = newOptionList.find((o) => o.optionId === option.optionId);
                           _option.optionText = e.target.value;
                           setOptions(newOptionList);
                         }}
                         onKeyPress={(e) => {
-                          if (e.key === "Enter") {
+                          if (e.key === 'Enter') {
                             updateOption(option.optionId, option.optionText);
                           }
                         }}
                       />
                     </div>
-                    <div className="flex flex-row space-x-4 ">
+                    <div className='flex flex-row space-x-4 '>
                       <AiOutlineSave
-                        size={"24px"}
-                        className="hover:cursor-pointer hover:animate-pulse "
+                        size={'24px'}
+                        className='hover:cursor-pointer hover:animate-pulse '
                         onClick={() => {
                           updateOption(option.optionId, option.optionText);
                         }}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
+                        data-bs-toggle='tooltip'
+                        data-bs-placement='right'
                         title={
-                          optionsRef.current.find(
-                            (oref) => oref.optionId === option.optionId
-                          )?.optionText === undefined
-                            ? "Kaydet"
-                            : "Güncelle"
+                          optionsRef.current.find((oref) => oref.optionId === option.optionId)
+                            ?.optionText === undefined
+                            ? 'Kaydet'
+                            : 'Güncelle'
                         }
                       />
                       <AiOutlineDelete
-                        size={"24px"}
-                        className="hover:cursor-pointer hover:animate-pulse "
+                        size={'24px'}
+                        className='hover:cursor-pointer hover:animate-pulse '
                         onClick={() => {
                           deleteOption(option.optionId);
                         }}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
-                        title="Sil"
+                        data-bs-toggle='tooltip'
+                        data-bs-placement='right'
+                        title='Sil'
                       />
                     </div>
                   </div>
@@ -936,32 +927,32 @@ function ConfigurationsPage() {
               })}
             </div>
           ) : (
-            <Alert apperance={"warning"}>Veriler Henüz Girilmemiş!</Alert>
+            <Alert apperance={'warning'}>Veriler Henüz Girilmemiş!</Alert>
           )}
         </div>
         {/* #endregion Ayar */}
 
         {/* #region Kalınlık */}
-        <div className="px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4">
-          <h4 className="text-lg">Kalınlık</h4>
+        <div className='px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4'>
+          <h4 className='text-lg'>Kalınlık</h4>
           <Button
-            appearance={"primary"}
+            appearance={'primary'}
             onClick={() => {
               const lastThickId = thicks[thicks.length - 1]?.thickId + 1 || 1;
               const newThickItem = {
                 thickId: lastThickId,
-                thickName: "Yeni Kalınlık",
+                thickName: 'Yeni Kalınlık',
               };
               setThicks([...thicks, newThickItem]);
               saveThick(newThickItem.thickName);
             }}
           >
-            <AiOutlinePlus color="white" size={"16px"} />
+            <AiOutlinePlus color='white' size={'16px'} />
             Yeni Kalınlık Ekle
           </Button>
           {thicks.length > 0 ? (
-            <div className="flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth">
-              <div className="grid grid-flow-row-dense grid-cols-2">
+            <div className='flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth'>
+              <div className='grid grid-flow-row-dense grid-cols-2'>
                 <p>Kalınlık</p>
                 <p>İşlemler</p>
               </div>
@@ -971,46 +962,44 @@ function ConfigurationsPage() {
                     key={thick.thickId}
                     className={` grid grid-flow-row-dense grid-cols-2 gap-2 border-b border-gray-600 py-4`}
                   >
-                    <div className="flex items-center justify-between">
+                    <div className='flex items-center justify-between'>
                       <EditableText
                         id={thick.thickId}
-                        type={"text"}
+                        type={'text'}
                         value={thick.thickName}
                         onChange={(e) => {
                           let newThickList = [...thicks];
-                          let _thick = newThickList.find(
-                            (t) => t.thickId === thick.thickId
-                          );
+                          let _thick = newThickList.find((t) => t.thickId === thick.thickId);
                           _thick.thickName = e.target.value;
                           setThicks(newThickList);
                         }}
                         onKeyPress={(e) => {
-                          if (e.key === "Enter") {
+                          if (e.key === 'Enter') {
                             updateThick(thick.thickId, thick.thickName);
                           }
                         }}
                       />
                     </div>
-                    <div className="flex flex-row space-x-4 ">
+                    <div className='flex flex-row space-x-4 '>
                       <AiOutlineSave
-                        size={"24px"}
-                        className="hover:cursor-pointer hover:animate-pulse "
+                        size={'24px'}
+                        className='hover:cursor-pointer hover:animate-pulse '
                         onClick={() => {
                           updateThick(thick.thickId, thick.thickName);
                         }}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
-                        title={"Kaydet"}
+                        data-bs-toggle='tooltip'
+                        data-bs-placement='right'
+                        title={'Kaydet'}
                       />
                       <AiOutlineDelete
-                        size={"24px"}
-                        className="hover:cursor-pointer hover:animate-pulse "
+                        size={'24px'}
+                        className='hover:cursor-pointer hover:animate-pulse '
                         onClick={() => {
                           deleteThick(thick.thickId);
                         }}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
-                        title="Sil"
+                        data-bs-toggle='tooltip'
+                        data-bs-placement='right'
+                        title='Sil'
                       />
                     </div>
                   </div>
@@ -1018,31 +1007,31 @@ function ConfigurationsPage() {
               })}
             </div>
           ) : (
-            <Alert apperance={"warning"}>Veriler Henüz Girilmemiş!</Alert>
+            <Alert apperance={'warning'}>Veriler Henüz Girilmemiş!</Alert>
           )}
         </div>
         {/* #endregion Kalınlık */}
 
-        <div className="px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4">
-          <h4 className="text-lg">Renkler</h4>
+        <div className='px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4'>
+          <h4 className='text-lg'>Renkler</h4>
           <Button
-            appearance={"primary"}
+            appearance={'primary'}
             onClick={() => {
               const lastColorId = colors[colors.length - 1]?.colorId + 1 || 1;
               const newColorItem = {
                 colorId: lastColorId,
-                colorName: "Yeni Renk",
+                colorName: 'Yeni Renk',
               };
               setColors([...colors, newColorItem]);
               saveColor(newColorItem.colorName);
             }}
           >
-            <AiOutlinePlus color="white" size={"16px"} />
+            <AiOutlinePlus color='white' size={'16px'} />
             Yeni Renk Ekle
           </Button>
           {colors.length > 0 ? (
-            <div className="flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth">
-              <div className="grid grid-flow-row-dense grid-cols-2">
+            <div className='flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth'>
+              <div className='grid grid-flow-row-dense grid-cols-2'>
                 <p>Renk</p>
                 <p>İşlemler</p>
               </div>
@@ -1052,46 +1041,44 @@ function ConfigurationsPage() {
                     key={color.colorId}
                     className={` grid grid-flow-row-dense grid-cols-2 gap-2 border-b border-gray-600 py-4`}
                   >
-                    <div className="flex items-center justify-between">
+                    <div className='flex items-center justify-between'>
                       <EditableText
                         id={color.colorId}
-                        type={"text"}
+                        type={'text'}
                         value={color.colorName}
                         onChange={(e) => {
                           let newColorList = [...colors];
-                          let _color = newColorList.find(
-                            (c) => c.colorId === color.colorId
-                          );
+                          let _color = newColorList.find((c) => c.colorId === color.colorId);
                           _color.colorName = e.target.value;
                           setColors(newColorList);
                         }}
                         onKeyPress={(e) => {
-                          if (e.key === "Enter") {
+                          if (e.key === 'Enter') {
                             updateColor(color.colorId, color.colorName);
                           }
                         }}
                       />
                     </div>
-                    <div className="flex flex-row space-x-4 ">
+                    <div className='flex flex-row space-x-4 '>
                       <AiOutlineSave
-                        size={"24px"}
-                        className="hover:cursor-pointer hover:animate-pulse "
+                        size={'24px'}
+                        className='hover:cursor-pointer hover:animate-pulse '
                         onClick={() => {
                           updateColor(color.colorId, color.colorName);
                         }}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
-                        title={"Kaydet"}
+                        data-bs-toggle='tooltip'
+                        data-bs-placement='right'
+                        title={'Kaydet'}
                       />
                       <AiOutlineDelete
-                        size={"24px"}
-                        className="hover:cursor-pointer hover:animate-pulse "
+                        size={'24px'}
+                        className='hover:cursor-pointer hover:animate-pulse '
                         onClick={() => {
                           deleteColor(color.colorId);
                         }}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
-                        title="Sil"
+                        data-bs-toggle='tooltip'
+                        data-bs-placement='right'
+                        title='Sil'
                       />
                     </div>
                   </div>
@@ -1099,31 +1086,31 @@ function ConfigurationsPage() {
               })}
             </div>
           ) : (
-            <Alert apperance={"warning"}>Veriler Henüz Girilmemiş!</Alert>
+            <Alert apperance={'warning'}>Veriler Henüz Girilmemiş!</Alert>
           )}
         </div>
 
-        <div className="px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4">
-          <h4 className="text-lg">Açıklamalar</h4>
+        <div className='px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4'>
+          <h4 className='text-lg'>Açıklamalar</h4>
           <Button
-            appearance={"primary"}
+            appearance={'primary'}
             onClick={() => {
               const lastDescriptionId =
                 descriptions[descriptions.length - 1]?.descriptionId + 1 || 1;
               const newDescriptionItem = {
                 descriptionId: lastDescriptionId,
-                descriptionText: "Yeni Açıklama",
+                descriptionText: 'Yeni Açıklama',
               };
               setDescriptions([...colors, newDescriptionItem]);
               saveDescription(newDescriptionItem.descriptionText);
             }}
           >
-            <AiOutlinePlus color="white" size={"16px"} />
+            <AiOutlinePlus color='white' size={'16px'} />
             Yeni Açıklama Ekle
           </Button>
           {descriptions.length > 0 ? (
-            <div className="flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth">
-              <div className="grid grid-flow-row-dense grid-cols-2">
+            <div className='flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth'>
+              <div className='grid grid-flow-row-dense grid-cols-2'>
                 <p>Açıklama</p>
                 <p>İşlemler</p>
               </div>
@@ -1133,52 +1120,49 @@ function ConfigurationsPage() {
                     key={description.descriptionId}
                     className={` grid grid-flow-row-dense grid-cols-2 gap-2 border-b border-gray-600 py-4`}
                   >
-                    <div className="flex items-center justify-between">
+                    <div className='flex items-center justify-between'>
                       <EditableText
                         id={description.descriptionId}
-                        type={"text"}
+                        type={'text'}
                         value={description.descriptionText}
                         onChange={(e) => {
                           let newDescriptionList = [...descriptions];
                           let _description = newDescriptionList.find(
-                            (d) => d.descriptionId === description.descriptionId
+                            (d) => d.descriptionId === description.descriptionId,
                           );
                           _description.descriptionText = e.target.value;
                           setDescriptions(newDescriptionList);
                         }}
                         onKeyPress={(e) => {
-                          if (e.key === "Enter") {
+                          if (e.key === 'Enter') {
                             updateDescription(
                               description.descriptionId,
-                              description.descriptionText
+                              description.descriptionText,
                             );
                           }
                         }}
                       />
                     </div>
-                    <div className="flex flex-row space-x-4 ">
+                    <div className='flex flex-row space-x-4 '>
                       <AiOutlineSave
-                        size={"24px"}
-                        className="hover:cursor-pointer hover:animate-pulse "
+                        size={'24px'}
+                        className='hover:cursor-pointer hover:animate-pulse '
                         onClick={() => {
-                          updateDescription(
-                            description.descriptionId,
-                            description.descriptionText
-                          );
+                          updateDescription(description.descriptionId, description.descriptionText);
                         }}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
-                        title={"Kaydet"}
+                        data-bs-toggle='tooltip'
+                        data-bs-placement='right'
+                        title={'Kaydet'}
                       />
                       <AiOutlineDelete
-                        size={"24px"}
-                        className="hover:cursor-pointer hover:animate-pulse "
+                        size={'24px'}
+                        className='hover:cursor-pointer hover:animate-pulse '
                         onClick={() => {
                           deleteDescription(description.descriptionId);
                         }}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
-                        title="Sil"
+                        data-bs-toggle='tooltip'
+                        data-bs-placement='right'
+                        title='Sil'
                       />
                     </div>
                   </div>
@@ -1186,32 +1170,31 @@ function ConfigurationsPage() {
               })}
             </div>
           ) : (
-            <Alert apperance={"warning"}>Veriler Henüz Girilmemiş!</Alert>
+            <Alert apperance={'warning'}>Veriler Henüz Girilmemiş!</Alert>
           )}
         </div>
 
-        <div className="px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4">
-          <h4 className="text-lg">Hazırlayan</h4>
+        <div className='px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4'>
+          <h4 className='text-lg'>Hazırlayan</h4>
           <Button
-            appearance={"primary"}
+            appearance={'primary'}
             onClick={() => {
-              const lastCreatorId =
-                creators[creators.length - 1]?.creatorId + 1 || 1;
+              const lastCreatorId = creators[creators.length - 1]?.creatorId + 1 || 1;
               const newCreatorItem = {
                 creatorId: lastCreatorId,
-                creatorName: "Yeni Hazırlayan Kişi",
+                creatorName: 'Yeni Hazırlayan Kişi',
               };
 
               setCreators([...creators, newCreatorItem]);
               saveCreator(newCreatorItem.creatorName);
             }}
           >
-            <AiOutlinePlus color="white" size={"16px"} />
+            <AiOutlinePlus color='white' size={'16px'} />
             Yeni Hazırlayan Ekle
           </Button>
           {creators.length > 0 ? (
-            <div className="flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth">
-              <div className="grid grid-flow-row-dense grid-cols-2">
+            <div className='flex flex-col max-h-96 overflow-y-scroll scroll-m-1 scroll-smooth'>
+              <div className='grid grid-flow-row-dense grid-cols-2'>
                 <p>Hazırlayan</p>
                 <p>İşlemler</p>
               </div>
@@ -1221,49 +1204,46 @@ function ConfigurationsPage() {
                     key={creator.creatorId}
                     className={` grid grid-flow-row-dense grid-cols-2 gap-2 border-b border-gray-600 py-4`}
                   >
-                    <div className="flex items-center justify-between">
+                    <div className='flex items-center justify-between'>
                       <EditableText
                         id={creator.creatorId}
-                        type={"text"}
+                        type={'text'}
                         value={creator.creatorName}
                         onChange={(e) => {
                           let newCreatorList = [...creators];
                           let _creator = newCreatorList.find(
-                            (c) => c.creatorId === creator.creatorId
+                            (c) => c.creatorId === creator.creatorId,
                           );
                           _creator.creatorName = e.target.value;
                           setCreators(newCreatorList);
                         }}
                         onKeyPress={(e) => {
-                          if (e.key === "Enter") {
-                            updateCreator(
-                              creator.creatorId,
-                              creator.creatorName
-                            );
+                          if (e.key === 'Enter') {
+                            updateCreator(creator.creatorId, creator.creatorName);
                           }
                         }}
                       />
                     </div>
-                    <div className="flex flex-row space-x-4 ">
+                    <div className='flex flex-row space-x-4 '>
                       <AiOutlineSave
-                        size={"24px"}
-                        className="hover:cursor-pointer hover:animate-pulse "
+                        size={'24px'}
+                        className='hover:cursor-pointer hover:animate-pulse '
                         onClick={() => {
                           updateCreator(creator.creatorId, creator.creatorName);
                         }}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
-                        title={"Kaydet"}
+                        data-bs-toggle='tooltip'
+                        data-bs-placement='right'
+                        title={'Kaydet'}
                       />
                       <AiOutlineDelete
-                        size={"24px"}
-                        className="hover:cursor-pointer hover:animate-pulse "
+                        size={'24px'}
+                        className='hover:cursor-pointer hover:animate-pulse '
                         onClick={() => {
                           deleteCreator(creator.creatorId);
                         }}
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="right"
-                        title="Sil"
+                        data-bs-toggle='tooltip'
+                        data-bs-placement='right'
+                        title='Sil'
                       />
                     </div>
                   </div>
@@ -1271,7 +1251,7 @@ function ConfigurationsPage() {
               })}
             </div>
           ) : (
-            <Alert apperance={"warning"}>Veriler Henüz Girilmemiş!</Alert>
+            <Alert apperance={'warning'}>Veriler Henüz Girilmemiş!</Alert>
           )}
         </div>
         {/* <div className="px-6 py-4 border border-spacing-2 border-gray-600 rounded space-y-4">
@@ -1312,7 +1292,6 @@ function ConfigurationsPage() {
                         type={"text"}
                         value={treeStatus.treeStatusName}
                         onChange={(e) => {
-                          console.log("e");
                           let newTreeStatusList = [...treeStatuses];
                           let _treeStatus = newTreeStatusList.find(
                             (t) => t.treeStatusId === treeStatus.treeStatusId

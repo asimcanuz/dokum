@@ -202,7 +202,6 @@ function NewTreeTab({
           <p className='col-span-12 md:col-span-1 items-center flex flex-row justify-center'>
             İş Grubu
           </p>
-          {console.log(newTree)}
           <div className='col-span-12 md:col-span-5'>
             <SelectBox
               className='hover:cursor-pointer text-sm'
@@ -230,7 +229,6 @@ function NewTreeTab({
           />
         </div>
         <div className='flex flex-row items-center justify-between'>
-          {console.log(newTree)}
           <NumberBox
             label={'Agaç No'}
             labelMode={'floating'}
@@ -316,7 +314,6 @@ function NewTreeTab({
                       newTree.ayarId === option.optionId ? 'bg-gray-300 dark:bg-slate-800' : ''
                     } p-1 hover:cursor-pointer`}
                     onClick={() => {
-                      console.log(option);
                       if (
                         option.optionText === 'Bronz' ||
                         option.optionText === 'Alloy' ||

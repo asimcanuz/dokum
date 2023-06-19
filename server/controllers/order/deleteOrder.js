@@ -29,6 +29,7 @@ const deleteOrder = async (req, res) => {
 
       const customers = [];
       let isImmediate = false;
+
       orders.forEach((order) => {
         if (order.isImmediate) {
           isImmediate = true;
@@ -49,7 +50,19 @@ const deleteOrder = async (req, res) => {
           },
         }
       );
-      if (customers.length > 1) {
+      if (customers.length === 0) {
+        await db.tree.update(
+          {
+            treeType: "",
+            customerQuantity: 0,
+          },
+          {
+            where: {
+              treeId,
+            },
+          }
+        );
+      } else if (customers.length > 1) {
         await db.tree.update(
           {
             treeType: "Karışık",

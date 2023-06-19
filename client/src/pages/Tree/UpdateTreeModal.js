@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from '../../components/Modal/Modal';
 import ModalHeader from '../../components/Modal/ModalHeader';
 import ModalBody from '../../components/Modal/ModalBody';
@@ -47,6 +47,33 @@ function UpdateTreeModal({
   } = updateClick;
   const navigate = useNavigate();
   const location = useLocation();
+  const [treeIndexes, setTreeIndexes] = useState([{ treeNo: '', listNo: '', treeId: '' }]);
+  const [treeNoError, setTreeNoError] = useState({ show: false, message: '' });
+  const [listNoError, setListNoError] = useState({ show: false, message: '' });
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const getTreeIndexes = async () => {
+      try {
+        const res = await axiosPrivate.get(Endpoints.TREE.INDEXES, {
+          params: {
+            jobGroupId: selectedJobGroup,
+          },
+          signal: controller.signal,
+        });
+
+        if (isMounted) {
+          setTreeIndexes(res.data.trees);
+        }
+      } catch (error) {
+        console.error(error);
+        navigate('/login', { state: { from: location }, replace: true });
+      }
+    };
+
+    isMounted && getTreeIndexes();
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -132,8 +159,29 @@ function UpdateTreeModal({
                     name='treeNo'
                     type={'text'}
                     value={formik.values.treeNo}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      formik.setFieldValue('treeNo', e.target.value);
+
+                      let sameNumber = treeIndexes.find(
+                        (tree) => tree.treeNo === parseInt(e.target.value),
+                      );
+                      if (sameNumber !== undefined || sameNumber !== null) {
+                        setTreeNoError({
+                          show: true,
+                          message: 'İş grubunda aynı ağaç numarası bulunmaktadır.',
+                        });
+                      } else {
+                        setTreeNoError({
+                          show: false,
+                          message: '',
+                        });
+                      }
+                    }}
                   />
+
+                  {treeNoError.show ? (
+                    <div className='text-red-600'>{treeNoError.message}</div>
+                  ) : null}
                 </div>
                 <div>
                   <label htmlFor='listNo'>Liste Numarası</label>
@@ -142,8 +190,28 @@ function UpdateTreeModal({
                     name='listNo'
                     type={'text'}
                     value={formik.values.listNo}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      formik.setFieldValue('listNo', e.target.value);
+
+                      let sameNumber = treeIndexes.find(
+                        (tree) => tree.listNo === parseInt(e.target.value),
+                      );
+                      if (sameNumber !== undefined || sameNumber !== null) {
+                        setListNoError({
+                          show: true,
+                          message: 'İş grubunda aynı liste numarası bulunmaktadır.',
+                        });
+                      } else {
+                        setListNoError({
+                          show: false,
+                          message: '',
+                        });
+                      }
+                    }}
                   />
+                  {listNoError.show ? (
+                    <div className='text-red-600'>{listNoError.message}</div>
+                  ) : null}
                 </div>
                 <div className='flex  justify-center items-center'>
                   <CheckBox
@@ -318,6 +386,7 @@ function UpdateTreeModal({
         </Button>
         <Button
           appearance={'success'}
+          disabled={listNoError.show && treeNoError.show}
           onClick={async () => {
             await formik.handleSubmit();
 

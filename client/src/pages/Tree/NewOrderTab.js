@@ -154,7 +154,6 @@ function NewOrderTab({
               value={order.quantity}
               min='1'
               onValueChanged={(e) => {
-                console.log(e);
                 if (parseInt(e.value) <= 0) {
                 }
                 setOrder({ ...order, quantity: e.value });
@@ -206,7 +205,6 @@ function NewOrderTab({
             Sipariş Ekle
           </Button>
         </div>
-        {console.log(errorModal)}
       </section>{' '}
       {errorModal.visible && (
         <ErrorModal

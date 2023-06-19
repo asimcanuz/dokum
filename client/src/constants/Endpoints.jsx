@@ -18,6 +18,7 @@ export const Endpoints = {
     TODAY: 'api/tree/today',
     PASSIVE: 'api/tree/passive',
     OVEN: '/api/tree/oven',
+    INDEXES: '/api/tree/indexes',
   },
   ORDER: 'api/order',
   COLOR: 'api/color',

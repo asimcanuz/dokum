@@ -1,4 +1,4 @@
-const { Sequelize, where } = require("sequelize");
+const { Sequelize, where, sequelize } = require("sequelize");
 const db = require("../../models");
 const Op = Sequelize.Op;
 

@@ -10,8 +10,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Input from '../../components/Input';
 
 function NewListNo({ open, toggle, replaceJobGroup, replacedTree, getTrees }) {
-  const [listNo, setListNo] = useState(1);
-  const [listNoList, setListNoList] = useState([]);
+  const [treeNo, setTreeNo] = useState(1);
+  const [treeNoList, setTreeNoList] = useState([]);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,7 +27,7 @@ function NewListNo({ open, toggle, replaceJobGroup, replacedTree, getTrees }) {
           signal: controller.signal,
         });
 
-        setListNoList(res.data);
+        setTreeNoList(res.data);
       } catch (error) {
         console.error(error);
         navigate('/login', { state: { from: location }, replace: true });
@@ -38,29 +38,28 @@ function NewListNo({ open, toggle, replaceJobGroup, replacedTree, getTrees }) {
   }, [replaceJobGroup]);
   return (
     <Modal open={open}>
-      <ModalHeader title={'Liste Numarası güncelle'} toggle={toggle} />
+      <ModalHeader title={'Ağaç Numarası güncelle'} toggle={toggle} />
       <ModalBody>
         <Input
           type={'number'}
-          placeholder={'Liste numarası'}
-          value={listNo}
+          placeholder={'Ağaç numarası'}
+          value={treeNo}
           min='1'
-          onChange={(e) => setListNo(e.target.value)}
+          onChange={(e) => setTreeNo(e.target.value)}
         />
-        {console.log(listNo)}
         <span
           className={
-            listNo === ''
+            treeNo === ''
               ? 'text-red-500'
-              : listNoList?.includes(parseInt(listNo))
+              : treeNoList?.includes(parseInt(treeNo))
               ? 'text-red-600'
               : 'text-green-600'
           }
         >
-          {listNo === ''
+          {treeNo === ''
             ? 'Taşımaya uygun değildir. Lütfen geçerli bir sayı giriniz'
-            : listNoList?.includes(parseInt(listNo))
-            ? 'Yeni iş grubunda aynı liste numarası vardı'
+            : treeNoList?.includes(parseInt(treeNo))
+            ? 'Yeni iş grubunda aynı ağaç numarası vardı'
             : 'Taşımaya uygundur'}
         </span>
       </ModalBody>
@@ -70,13 +69,13 @@ function NewListNo({ open, toggle, replaceJobGroup, replacedTree, getTrees }) {
         </Button>
         <Button
           appearance={'success'}
-          disabled={listNoList?.includes(parseInt(listNo)) || listNo === 0 || listNo === ''}
+          disabled={treeNoList?.includes(parseInt(treeNo)) || treeNo === 0 || treeNo === ''}
           onClick={async () => {
             await axiosPrivate
               .put(Endpoints.FINISHDAY + '/date', {
                 treeId: replacedTree.treeId,
                 jobGroupId: replaceJobGroup,
-                listNo: listNo,
+                treeNo: treeNo,
               })
               .then(async () => {
                 await getTrees();

@@ -338,6 +338,7 @@ function TreePage() {
           toggle={() => {
             setUpdateClick(initUpdateClick);
           }}
+          jobGroupId={selectedJobGroup}
         />
       ) : null}
     </Fragment>

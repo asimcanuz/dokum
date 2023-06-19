@@ -1,17 +1,9 @@
-import React, { Fragment, useEffect, useMemo, useState } from "react";
-import Select from "react-select";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { Endpoints } from "../../constants/Endpoints";
-import {
-  Document,
-  Font,
-  PDFViewer,
-  Page,
-  StyleSheet,
-  Text,
-  View,
-} from "@react-pdf/renderer";
-import Alert from "../../components/Alert/Alert";
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
+import Select from 'react-select';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { Endpoints } from '../../constants/Endpoints';
+import { Document, Font, PDFViewer, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import Alert from '../../components/Alert/Alert';
 // import PdfTable from "./PdfTable";
 
 function MusteriAdetSiraliMadenAyarlamaRaporu({
@@ -27,16 +19,14 @@ function MusteriAdetSiraliMadenAyarlamaRaporu({
     return jobGroups.map((jobGroup) => {
       return {
         value: jobGroup.id,
-        label: "No: " + jobGroup.number,
+        label: 'No: ' + jobGroup.number,
       };
     });
   }, [jobGroups]);
 
   const getJobGroupValue = () => {
-    if (selectedJobGroup !== "") {
-      return jobGroupOptions.find(
-        (option) => option.value === selectedJobGroup
-      );
+    if (selectedJobGroup !== '') {
+      return jobGroupOptions.find((option) => option.value === selectedJobGroup);
     } else {
       return null;
     }
@@ -46,15 +36,12 @@ function MusteriAdetSiraliMadenAyarlamaRaporu({
     let isMounted = true;
     const controller = new AbortController();
     const fetchData = async () => {
-      const res = await axiosPrivate.get(
-        Endpoints.REPORTS.MUSTERIADETSIRALIMADENAYARLAMARAPORU,
-        {
-          params: {
-            jobGroupId: selectedJobGroup,
-          },
-          signal: controller.signal,
-        }
-      );
+      const res = await axiosPrivate.get(Endpoints.REPORTS.MUSTERIADETSIRALIMADENAYARLAMARAPORU, {
+        params: {
+          jobGroupId: selectedJobGroup,
+        },
+        signal: controller.signal,
+      });
 
       if (isMounted) {
         setTrees(res.data.musteriAdetSiraliMadenAyarlamaRaporu);
@@ -65,10 +52,10 @@ function MusteriAdetSiraliMadenAyarlamaRaporu({
   }, [selectedJobGroup]);
 
   return (
-    <div className="flex flex-col space-y-4">
-      <div className="">
+    <div className='flex flex-col space-y-4'>
+      <div className=''>
         <Select
-          className="w-1/2"
+          className='w-1/2'
           value={getJobGroupValue()}
           options={jobGroupOptions}
           onChange={(e) => {
@@ -83,16 +70,11 @@ function MusteriAdetSiraliMadenAyarlamaRaporu({
           ) : (
             <Fragment>
               {trees.length > 0 ? (
-                <PDFViewer className="w-full" style={{ height: "79vh" }}>
-                  <MadenAyarlamaRaporuPDF
-                    trees={trees}
-                    jobGroup={getJobGroupValue()}
-                  />
+                <PDFViewer className='w-full' style={{ height: '79vh' }}>
+                  <MadenAyarlamaRaporuPDF trees={trees} jobGroup={getJobGroupValue()} />
                 </PDFViewer>
               ) : (
-                <Alert apperance={"warning"}>
-                  Seçilen iş grubunda ağaç girilmemiş.
-                </Alert>
+                <Alert apperance={'warning'}>Seçilen iş grubunda ağaç girilmemiş.</Alert>
               )}
             </Fragment>
           )
@@ -105,79 +87,79 @@ function MusteriAdetSiraliMadenAyarlamaRaporu({
 }
 const styles = StyleSheet.create({
   page: {
-    fontFamily: "Roboto",
+    fontFamily: 'Roboto',
     fontSize: 8,
     paddingHorizontal: 16,
     paddingVertical: 16,
   },
 
   table: {
-    display: "table",
-    width: "auto",
-    borderStyle: "solid",
+    display: 'table',
+    width: 'auto',
+    borderStyle: 'solid',
     borderWidth: 1,
-    borderColor: "#bfbfbf",
+    borderColor: '#bfbfbf',
     borderRightWidth: 0,
     borderBottomWidth: 0,
     marginTop: 2,
     fontSize: 8,
   },
   tableRow: {
-    margin: "auto",
-    flexDirection: "row",
+    margin: 'auto',
+    flexDirection: 'row',
   },
   tableColHeader: {
-    fontWeight: "medium",
-    borderStyle: "solid",
+    fontWeight: 'medium',
+    borderStyle: 'solid',
     borderWidth: 1,
-    borderColor: "#bfbfbf",
+    borderColor: '#bfbfbf',
     borderTopWidth: 0,
     borderLeftWidth: 0,
-    alignItems: "center",
-    justifyContent: "center",
-    height: "32px",
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '32px',
   },
   tableCol: {
-    height: "50px",
-    borderStyle: "solid",
+    height: '50px',
+    borderStyle: 'solid',
     borderWidth: 1,
-    borderColor: "#bfbfbf",
+    borderColor: '#bfbfbf',
     borderTopWidth: 0,
     borderLeftWidth: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   tableCellHeader: {
-    margin: "auto",
+    margin: 'auto',
     marginTop: 5,
     fontSize: 8,
-    textAlign: "center",
+    textAlign: 'center',
   },
   tableCell: {
     fontSize: 7,
-    minHeight: "40px",
+    minHeight: '40px',
     // textAlign: "center",
     // backgroundColor: "#eaeaea",
   },
   pageNumber: {
-    position: "absolute",
+    position: 'absolute',
     fontSize: 12,
     bottom: 0,
     left: 0,
     right: 0,
-    textAlign: "center",
-    color: "grey",
+    textAlign: 'center',
+    color: 'grey',
   },
 });
 // Register Font
 Font.register({
-  family: "Roboto",
-  src: "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf",
+  family: 'Roboto',
+  src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf',
 });
 Font.register({
-  family: "Roboto",
-  src: "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-medium-webfont.ttf",
+  family: 'Roboto',
+  src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-medium-webfont.ttf',
 });
 
 const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
@@ -189,26 +171,24 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
 
     // option.optionText'e göre grupla
     trees.forEach((tree, index) => {
-      console.log(tree);
-      if (mineralWaxTotalWeights[tree["option.optionText"]] === undefined) {
-        mineralWaxTotalWeights[tree["option.optionText"]] = {
+      if (mineralWaxTotalWeights[tree['option.optionText']] === undefined) {
+        mineralWaxTotalWeights[tree['option.optionText']] = {
           totalMineralWeight: tree.mineralWeight,
           totalWaxWeight: tree.waxWeight,
         };
       } else {
-        mineralWaxTotalWeights[tree["option.optionText"]] = {
+        mineralWaxTotalWeights[tree['option.optionText']] = {
           totalMineralWeight:
-            mineralWaxTotalWeights[tree["option.optionText"]]
-              .totalMineralWeight + tree.mineralWeight,
+            mineralWaxTotalWeights[tree['option.optionText']].totalMineralWeight +
+            tree.mineralWeight,
           totalWaxWeight:
-            mineralWaxTotalWeights[tree["option.optionText"]].totalWaxWeight +
-            tree.waxWeight,
+            mineralWaxTotalWeights[tree['option.optionText']].totalWaxWeight + tree.waxWeight,
         };
       }
       if (index !== 0) {
         if (
           trees[index - 1] !== undefined &&
-          trees[index - 1]["option.optionText"] !== tree["option.optionText"]
+          trees[index - 1]['option.optionText'] !== tree['option.optionText']
         ) {
           groupedTrees.push([tree]);
         } else {
@@ -239,53 +219,45 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
   };
 
   const groupedTrees = groupTrees();
-  console.log(mineralWaxTotalWeights);
 
   return (
     <Document>
-      <Page size="A4" style={styles.page} wrap>
+      <Page size='A4' style={styles.page} wrap>
         {groupedTrees !== null &&
           groupedTrees.map((groupedTree, index) => {
             return (
               <View break={index > 0}>
                 <View
                   style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
                   }}
                 >
                   <View fixed>
-                    <Text style={{ fontSize: 12, fontWeight: "bold" }}>
-                      {jobGroup.label}
-                    </Text>
+                    <Text style={{ fontSize: 12, fontWeight: 'bold' }}>{jobGroup.label}</Text>
                   </View>
                   <View fixed>
-                    <Text style={{ fontSize: 12, fontWeight: "bold" }}>
-                      {groupedTree[0]["option.optionText"]}
+                    <Text style={{ fontSize: 12, fontWeight: 'bold' }}>
+                      {groupedTree[0]['option.optionText']}
                     </Text>
                   </View>
-                  <View fixed style={{ display: "flex", flexDirection: "row" }}>
-                    <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+                  <View fixed style={{ display: 'flex', flexDirection: 'row' }}>
+                    <Text style={{ fontSize: 12, fontWeight: 'bold' }}>
                       Toplam Mum Ağırlık :
-                      {
-                        mineralWaxTotalWeights[
-                          groupedTree[0]["option.optionText"]
-                        ].totalWaxWeight
-                      }
+                      {mineralWaxTotalWeights[groupedTree[0]['option.optionText']].totalWaxWeight}
                     </Text>
                     <Text
                       style={{
                         fontSize: 12,
-                        fontWeight: "bold",
-                        marginLeft: "12px",
+                        fontWeight: 'bold',
+                        marginLeft: '12px',
                       }}
                     >
                       Toplam Maden Ağırlık :
                       {
-                        mineralWaxTotalWeights[
-                          groupedTree[0]["option.optionText"]
-                        ].totalMineralWeight
+                        mineralWaxTotalWeights[groupedTree[0]['option.optionText']]
+                          .totalMineralWeight
                       }
                     </Text>
                   </View>
@@ -327,11 +299,8 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
                   {groupedTree.map((row, index) => {
                     return (
                       <View style={styles.tableRow} key={index} wrap={false}>
-                        <View
-                          style={[styles.tableCol, { width: 20 }]}
-                          wrap={false}
-                        >
-                          <Text wrap={false}>{row["treeNo"]}</Text>
+                        <View style={[styles.tableCol, { width: 20 }]} wrap={false}>
+                          <Text wrap={false}>{row['treeNo']}</Text>
                         </View>
 
                         <View
@@ -339,97 +308,70 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
                             styles.tableCol,
                             {
                               width: 117,
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                              justifyContent: "flex-start",
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              justifyContent: 'flex-start',
                             },
                           ]}
                         >
                           <View
                             style={[
                               {
-                                display: "flex",
-                                flexDirection: "row",
+                                display: 'flex',
+                                flexDirection: 'row',
                               },
                             ]}
                           >
-                            {row["isImmediate"] ? (
-                              <Text wrap style={{ color: "red" }}>
+                            {row['isImmediate'] ? (
+                              <Text wrap style={{ color: 'red' }}>
                                 (A)
                               </Text>
                             ) : null}
 
-                            {row["isOld"] ? (
-                              <Text wrap style={{ color: "red" }}>
+                            {row['isOld'] ? (
+                              <Text wrap style={{ color: 'red' }}>
                                 (E)
                               </Text>
                             ) : null}
-                            <Text wrap>{row["treeType"]}</Text>
+                            <Text wrap>{row['treeType']}</Text>
                           </View>
 
-                          <View style={{ overflow: "hidden" }}>
+                          <View style={{ overflow: 'hidden' }}>
                             <Text
                               style={{
-                                color: "blue",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
+                                color: 'blue',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
                               }}
                             >
-                              {row["desc"] !== null
-                                ? row["desc"].slice(0, 65)
-                                : ""}
+                              {row['desc'] !== null ? row['desc'].slice(0, 65) : ''}
                             </Text>
                           </View>
                         </View>
-                        <View
-                          style={[styles.tableCol, { width: 30 }]}
-                          wrap={false}
-                        >
-                          <Text wrap={false}>{row["customerQuantity"]}</Text>
+                        <View style={[styles.tableCol, { width: 30 }]} wrap={false}>
+                          <Text wrap={false}>{row['customerQuantity']}</Text>
                         </View>
-                        <View
-                          style={[styles.tableCol, { width: 35 }]}
-                          wrap={false}
-                        >
-                          <Text wrap={false}>{row["option.optionText"]}</Text>
+                        <View style={[styles.tableCol, { width: 35 }]} wrap={false}>
+                          <Text wrap={false}>{row['option.optionText']}</Text>
                         </View>
-                        <View
-                          style={[styles.tableCol, { width: 40 }]}
-                          wrap={false}
-                        >
-                          <Text wrap={false}>{row["thick.thickName"]}</Text>
+                        <View style={[styles.tableCol, { width: 40 }]} wrap={false}>
+                          <Text wrap={false}>{row['thick.thickName']}</Text>
                         </View>
-                        <View
-                          style={[styles.tableCol, { width: 30 }]}
-                          wrap={false}
-                        >
-                          <Text wrap={false}>{row["color.colorName"]}</Text>
+                        <View style={[styles.tableCol, { width: 30 }]} wrap={false}>
+                          <Text wrap={false}>{row['color.colorName']}</Text>
                         </View>
-                        <View
-                          style={[styles.tableCol, { width: 40 }]}
-                          wrap={false}
-                        >
-                          <Text wrap={false}>{row["waxWeight"]}</Text>
+                        <View style={[styles.tableCol, { width: 40 }]} wrap={false}>
+                          <Text wrap={false}>{row['waxWeight']}</Text>
                         </View>
-                        <View
-                          style={[styles.tableCol, { width: 40 }]}
-                          wrap={false}
-                        >
-                          <Text wrap={false}>{row["mineralWeight"]}</Text>
+                        <View style={[styles.tableCol, { width: 40 }]} wrap={false}>
+                          <Text wrap={false}>{row['mineralWeight']}</Text>
                         </View>
-                        <View
-                          style={[styles.tableCol, { width: 105 }]}
-                          wrap={false}
-                        >
-                          <Text wrap={false}>{""}</Text>
+                        <View style={[styles.tableCol, { width: 105 }]} wrap={false}>
+                          <Text wrap={false}>{''}</Text>
                         </View>
-                        <View
-                          style={[styles.tableCol, { width: 105 }]}
-                          key={index}
-                          wrap={false}
-                        >
-                          <Text wrap={false}>{""}</Text>
+                        <View style={[styles.tableCol, { width: 105 }]} key={index} wrap={false}>
+                          <Text wrap={false}>{''}</Text>
                         </View>
                       </View>
                     );
@@ -440,9 +382,7 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
           })}
         <Text
           style={styles.pageNumber}
-          render={({ pageNumber, totalPages }) =>
-            `${pageNumber} / ${totalPages}`
-          }
+          render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
           fixed
         />
       </Page>

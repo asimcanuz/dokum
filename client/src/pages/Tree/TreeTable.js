@@ -61,7 +61,6 @@ function TreeTable({
     e.component.expandRow(e.currentSelectedRowKeys[0]);
 
     let clickedTree = e.selectedRowsData[0];
-
     let customerIds = [];
 
     clickedTree.orders.forEach((order) => {
@@ -83,6 +82,7 @@ function TreeTable({
 
   function rowDblClick(e) {
     const { data } = e;
+    // if (data.treeStatus.treeStatusName !== 'Hazırlanıyor') return;
     const {
       active,
       colorId,
@@ -140,9 +140,6 @@ function TreeTable({
       component: e.component,
       worksheet,
       autoFilterEnabled: true,
-      customizeCell: ({ gridCell, excelCell }) => {
-        console.log(gridCell, excelCell);
-      },
     }).then(() => {
       workbook.xlsx.writeBuffer().then((buffer) => {
         saveAs(
@@ -150,7 +147,6 @@ function TreeTable({
           selectedJobGroup + '-IsGrubuAgacListesi.xlsx',
         );
       });
-      console.log('excel');
     });
     e.cancel = true;
   }
@@ -214,7 +210,15 @@ function TreeTable({
           />
           <Scrolling mode='virtual' />
           <Selection mode={'single'} />
-          <Column dataField={'treeNo'} caption={'Ağaç No'} width={'70px'} allowEditing={false} />
+          <Column
+            dataField={'treeNo'}
+            caption={'Ağaç No'}
+            width={'70px'}
+            allowEditing={false}
+            dataType={'integer'}
+            defaultSortOrder={'asc'}
+            // cellRender={({ value }) => parseInt(value)}
+          />
           <Column dataField={'listNo'} caption={'Liste No'} width={'70px'} allowEditing={false} />
           <Column
             dataField={'isImmediate'}
