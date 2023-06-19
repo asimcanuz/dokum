@@ -42,7 +42,7 @@ function OvenMainPage() {
   const [firinListesi, setFirinListesi] = React.useState(initialFirinListesi);
   const [allDisabled, setAllDisabled] = React.useState(false);
   const [trees, setTrees] = useState([]);
-
+  const [treeLoading, setTreeLoading] = useState(false);
   useEffect(() => {
     const controller = new AbortController();
     let isMounted = true;
@@ -88,7 +88,8 @@ function OvenMainPage() {
         });
 
         if (isMounted) {
-          let trees = res.data.trees.map((tree, index) => {
+          let index = 1;
+          let trees = res.data.trees.map((tree) => {
             tree.firinTipi = tree.erkenFirinGrubunaEklendiMi ? 'Erken' : 'Normal';
             if (tree.fırın === null) {
               tree.yerlesenFirin = '-';
@@ -97,10 +98,13 @@ function OvenMainPage() {
               tree.yerlesenFirin = tree.fırın.fırınSıra + '-' + tree.fırın.fırınKonum;
               tree.firinDurumu = 'Girdi';
             }
+            tree['siraNo'] = index;
+            index += 1;
             return tree;
           });
 
           setTrees(trees);
+          setTreeLoading(true);
         }
       } catch (error) {
         console.error(error);
@@ -142,6 +146,7 @@ function OvenMainPage() {
               tree.yerlesenFirin = tree.fırın.fırınSıra + '-' + tree.fırın.fırınKonum;
               tree.firinDurumu = 'Girdi';
             }
+            tree.siraNo = index + 1;
             return tree;
           });
 
@@ -337,12 +342,13 @@ function OvenMainPage() {
           />
         </div>
 
-        {firinListesi[1].ust.length > 0 ||
-        firinListesi[1].alt.length ||
-        firinListesi[2].ust.length > 0 ||
-        firinListesi[2].alt.length ||
-        firinListesi[3].ust.length > 0 ||
-        firinListesi[3].alt.length ? (
+        {(firinListesi[1].ust.length > 0 ||
+          firinListesi[1].alt.length ||
+          firinListesi[2].ust.length > 0 ||
+          firinListesi[2].alt.length ||
+          firinListesi[3].ust.length > 0 ||
+          firinListesi[3].alt.length) &&
+        treeLoading ? (
           <DataGrid
             dataSource={trees}
             showBorders={true}
@@ -358,6 +364,7 @@ function OvenMainPage() {
             }}
           >
             <Export enabled={true} />
+            <Column caption={'Sıra'} dataField={'siraNo'} />
             <Column dataField={'treeNo'} caption={'Ağaç Numarası'} alignment={'center'} />
             <Column dataField={'yerlesenFirin'} caption={'Yerleştiği Fırın'} />
             <Column dataField={'yerlesmesiGerekenFirin'} caption={'Yerleşmesi Gereken Fırın'} />
