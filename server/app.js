@@ -37,7 +37,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // routes
 //public routes for auth and refresh token
-app.use("/api/oven", require("./routes/oven.routes"));
 
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/refresh", require("./routes/refresh.routes"));
@@ -62,6 +61,8 @@ app.use("/api/tree", require("./routes/tree.routes"));
 app.use("/api/reports", require("./routes/report.routes"));
 app.use("/api/order", require("./routes/order.routes"));
 app.use("/api/jobGroup", require("./routes/jobGroup.routes"));
+app.use("/api/oven", require("./routes/oven.routes"));
+
 // db.sequelize
 //   .sync({ force: true })
 //   .then(() => {
@@ -71,8 +72,8 @@ app.use("/api/jobGroup", require("./routes/jobGroup.routes"));
 //   .catch((err) => {
 //     console.log("Failed to sync db: " + err.message);
 //   });
-// db.sequelize.sync({ alter: true });
-db.sequelize.sync();
+db.sequelize.sync({ alter: true });
+// db.sequelize.sync();
 
 async function initDB() {
   await Role.create({
