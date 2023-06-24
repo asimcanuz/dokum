@@ -146,7 +146,7 @@ function Kalinlik() {
       </Button>
       {thicks.length > 0 ? (
         <div
-          style={{ height: '70vh' }}
+          style={{ height: '60vh' }}
           className='flex flex-col overflow-y-auto scroll-m-1 scroll-smooth'
         >
           <div className='grid grid-flow-row-dense grid-cols-2'>

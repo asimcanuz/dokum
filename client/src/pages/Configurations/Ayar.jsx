@@ -146,12 +146,12 @@ function Ayar() {
       </Button>
       {options.length > 0 ? (
         <div
-          style={{ height: '75vh' }}
+          style={{ height: '60vh' }}
           className='flex flex-col overflow-y-auto scroll-m-1 scroll-smooth'
         >
           <div className='grid grid-flow-row-dense grid-cols-2 gap-2 border-b border-gray-600 py-4'>
-            <p>Ayar Türü</p>
-            <p>İşlemler</p>
+            <b>Ayar Türü</b>
+            <b>İşlemler</b>
           </div>
           {options.map((option, index) => {
             return (

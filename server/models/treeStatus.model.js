@@ -9,6 +9,10 @@ module.exports = (sequelize, Sequelize) => {
     treeStatusName: {
       type: Sequelize.STRING,
     },
+    statusCompleteTime: {
+      type:Sequelize.TIME,
+      defaultValue:'0'
+    }
   });
   return TreeStatus;
 };

@@ -133,7 +133,7 @@ function MumTuru() {
       <h4 className='text-lg'>Mum Türü</h4>
       <Button
         appearance={'primary'}
-        onClick={async (e) => {
+        onClick={async () => {
           const lastWaxId = waxes[waxes.length - 1]?.waxId + 1 || 1;
           const newWaxItem = {
             waxId: lastWaxId,
@@ -148,7 +148,7 @@ function MumTuru() {
       </Button>
       {waxes.length > 0 ? (
         <div
-          style={{ height: '70vh' }}
+          style={{ height: '60vh' }}
           className='flex flex-col overflow-y-auto scroll-m-1 scroll-smooth'
         >
           <div className='grid grid-flow-row-dense grid-cols-2 gap-2 border-b border-gray-600 py-4 '>

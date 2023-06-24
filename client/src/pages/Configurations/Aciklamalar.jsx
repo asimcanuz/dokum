@@ -148,7 +148,7 @@ function Aciklamalar() {
       </Button>
       {descriptions.length > 0 ? (
         <div
-          style={{ height: '75vh' }}
+          style={{ height: '60vh' }}
           className='flex flex-col overflow-y-auto scroll-m-1 scroll-smooth '
         >
           <div className='grid grid-cols-6 font-medium text-lg sticky'>

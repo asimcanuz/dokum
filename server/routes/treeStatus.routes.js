@@ -6,8 +6,9 @@ const deleteTreeStatus = require("../controllers/treeStatus/deleteTreeStatus");
 const router = express.Router();
 
 router.get("/", getTreeStatuses);
+
 router.post("/", addTreeStatus);
 router.put("/", updateTreeStatus);
 router.delete("/", deleteTreeStatus);
 
-module.exports = router
+module.exports = router;
