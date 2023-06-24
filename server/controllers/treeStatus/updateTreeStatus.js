@@ -2,11 +2,11 @@ const db = require("../../models");
 const TreeStatus = db.treeStatus;
 
 async function updateTreeStatus(req, res) {
-  const { treeStatusId, treeStatusName } = req.body;
+  const { treeStatusId, statusCompleteTime } = req.body;
   const treeStatus = await TreeStatus.update(
     {
       treeStatusId,
-      treeStatusName,
+      statusCompleteTime,
     },
     {
       where: { treeStatusId },
