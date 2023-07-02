@@ -37,5 +37,6 @@ export const Endpoints = {
     MUSTERIADETSIRALIMADENAYARLAMARAPORU: 'api/reports/musteriadetsirali',
     MUSTERISIPARISRAPORU: 'api/reports/musterisiparis',
   },
+  WALLBOARD: 'api/wallboard',
   OVEN: 'api/oven',
 };

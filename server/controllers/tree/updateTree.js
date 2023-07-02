@@ -6,21 +6,6 @@ const Op = Sequelize.Op;
 const Tree = db.tree;
 
 const updateTree = async (req, res) => {
-  // const {
-  //   active,
-  //   colorId,
-  //   creatorId,
-  //   date,
-  //   isImmediate,
-  //   listNo,
-  //   optionId,
-  //   processId,
-  //   thickId,
-  //   treeNo,
-  //   treeStatusId,
-  //   waxId,
-  // }
-
   if (req.body.treeStatusId) {
     const { treeStatusId, treeId } = req.body;
     const oldTreeValue = await Tree.findOne({
@@ -31,7 +16,7 @@ const updateTree = async (req, res) => {
     const oldTreeStatusId = oldTreeValue.treeStatusId;
     if (oldTreeStatusId !== treeStatusId) {
       const treeStatusDate = await db.treeStatusDate.create({
-        treeStatusDate: moment().format("YYYY-MM-DD"),
+        treeStatusDate: moment(),
         oldTreeStatusId: oldTreeStatusId,
         newTreeStatusId: treeStatusId,
         treeId: treeId,
