@@ -18,7 +18,6 @@ const sequelize = new Sequelize(
     dialectOptions: {
       useUTC: false,
     },
-    timezone: "+03:00",
   }
 );
 

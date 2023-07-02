@@ -62,6 +62,7 @@ app.use("/api/reports", require("./routes/report.routes"));
 app.use("/api/order", require("./routes/order.routes"));
 app.use("/api/jobGroup", require("./routes/jobGroup.routes"));
 app.use("/api/oven", require("./routes/oven.routes"));
+app.use("/api/wallboard", require("./routes/wallboard.routes"));
 
 // db.sequelize
 //   .sync({ force: true })
