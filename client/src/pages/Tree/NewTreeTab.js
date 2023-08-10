@@ -27,9 +27,9 @@ function NewTreeTab({
       listeNo: 1,
       agacAuto: false,
       listeAuto: false,
-      renkId: '',
-      ayarId: '',
-      kalınlıkId: '',
+      renkId: Number(sessionStorage.getItem('renkId')) || '',
+      ayarId: Number(sessionStorage.getItem('ayarId')) || '',
+      kalınlıkId: Number(sessionStorage.getItem('kalınlıkId')) || '',
       hazırlayanId: '',
       mumTurId: '',
       desc: '',
@@ -176,7 +176,9 @@ function NewTreeTab({
         await setLoading(false);
       }
       setTodayTrees(res.data.trees);
-
+      sessionStorage.removeItem('renkId');
+      sessionStorage.removeItem('ayarId');
+      sessionStorage.removeItem('kalınlıkId');
       controller.abort();
     } catch (err) {
       setLoading(false);
@@ -214,6 +216,7 @@ function NewTreeTab({
               onValueChanged={(e) => {
                 setNewTree({ ...newTree, jobGroupId: e.value });
                 setSelectedJobGroup(e.value);
+                sessionStorage.setItem('jobGroup', e.value);
               }}
             />
           </div>
@@ -290,6 +293,7 @@ function NewTreeTab({
                         return;
                       } else {
                         setNewTree({ ...newTree, renkId: color.colorId });
+                        sessionStorage.setItem('renkId', color.colorId);
                       }
                     }}
                   >
@@ -323,8 +327,10 @@ function NewTreeTab({
                         option.optionText === 'Gümüş'
                       ) {
                         setNewTree({ ...newTree, renkId: 3, ayarId: option.optionId });
+                        sessionStorage.setItem('ayarId', 3);
                       } else {
                         setNewTree({ ...newTree, ayarId: option.optionId });
+                        sessionStorage.setItem('ayarId', option.optionId);
                       }
                     }}
                   >
@@ -353,6 +359,7 @@ function NewTreeTab({
                     } p-1 hover:cursor-pointer`}
                     onClick={() => {
                       setNewTree({ ...newTree, kalınlıkId: thick.thickId });
+                      sessionStorage.setItem('kalınlıkId', thick.thickId);
                     }}
                   >
                     {Capitalize(thick.thickName)}

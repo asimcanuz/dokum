@@ -16,7 +16,7 @@ function Layout() {
       <ScrollToTop />
       <div className='flex flex-col md:flex-row '>
         <Sidebar collapse={sidebarCollapse} handleSidebar={handleSidebar} />
-
+        <div className='absolute bottom-4 left-4'>v1.2</div>
         <div className='flex-1 px-4 py-4 '>
           <Navbar />
           <Outlet />

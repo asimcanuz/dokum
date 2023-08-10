@@ -5,6 +5,7 @@ const allowedOrigins = [
   "http://localhost",
   "http://192.168.1.106",
   "http://192.168.1.106:3000",
+  "http://192.168.1.111:3000",
 ];
 
 module.exports = allowedOrigins;

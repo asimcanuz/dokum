@@ -37,6 +37,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // routes
 //public routes for auth and refresh token
+app.use("/api/customers", require("./routes/customer.routes"));
 
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/refresh", require("./routes/refresh.routes"));
@@ -47,7 +48,6 @@ app.use(verifyJWT);
 app.use("/api/customertracking", require("./routes/customerTracking.routes"));
 app.use("/api/createLabel", require("./routes/createLabel.routes"));
 app.use("/api/users", require("./routes/user.routes"));
-app.use("/api/customers", require("./routes/customer.routes"));
 app.use("/api/color", require("./routes/color.routes"));
 app.use("/api/creator", require("./routes/creator.routes"));
 app.use("/api/description", require("./routes/description.routes"));
@@ -167,6 +167,15 @@ async function initDB() {
     fırınSıra: 3,
     fırınKonum: "alt",
   });
+
+  for (let index = 0; index < 4000; index++) {
+    await db.customer.create({
+      accountNumber: index,
+      customerName: index + ". Müsteri",
+      email: "index@mail.com",
+      phone: "2378564762",
+    });
+  }
 }
 
 module.exports = app;

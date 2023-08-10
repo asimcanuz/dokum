@@ -1,12 +1,15 @@
 var express = require("express");
 const router = express.Router();
 
-const { verifyJWT } = require("../middleware");
 const controller = require("../controllers/customer.controller");
 
-router.get("/", verifyJWT, controller.getAllCustomers);
-router.post("/addnew", verifyJWT, controller.addNewCustomer);
-router.post("/update", verifyJWT, controller.updateCustomer);
-router.post("/delete", verifyJWT, controller.deleteCustomer);
+router.get("/", controller.getAllCustomers);
+router.post("/addnew", controller.addNewCustomer);
+router.post("/update", controller.updateCustomer);
+router.post("/delete", controller.deleteCustomer);
+router.post(
+  "/getAllCustomersLimitization",
+  controller.getAllCustomersLimitization
+);
 
 module.exports = router;
