@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import Header from '../../components/Header';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
@@ -12,7 +12,6 @@ import Select from 'react-select';
 import moment from 'moment/moment';
 import ErrorModal from '../../components/ErrorModal';
 import NewListNo from './NewListNo';
-import { NumberBox } from 'devextreme-react';
 
 function EndDayMain() {
   const axiosPrivate = useAxiosPrivate();
@@ -23,7 +22,6 @@ function EndDayMain() {
   const [selectedTrees, setSelectedTrees] = useState([]);
   const [jobGroups, setJobGroups] = useState([]);
   const [selectedJobGroup, setSelectedJobGroup] = useState('');
-  const [newTreeNo, setNewTreeNo] = useState(0);
   const [openTreeNoModal, setOpenTreeNoModal] = useState(0);
   const [replaceJobGroup, setReplaceJobGroup] = useState('');
   const [replacedTree, setReplacedTree] = useState();
@@ -220,20 +218,22 @@ function EndDayMain() {
   const finishDay = () => {
     try {
       const finishTrees = trees.filter((tree) => selectedTrees.includes(tree.treeId));
+
       finishTrees.forEach((tree) => {
         if (
           tree.treeStatus.treeStatusName === 'Hazırlanıyor' ||
           tree.treeStatus.treeStatusName === 'Dökümde'
         ) {
           throw new Error('Durumu hazırlanıyor veya dökümde olan ağaçları gün sonu yapamazsınız!');
-        } else {
-          let update = axiosPrivate.put(Endpoints.FINISHDAY, {
-            treeIds: selectedTrees,
-          });
-          Promise.all([update]).then(() => {
-            getTrees();
-          });
         }
+      });
+      finishTrees.forEach((tree) => {
+        let update = axiosPrivate.put(Endpoints.FINISHDAY, {
+          treeIds: selectedTrees,
+        });
+        Promise.all([update]).then(() => {
+          getTrees();
+        });
       });
     } catch (error) {
       setErrorModal({
@@ -253,17 +253,15 @@ function EndDayMain() {
           throw new Error(
             'Durumu hazırlanıyor veya dökümde olan ağaçlarınız vardır. İş grubunu kapatamazsınız!',
           );
-        } else {
-          let update = axiosPrivate.put(Endpoints.FINISHDAY + '/all', {
-            jobGroupId: selectedJobGroup,
-          });
-
-          Promise.all([update]).then(() => {
-            setSelectedJobGroup('');
-            getJobGroups();
-            setTrees([]);
-          });
         }
+      });
+      let update = axiosPrivate.put(Endpoints.FINISHDAY + '/all', {
+        jobGroupId: selectedJobGroup,
+      });
+      Promise.all([update]).then(() => {
+        setSelectedJobGroup('');
+        getJobGroups();
+        setTrees([]);
       });
     } catch (error) {
       setErrorModal({

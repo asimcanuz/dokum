@@ -16,19 +16,25 @@ const WallboardItem = ({ wallboard }) => {
     var seconds = (minutes - absoluteMinutes) * 60;
     var absoluteSeconds = Math.floor(seconds);
     var s = absoluteSeconds > 9 ? absoluteSeconds : '0' + absoluteSeconds;
+    if (milliseconds < 0) {
+      h = h * -1;
+      m = (Number(m) - 60) * -1;
+      s = (Number(s) - 60) * -1;
+      s = s > 9 ? s : '0' + s;
+      m = m > 9 ? m : '0' + m;
+    }
 
     return h + ':' + m + ':' + s;
   }
 
   let remaininTime = () => {
-    const wallboardStatusDate = wallboard.statusDate.treeStatusDate;
+    const wallboardStatusDate = wallboard.statusDate.createdAt;
 
     const wallboardTreeStatus = wallboard.treeStatus.statusCompleteTime;
-
     const now = new Date();
     const wallboardStatusDateTime = new Date(wallboardStatusDate);
     let [hour, minutes, seconds] = wallboardTreeStatus.split(':');
-    wallboardStatusDateTime.setHours(wallboardStatusDateTime.getHours() + parseInt(hour - 3));
+    wallboardStatusDateTime.setHours(wallboardStatusDateTime.getHours() + parseInt(hour));
     wallboardStatusDateTime.setMinutes(wallboardStatusDateTime.getMinutes() + parseInt(minutes));
     wallboardStatusDateTime.setSeconds(wallboardStatusDateTime.getSeconds() + parseInt(seconds));
 

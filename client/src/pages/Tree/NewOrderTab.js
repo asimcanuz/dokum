@@ -8,10 +8,11 @@ import useAuth from '../../hooks/useAuth';
 import { CheckBox, NumberBox, SelectBox } from 'devextreme-react';
 import ErrorModal from '../../components/ErrorModal';
 import AddNewDescriptionModal from './AddNewDescriptionModal';
+import { useLocation, useNavigate } from 'react-router-dom';
+import ReactSelect from 'react-select';
 
 function NewOrderTab({
   clickTree: tree,
-  customers,
   descriptions,
   setTodayTrees,
   selectedJobGroup,
@@ -19,12 +20,16 @@ function NewOrderTab({
 }) {
   const auth = useAuth();
   const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [loading, setLoading] = useState(true);
   const [errorModal, setErrorModal] = useState({
     visible: false,
     message: '',
     title: '',
   });
+
   const [order, setOrder] = React.useState({
     treeId: tree.agacId,
     customerId: '',
@@ -34,13 +39,51 @@ function NewOrderTab({
     isImmediate: false,
   });
 
+  const [customerName, setCustomerName] = useState('');
+  const [customers, setCustomers] = useState();
   const [modalOpen, setModalOpen] = useState(false);
+  const [limit, setLimit] = useState(100);
+  const [skip, setSkip] = useState(0);
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const getCustomers = async () => {
+      try {
+        const response = await axiosPrivate.post(Endpoints.CUSTOMERS.LIMIZATION, {
+          limit: limit,
+          skip: skip,
+          filter: customerName,
+          signal: controller.signal,
+        });
+        if (isMounted) {
+          if (response.data.customers.length === 0) {
+            response.data.customers[0] = {
+              customerId: 1,
+              customerName: 'Lütfen Geçerli Müşteri Giriniz!',
+            };
+          }
+          setCustomers(response.data.customers);
+        }
+      } catch (err) {
+        console.error(err);
+        navigate('/login', { state: { from: location }, replace: true });
+      }
+    };
+
+    isMounted && getCustomers();
+
+    return () => {
+      isMounted = false;
+      !isMounted && controller.abort();
+    };
+  }, [customerName]);
 
   useEffect(() => {
     setOrder({ ...order, treeId: tree.agacId });
   }, [tree]);
 
-  const customerOptions = customers.map((customer) => ({
+  const customerOptions = customers?.map((customer) => ({
     value: customer.customerId,
     label: customer.customerName,
   }));
@@ -92,6 +135,9 @@ function NewOrderTab({
     controller.abort();
   }
 
+  const customFilter = async (option, searchText) => {
+    setCustomerName(searchText);
+  };
   return (
     <Fragment>
       <section className='flex flex-col space-y-4 '>
@@ -132,7 +178,7 @@ function NewOrderTab({
 
         <div className='grid grid-rows-3'>
           <div className='flex flex-col'>
-            <SelectBox
+            {/* <SelectBox
               className='hover:cursor-pointer text-sm'
               dataSource={customerOptions}
               displayExpr={'label'}
@@ -145,6 +191,21 @@ function NewOrderTab({
               onValueChanged={(e) => {
                 setOrder({ ...order, customerId: e.value });
               }}
+
+              searchEnabled={true}
+              searchMode='startswith'
+              searchExpr={'label'}
+              minSearchLength={'2'}
+            /> */}
+            <ReactSelect
+              className='hover:cursor-pointer text-sm'
+              options={customerOptions}
+              onChange={(e) => {
+                setOrder({ ...order, customerId: e.value });
+              }}
+              value={customerOptions?.filter((option) => option.value === order.customerId)[0]}
+              isSearchable={true}
+              filterOption={customFilter}
             />
           </div>
           <div className='flex flex-col'>

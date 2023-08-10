@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from '../../components/Modal/Modal';
 import ModalHeader from '../../components/Modal/ModalHeader';
 import ModalBody from '../../components/Modal/ModalBody';
@@ -13,22 +13,27 @@ import { Endpoints } from '../../constants/Endpoints';
 import * as Yup from 'yup';
 
 const FormSchema = Yup.object().shape({
-  accountNumber: Yup.number()
-    .typeError('Sadece numara girilmelidr')
-    .min(1)
-    .required('Hesap numarası zorunludur.'),
+  accountNumber: Yup.number().typeError('Sadece numara girilmelidr').min(1),
   customerName: Yup.string().required('Müşteri adı zorunludur.'),
   email: Yup.string().email('Geçerli bir email adresi giriniz.'),
   phone: Yup.number()
     .typeError('Telefon numarası girilmelidir.')
     .positive('Telefon numarası negatif sayı olamaz.')
-    .min(8, 'Telefon numarası minimum 8 karakter olmalıdır.')
-    .required('Telefon numarası zorunludur.'),
+    .min(8, 'Telefon numarası minimum 8 karakter olmalıdır.'),
 });
 
 function CustomerAddNewModal({ open, toggle, size, customers, setCustomers, setReqController }) {
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
+  const [errorMessage, setErrorMessage] = useState('');
+  useEffect(() => {
+    if (errorMessage !== '') {
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 10000);
+    }
+  }, [errorMessage]);
+
   const formik = useFormik({
     initialValues: {
       accountNumber: '',
@@ -56,12 +61,13 @@ function CustomerAddNewModal({ open, toggle, size, customers, setCustomers, setR
           withCredentials: true,
         });
         if (response.status === 200) {
-          // customers.push(customer);
-          // setCustomers([...customers]);
           setReqController(true);
+          await toggle();
         }
       } catch (error) {
         console.log(error);
+
+        setErrorMessage(error.response.data.message);
       }
     },
   });
@@ -71,6 +77,7 @@ function CustomerAddNewModal({ open, toggle, size, customers, setCustomers, setR
       <ModalHeader title={'Yeni Müşteri Ekle'} toogle={toggle} />
       <ModalBody>
         <div className='flex flex-col'>
+          {errorMessage !== '' && <div className='text-red-500 text-lg'>{errorMessage} </div>}
           <form>
             <div className='flex flex-col'>
               <div className='mb-6'>
@@ -163,17 +170,9 @@ function CustomerAddNewModal({ open, toggle, size, customers, setCustomers, setR
         <Button
           type='submit'
           appearance={'success'}
-          disabled={
-            !formik.isValid ||
-            formik.values.accountNumber === '' ||
-            formik.values.customerName === '' ||
-            formik.values.email === '' ||
-            formik.values.phone === ''
-          }
+          disabled={!formik.isValid || formik.values.customerName === ''}
           onClick={async () => {
             await formik.handleSubmit();
-
-            await toggle();
           }}
         >
           Kaydet

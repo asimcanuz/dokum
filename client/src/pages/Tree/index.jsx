@@ -47,7 +47,9 @@ const initUpdateClick = {
 };
 
 function TreePage() {
-  const [selectedTab, setSelectedTab] = useState(tabs.isGrubu);
+  const [selectedTab, setSelectedTab] = useState(
+    sessionStorage.getItem('selectedTab') || tabs.isGrubu,
+  );
   const [clickTree, setClickTree] = useState(initUpdateClick);
   const [updateClick, setUpdateClick] = useState({});
 
@@ -66,7 +68,9 @@ function TreePage() {
   const [descriptions, setDescriptions] = useState([]);
   const [jobGroups, setJobGroups] = useState([]);
 
-  const [selectedJobGroup, setSelectedJobGroup] = useState(null);
+  const [selectedJobGroup, setSelectedJobGroup] = useState(
+    Number(sessionStorage.getItem('jobGroup')) || null,
+  );
   const treeTableRef = useRef(null);
   useEffect(() => {
     const controller = new AbortController();
@@ -263,7 +267,7 @@ function TreePage() {
       <section className='space-y-2'>
         <Header title={'Ağaç Girişi'} description={'Döküme girecek ağaç girişleri'} />
         <div className='grid grid-cols-12 mt-4 gap-x-4 gap-y-4'>
-          <div className='col-span-12 lg:col-span-3 max-w-lg'>
+          <div className='col-span-12 lg:col-span-3 max-w-lg md:w-full'>
             <Tabs tabsList={tabList} setSelected={setSelectedTab} selectedTab={selectedTab} />
             <div className='px-6 py-4'>
               {selectedTab === tabs.agac ? (
@@ -280,6 +284,7 @@ function TreePage() {
                   jobGroups={jobGroups}
                   selectedJobGroup={selectedJobGroup}
                   setSelectedJobGroup={setSelectedJobGroup}
+                  treeStatuses={treeStatuses}
                 />
               ) : selectedTab === tabs.siparis ? (
                 <NewOrderTab

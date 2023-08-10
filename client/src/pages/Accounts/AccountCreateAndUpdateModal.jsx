@@ -1,18 +1,18 @@
-import React, { Fragment } from "react";
-import { useFormik } from "formik";
+import React, { Fragment } from 'react';
+import { useFormik } from 'formik';
 
-import Modal from "../../components/Modal/Modal";
-import ModalHeader from "../../components/Modal/ModalHeader";
-import ModalBody from "../../components/Modal/ModalBody";
-import ModalFooter from "../../components/Modal/ModalFooter";
-import Button from "../../components/Button";
-import Input from "../../components/Input";
-import CheckBox from "../../components/Input/CheckBox";
-import Select from "react-select";
-import { ROLES } from "../../constants/RolesConstants";
-import { Endpoints } from "../../constants/Endpoints";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import PasswordInput from "../../components/Input/PasswordInput";
+import Modal from '../../components/Modal/Modal';
+import ModalHeader from '../../components/Modal/ModalHeader';
+import ModalBody from '../../components/Modal/ModalBody';
+import ModalFooter from '../../components/Modal/ModalFooter';
+import Button from '../../components/Button';
+import Input from '../../components/Input';
+import CheckBox from '../../components/Input/CheckBox';
+import Select from 'react-select';
+import { ROLES } from '../../constants/RolesConstants';
+import { Endpoints } from '../../constants/Endpoints';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import PasswordInput from '../../components/Input/PasswordInput';
 
 // const FormSchema = Yup.object().shape({
 //   password: Yup.string(),
@@ -22,15 +22,7 @@ import PasswordInput from "../../components/Input/PasswordInput";
 //   ),
 // });
 
-function AccountCreateAndUpdateModal({
-  open,
-  toggle,
-  type,
-  size,
-  defaultValues,
-  users,
-  setUsers,
-}) {
+function AccountCreateAndUpdateModal({ open, toggle, type, size, defaultValues, users, setUsers }) {
   const axiosPrivate = useAxiosPrivate();
   const formik = useFormik({
     initialValues: {
@@ -38,8 +30,8 @@ function AccountCreateAndUpdateModal({
       roleId: defaultValues.roleId,
       username: defaultValues.username,
       isActive: defaultValues.isActive,
-      password: "",
-      confirmPassword: "",
+      password: '',
+      confirmPassword: '',
     },
     // validationSchema: FormSchema,
     onSubmit: async (values) => {
@@ -50,7 +42,7 @@ function AccountCreateAndUpdateModal({
         roleId: values.roleId,
         userId: defaultValues.userId,
       };
-      if (type === "add") {
+      if (type === 'add') {
         user = {
           email: values.email,
           isActive: values.isActive,
@@ -59,18 +51,16 @@ function AccountCreateAndUpdateModal({
           password: values.password,
         };
       }
-      var endpoint =
-        type === "add" ? Endpoints.USER_ADD_NEW_URL : Endpoints.USER_UPDATE_URL;
+      var endpoint = type === 'add' ? Endpoints.USER_ADD_NEW_URL : Endpoints.USER_UPDATE_URL;
 
       try {
         const response = await axiosPrivate.post(endpoint, user, {
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         });
         if (response.status === 200) {
-          if (type === "add") {
-            const { email, roleId, userId, username, password } =
-              response.data.user;
+          if (type === 'add') {
+            const { email, roleId, userId, username, password } = response.data.user;
             const newUser = {
               email,
               roleId,
@@ -82,9 +72,7 @@ function AccountCreateAndUpdateModal({
             setUsers([...users, newUser]);
           } else {
             const newUserList = [...users];
-            var _user = newUserList.find(
-              (__user) => __user.userId === user.userId
-            );
+            var _user = newUserList.find((__user) => __user.userId === user.userId);
             _user.email = user.email;
             _user.isActive = user.isActive;
             _user.username = user.username;
@@ -109,89 +97,84 @@ function AccountCreateAndUpdateModal({
   return (
     <Modal open={open} size={size}>
       {/*header*/}
-      <ModalHeader
-        title={type === "add" ? "Yeni Hesap Ekle" : "Hesabı Güncelle"}
-        toogle={toggle}
-      />
+      <ModalHeader title={type === 'add' ? 'Yeni Hesap Ekle' : 'Hesabı Güncelle'} toogle={toggle} />
       {/*body*/}
       <ModalBody>
-        <div className="flex flex-col">
+        <div className='flex flex-col'>
           <form>
-            <div className="flex flex-col">
-              <div className="mb-6">
-                <label htmlFor="username">Username</label>
+            <div className='flex flex-col'>
+              <div className='mb-6'>
+                <label htmlFor='username'>Kullanıcı Adı</label>
                 <Input
-                  id={"username"}
-                  name={"username"}
-                  type={"text"}
-                  placeholder={"Username"}
+                  id={'username'}
+                  name={'username'}
+                  type={'text'}
+                  placeholder={'Username'}
                   onChange={formik.handleChange}
                   value={formik.values.username}
                   required
                 />
               </div>
-              <div className="mb-6">
-                <label htmlFor="email">Email</label>
+              <div className='mb-6'>
+                <label htmlFor='email'>Mail Adresi</label>
                 <Input
-                  id={"email"}
-                  name={"email"}
-                  type={"text"}
-                  placeholder={"Email"}
+                  id={'email'}
+                  name={'email'}
+                  type={'text'}
+                  placeholder={'Email'}
                   onChange={formik.handleChange}
                   value={formik.values.email}
                   required
                 />
               </div>
 
-              {type === "add" ? (
+              {type === 'add' ? (
                 <Fragment>
-                  <div className="mb-6">
-                    <label htmlFor="password">Password</label>
+                  <div className='mb-6'>
+                    <label htmlFor='password'>Şifre</label>
 
                     <PasswordInput
-                      id={"password"}
-                      name={"password"}
-                      placeholder={"Şifre"}
-                      {...formik.getFieldProps("password")}
+                      id={'password'}
+                      name={'password'}
+                      placeholder={'Şifre'}
+                      {...formik.getFieldProps('password')}
                       required
                     />
                   </div>
-                  <div className="mb-6">
-                    <label htmlFor="confirmPassword">Şifre Onayla</label>
+                  <div className='mb-6'>
+                    <label htmlFor='confirmPassword'>Şifre Onayla</label>
                     <PasswordInput
-                      id={"confirmPassword"}
-                      name={"confirmPassword"}
-                      placeholder={"Şifre"}
-                      {...formik.getFieldProps("confirmPassword")}
+                      id={'confirmPassword'}
+                      name={'confirmPassword'}
+                      placeholder={'Şifre'}
+                      {...formik.getFieldProps('confirmPassword')}
                       required
                     />
                   </div>
                 </Fragment>
               ) : null}
-              <div className="mb-6">
-                <label htmlFor="roleId">Role</label>
+              <div className='mb-6'>
+                <label htmlFor='roleId'>Role</label>
                 <Select
-                  type={"select"}
-                  id={"roleId"}
-                  name={"roleId"}
+                  type={'select'}
+                  id={'roleId'}
+                  name={'roleId'}
                   onChange={(selectedOption) =>
-                    formik.setFieldValue("roleId", selectedOption.value)
+                    formik.setFieldValue('roleId', selectedOption.value)
                   }
                   options={rolesOpts}
-                  value={rolesOpts.find(
-                    (option) => option.value === formik.values.roleId
-                  )}
+                  value={rolesOpts.find((option) => option.value === formik.values.roleId)}
                   required
                 />
               </div>
-              <div className="mb-6">
-                <div className="form-group form-check">
+              <div className='mb-6'>
+                <div className='form-group form-check'>
                   <CheckBox
-                    id={"rememberMe"}
-                    name={"rememberMe"}
-                    label={"Pasif Kullanıcı Yapılsın Mı?"}
+                    id={'rememberMe'}
+                    name={'rememberMe'}
+                    label={'Pasif Kullanıcı Yapılsın Mı?'}
                     onChange={(e) => {
-                      formik.setFieldValue("isBlocked", e.target.checked);
+                      formik.setFieldValue('isBlocked', e.target.checked);
                     }}
                     checked={formik.values.isBlocked}
                     // checked
@@ -204,12 +187,12 @@ function AccountCreateAndUpdateModal({
       </ModalBody>
       {/*footer*/}
       <ModalFooter>
-        <Button appearance={"danger"} onClick={toggle}>
+        <Button appearance={'danger'} onClick={toggle}>
           İptal
         </Button>
         <Button
-          type="submit"
-          appearance={"success"}
+          type='submit'
+          appearance={'success'}
           onClick={async () => {
             await formik.handleSubmit();
 
@@ -224,7 +207,7 @@ function AccountCreateAndUpdateModal({
 }
 
 AccountCreateAndUpdateModal.defaultProps = {
-  size: "normal",
+  size: 'normal',
 };
 
 export default AccountCreateAndUpdateModal;

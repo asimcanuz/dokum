@@ -12,6 +12,7 @@ export const Endpoints = {
     ADD_NEW: 'api/customers/addnew',
     UPDATE: 'api/customers/update',
     DELETE: 'api/customers/delete',
+    LIMIZATION: 'api/customers/getAllCustomersLimitization',
   },
   TREE: {
     MAIN: 'api/tree',
@@ -19,6 +20,7 @@ export const Endpoints = {
     PASSIVE: 'api/tree/passive',
     OVEN: '/api/tree/oven',
     INDEXES: '/api/tree/indexes',
+    UPDATREESTATUS: '/api/tree/updateTreeStatus',
   },
   ORDER: 'api/order',
   COLOR: 'api/color',

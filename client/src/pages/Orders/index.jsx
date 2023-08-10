@@ -1,60 +1,140 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import Header from '../../components/Header';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { Endpoints } from '../../constants/Endpoints';
-import { useGlobalFilter, usePagination, useTable } from 'react-table';
+import { useGlobalFilter, usePagination, useTable, useFilters } from 'react-table';
 import Alert from '../../components/Alert/Alert';
+import ReactSelect from 'react-select';
+import { matchSorter } from 'match-sorter';
+
+function SelectColumnFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
+  // Calculate the options for filtering
+  // using the preFilteredRows
+  const options = React.useMemo(() => {
+    const options = new Set();
+    preFilteredRows.forEach((row) => {
+      options.add(row.values[id]);
+    });
+    return [...options.values()];
+  }, [id, preFilteredRows]);
+
+  let selectOptions = [{ value: '', label: 'Hepsi' }];
+
+  options.forEach((opts) => {
+    selectOptions.push({
+      label: opts,
+      value: opts,
+    });
+  });
+
+  return (
+    <select
+      className='block w-full px-1 py-0.5 text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+      value={filterValue}
+      onChange={(e) => {
+        setFilter(e.target.value || undefined);
+      }}
+    >
+      <option value=''>Hepsi</option>
+      {options.map((option, i) => (
+        <option key={i} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function BooleanFilter({ column: { filterValue, setFilter } }) {
+  // Calculate the options for filtering
+  // using the preFilteredRows
+
+  let selectOptions = [{ value: '', label: 'Hepsi' }];
+
+  return (
+    <select
+      className='block w-full px-1 py-0.5 text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+      value={filterValue}
+      onChange={(e) => {
+        setFilter(e.target.value || undefined);
+      }}
+    >
+      <option value=''>Hepsi</option>
+      <option value='true'>Evet</option>
+      <option value='false'>Hayır</option>
+    </select>
+  );
+}
+
+function fuzzyTextFilterFn(rows, id, filterValue) {
+  return matchSorter(rows, filterValue, { keys: [(row) => row.values[id]] });
+}
+
+// Let the table remove the filter if the string is empty
+fuzzyTextFilterFn.autoRemove = (val) => !val;
 
 function OrderMain() {
   const axiosPrivate = useAxiosPrivate();
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const [orders, setOrders] = useState([]);
-  // const [page, setPage] = useState(1);
-  // const [totalPage, setTotalPage] = useState(1);
+
   const tableColumns = React.useMemo(
     () => [
       {
         Header: 'Sipariş ID',
         accessor: 'orderId',
+        filterable: false,
       },
       {
         Header: 'Agac No',
         accessor: 'treeId',
+        filterable: true,
+        Filter: SelectColumnFilter,
       },
       {
         Header: 'Liste No',
         accessor: 'tree.listNo',
+        filterable: false,
       },
       {
         Header: 'Hesap No',
         accessor: 'customer.accountNumber',
+        filterable: false,
       },
       {
         Header: 'Müşteri Adı',
         accessor: 'customer.customerName',
+        Filter: SelectColumnFilter,
+        filterable: true,
       },
       {
         Header: 'Ayar',
         accessor: 'tree.option.optionText',
+        filterable: true,
+        Filter: SelectColumnFilter,
       },
       {
         Header: 'Renk',
         accessor: 'tree.color.colorName',
+        filterable: true,
+        Filter: SelectColumnFilter,
       },
       {
         Header: 'Kalınlık',
         accessor: 'tree.thick.thickName',
+        filterable: true,
+        Filter: SelectColumnFilter,
       },
       {
         Header: 'Açıklama',
         accessor: 'description.descriptionText',
+        filterable: false,
       },
       {
         Header: 'Döküm Tarihi',
         accessor: 'tree.date',
+        filterable: true,
+        Filter: SelectColumnFilter,
       },
       {
         Header: 'Adet',
@@ -82,7 +162,10 @@ function OrderMain() {
             rowBackgroundColor() + ' text-center text-sm font-semibold p-1 rounded w-32 mx-auto';
           return <div className={cn}>{row.value}</div>;
         },
+        filterable: true,
+        Filter: SelectColumnFilter,
       },
+
       {
         Header: 'Aktif-Pasif',
         accessor: 'tree.active',
@@ -91,6 +174,8 @@ function OrderMain() {
           cn += ' text-white p-1 rounded text-sm font-semibold text-center w-16 mx-auto ';
           return <div className={cn}>{row.value ? 'Aktif' : 'Pasif'}</div>;
         },
+        filterable: true,
+        Filter: BooleanFilter,
       },
       {
         Header: 'Gün Sonu',
@@ -100,6 +185,8 @@ function OrderMain() {
           cn += ' text-white p-1 rounded text-sm font-semibold text-center w-16 ';
           return <div className={cn}>{row.value ? 'Evet' : 'Hayır'}</div>;
         },
+        filterable: true,
+        Filter: BooleanFilter,
       },
       {
         Header: 'Acil Mi',
@@ -109,10 +196,14 @@ function OrderMain() {
           cn += ' text-white p-1 rounded text-sm font-semibold text-center w-16 mx-auto ';
           return <div className={cn}>{row.value ? 'Evet' : 'Hayır'}</div>;
         },
+        filterable: true,
+        Filter: BooleanFilter,
       },
       {
         Header: 'Hazırlayan',
         accessor: 'tree.creator.creatorName',
+        filterable: true,
+        Filter: SelectColumnFilter,
       },
     ],
 
@@ -162,18 +253,20 @@ function OrderMain() {
     gotoPage,
     nextPage,
     previousPage,
+    defaultColumn,
     setPageSize,
   } = useTable(
     {
       columns: tableColumns,
       data: orders,
     },
+    useFilters,
     useGlobalFilter,
     usePagination,
   );
 
   return (
-    <div className='overflow-x-scroll'>
+    <div className='overflow-x-scroll text-xs'>
       <section className='space-y-4'>
         <Header title='Siparişler' description='Siparişlerinizi bu sayfadan takip edebilirsiniz.' />
       </section>
@@ -188,6 +281,7 @@ function OrderMain() {
                     {headerGroup.headers.map((column) => (
                       <th scope='col' className='px-6 py-4' {...column.getHeaderProps()}>
                         {column.render('Header')}
+                        <div>{column.filterable ? column.render('Filter') : null}</div>
                       </th>
                     ))}
                   </tr>

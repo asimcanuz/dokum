@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const db = require("../models");
 const Customer = db.customer;
 
@@ -19,6 +20,35 @@ exports.getAllCustomers = async (req, res) => {
   res.status(200).send({ customers });
 };
 
+exports.getAllCustomersLimitization = async (req, res) => {
+  const { limit, skip, filter } = req.body;
+
+  const customers = await Customer.findAll({
+    limit,
+    offset: skip,
+    attributes: [
+      "customerId",
+      "accountNumber",
+      "customerName",
+      "email",
+      "phone",
+      "createdBy",
+      "updatedBy",
+      "isActive",
+    ],
+    where: {
+      customerName: {
+        [Op.like]: `%${filter}%`,
+      },
+    },
+  });
+
+  if (!customers)
+    return res.status(401).send({ message: "Customers Not Found!" });
+  return res.status(200).send({ customers });
+  // filterOptions: sütun ismi ve değeri
+};
+
 exports.addNewCustomer = async (req, res) => {
   const {
     accountNumber,
@@ -29,6 +59,12 @@ exports.addNewCustomer = async (req, res) => {
     updatedBy,
     isActive,
   } = req.body;
+
+  const customer = await Customer.findAll({ where: { customerName } });
+  if (customer.length !== 0)
+    return res
+      .status(500)
+      .send({ message: "Aynı isimli müşteriniz bulunmaktadır!" });
 
   Customer.create({
     accountNumber,

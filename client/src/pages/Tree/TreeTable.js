@@ -7,7 +7,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
 import CalculatedMineralWeight from '../../utils/calculateMineralWeight';
 import calculateMineralWeight from '../../utils/calculateMineralWeight';
-import { DataGrid } from 'devextreme-react';
+import { DataGrid, Lookup, SelectBox } from 'devextreme-react';
 import {
   Column,
   Editing,
@@ -20,6 +20,7 @@ import { Workbook } from 'exceljs';
 import { exportDataGrid } from 'devextreme/excel_exporter';
 import { saveAs } from 'file-saver';
 import { statusColorStyle } from '../../utils/StatusColor';
+import { axiosPrivate } from '../../api/axios';
 
 function TreeTable({
   setClickTree,
@@ -29,6 +30,7 @@ function TreeTable({
   setTodayTrees,
   jobGroups,
   selectedJobGroup,
+  treeStatuses,
 }) {
   const axiosPrivate = useAxiosPrivate();
   const [createLabel, setCreateLabel] = useState(false);
@@ -283,7 +285,26 @@ function TreeTable({
           <Column caption={'Kalınlık'} dataField={'thick.thickName'} allowEditing={false} />
           <Column caption={'Renk'} dataField={'color.colorName'} allowEditing={false} />
           <Column caption={'Tarih'} dataField={'date'} allowEditing={false} />
-          <Column caption={'Durum'} dataField={'treeStatus.treeStatusName'} allowEditing={false} />
+          <Column
+            caption={'Durum'}
+            dataField={'treeStatus.treeStatusName'}
+            allowEditing={true}
+            width={140}
+            editCellComponent={(props) => (
+              <StatusUpdateDropdown
+                {...props}
+                treeStatuses={treeStatuses}
+                setTodayTrees={setTodayTrees}
+                todayTrees={todayTrees}
+              />
+            )}
+          >
+            <Lookup
+              dataSource={treeStatuses}
+              valueExpr={'treeStatusId'}
+              displayExpr={'treeStatusName'}
+            />
+          </Column>
           <Column caption={'Hazırlayan'} dataField={'creator.creatorName'} allowEditing={false} />
           <Column
             caption={'Maden Ağırlık'}
@@ -407,6 +428,38 @@ function treeMasterDetail(data, axiosPrivate, descriptions, selectedJobGroup, se
         />
       </DataGrid>
     </div>
+  );
+}
+
+function StatusUpdateDropdown({ data, setTodayTrees, treeStatuses, todayTrees }) {
+  const { data: rowData } = data;
+
+  return (
+    <SelectBox
+      items={treeStatuses}
+      valueExpr={'treeStatusId'}
+      displayExpr={'treeStatusName'}
+      defaultValue={rowData.treeStatus.treeStatusId}
+      onValueChanged={async (e) => {
+        console.log('aaa');
+        let newStatusId = e.value;
+        let status = treeStatuses.find((status) => status.treeStatusId === e.value);
+        let trees = todayTrees.map((tree) => {
+          if (tree.treeId === rowData.treeId) {
+            tree.treeStatus.treeStatusId = newStatusId;
+            tree.treeStatusId = newStatusId;
+            tree.treeStatus.treeStatusName = status.treeStatusName;
+          }
+          return tree;
+        });
+        await axiosPrivate.post(Endpoints.TREE.UPDATREESTATUS, {
+          treeStatusId: newStatusId,
+          treeId: rowData.treeId,
+        });
+        console.log(trees);
+        setTodayTrees(trees);
+      }}
+    />
   );
 }
 
