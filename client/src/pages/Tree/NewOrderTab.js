@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import Select from 'react-select';
 import Button from '../../components/Button';
 import { AiOutlinePlus } from 'react-icons/ai';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
@@ -141,62 +140,43 @@ function NewOrderTab({
   return (
     <Fragment>
       <section className='flex flex-col space-y-4 '>
-        <div className='grid grid-cols-4 gap-4'>
-          <div className='flex flex-col '>
+        <div className='grid grid-cols-4 gap-4 text-sm'>
+          <div className='flex flex-col text-center'>
             <p className='font-bold text-red-400'>Id</p>
             <p className='text-blue-600'>{tree.agacId}</p>
           </div>
-          <div className='flex flex-col'>
+          <div className='flex flex-col text-center'>
             <p className='font-bold text-red-400'>Agaç No</p>
             <p className='text-blue-600'>{tree.agacNo}</p>
           </div>
-          <div className='flex flex-col'>
+          <div className='flex flex-col text-center'>
             <p className='font-bold text-red-400'>Liste No</p>
             <p className='text-blue-600'>{tree.listeNo}</p>
           </div>
-          <div className='flex flex-col'>
-            <p className='font-bold text-red-400'>Ağaçtaki Sipariş Adeti</p>
+          <div className='flex flex-col text-center'>
+            <p className='font-bold text-red-400'>Sipariş Adeti</p>
             <p className='text-blue-600'>{tree.siparisSayisi}</p>
           </div>
-          <div className='flex flex-col'>
+          <div className='flex flex-col text-center'>
             <p className='font-bold text-red-400'>Renk</p>
             <p className='text-blue-600'>{tree.renk}</p>
           </div>
-          <div className='flex flex-col'>
+          <div className='flex flex-col text-center'>
             <p className='font-bold text-red-400'>Ayar</p>
             <p className='text-blue-600'>{tree.ayar}</p>
           </div>
-          <div className='flex flex-col'>
+          <div className='flex flex-col text-center'>
             <p className='font-bold text-red-400'>Kalınlık</p>
             <p className='text-blue-600'>{tree.kalinlik}</p>
           </div>
-          <div className='flex flex-col'>
-            <p className='font-bold text-red-400'>Ağaçtaki Müşteri Adeti</p>
+          <div className='flex flex-col text-center'>
+            <p className='font-bold text-red-400'>Müşteri Adeti</p>
             <p className='text-blue-600'>{tree.musteriSayisi}</p>
           </div>
         </div>
 
         <div className='grid grid-rows-3'>
           <div className='flex flex-col'>
-            {/* <SelectBox
-              className='hover:cursor-pointer text-sm'
-              dataSource={customerOptions}
-              displayExpr={'label'}
-              valueExpr='value'
-              label='Müşteri'
-              labelMode='floating'
-              value={
-                customerOptions?.filter((option) => option.value === order.customerId)[0]?.value
-              }
-              onValueChanged={(e) => {
-                setOrder({ ...order, customerId: e.value });
-              }}
-
-              searchEnabled={true}
-              searchMode='startswith'
-              searchExpr={'label'}
-              minSearchLength={'2'}
-            /> */}
             <ReactSelect
               className='hover:cursor-pointer text-sm'
               options={customerOptions}
