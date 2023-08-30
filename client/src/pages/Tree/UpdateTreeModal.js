@@ -81,7 +81,6 @@ function UpdateTreeModal({
       colorId,
       creatorId,
       desc,
-      isImmediate,
       listNo,
       optionId,
       processId,
@@ -95,6 +94,17 @@ function UpdateTreeModal({
     onSubmit: async (values) => {
       // setTodayTrees([...todayTrees]);
       try {
+
+        todayTrees.forEach((tree) => {
+          if (tree['listNo'] === Number(values.listNo) && tree['jobGroupId'] === selectedJobGroup) {
+            throw new Error(`Tekrar eden bir Liste numarası girdiniz!`);
+          }
+          if (tree['treeNo'] === Number(values.treeNo) && tree['jobGroupId'] === selectedJobGroup) {
+            throw new Error(`Tekrar eden bir Agaç numarası girdiniz!`);
+          }
+        });
+
+
         await axiosPrivate.put(Endpoints.TREE.MAIN, values);
 
         try {
@@ -213,18 +223,7 @@ function UpdateTreeModal({
                     <div className='text-red-600'>{listNoError.message}</div>
                   ) : null}
                 </div>
-                <div className='flex  justify-center items-center'>
-                  <CheckBox
-                    id={'isImmediate'}
-                    name={'isImmediate'}
-                    label={'Acil Mi?'}
-                    onChange={(e) => {
-                      formik.setFieldValue('isImmediate', e.target.checked);
-                    }}
-                    checked={formik.values.isImmediate}
-                    // checked
-                  />
-                </div>
+               
               </div>
               <div className='flex flex-row justify-between space-x-4'>
                 <div className='w-full'>

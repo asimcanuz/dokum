@@ -114,13 +114,13 @@ function Sidebar({ collapse, handleSidebar }) {
 
   return (
     <aside
-      className={`w-full
+      className={` w-full
         ${
           collapse ? 'md:w-72' : 'md:w-24'
-        } bg-transparent p-5  pt-8 relative duration-300 transition-all`}
+        } bg-transparent p-5  pt-8 fixed duration-300 transition-all h-full `}
     >
       <div className='flex gap-x-4 items-center' onClick={handleSidebar}>
-        <img src='images/logo.png' className={`cursor-pointer duration-500 `} alt='logo' />
+        <img src='/images/logo.png' className={`cursor-pointer duration-500 `} alt='logo' />
       </div>
 
       <ul className='pt-6'>
@@ -130,7 +130,7 @@ function Sidebar({ collapse, handleSidebar }) {
               <Link
                 to={Menu?.to}
                 key={index}
-                className={` ${Menu.gap ? 'mt-9' : 'mt-2'} ${
+                className={` ${Menu.gap ? 'mt-3' : 'mt-1'} ${
                   !collapse ? 'hidden md:flex' : 'flex items-center duration-200'
                 } 
                   group flex items-center text-sm  gap-3.5 font-medium p-2 hover:text-white hover:bg-gray-300 hover:dark:bg-slate-700 rounded-md`}
@@ -140,13 +140,13 @@ function Sidebar({ collapse, handleSidebar }) {
                   duration-200
                   ${!collapse ? 'hidden' : 'flex items-center duration-200'} 
                   md:flex md:items-center
-                  rounded-md p-2 cursor-pointer text-slate-600 hover:text-white dark:text-gray-300 text-sm items-start gap-x-4`}
+                  rounded-md p-2 cursor-pointer text-slate-600 hover:text-white dark:text-gray-300 text-sm items-start gap-x-2`}
                   onClick={() => navigate(Menu.to)}
                   data-tooltip-id={Menu.title}
                   data-tooltip-content={Menu.title}
                 >
-                  <div>{React.createElement(Menu?.icon, { size: '20' })}</div>
-                  <span className={`${!collapse && 'hidden'} origin-left duration-200`}>
+                  <div>{React.createElement(Menu?.icon, { size: 20})}</div>
+                  <span className={`${!collapse && 'hidden'} text-sm origin-left duration-200`}>
                     {Menu.title}
                   </span>
                 </li>
@@ -167,9 +167,11 @@ function Sidebar({ collapse, handleSidebar }) {
               text-red-800
                 `}
         >
-          <AiOutlineLogout size={'24px'} className='font-bold ' />
+          <AiOutlineLogout size={20} className='font-bold ' />
           <span className={`${!collapse && 'hidden'} origin-left duration-200`}>Logout</span>
         </li>
+        <p>v1.2</p>
+
       </ul>
     </aside>
   );

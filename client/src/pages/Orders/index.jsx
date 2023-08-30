@@ -239,22 +239,17 @@ function OrderMain() {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
     prepareRow,
     state,
     page,
-    preGlobalFilteredRows,
-    setGlobalFilter,
-    visibleColumns,
+
     canPreviousPage,
     canNextPage,
     pageOptions,
-    pageCount,
     gotoPage,
     nextPage,
     previousPage,
-    defaultColumn,
-    setPageSize,
+    
   } = useTable(
     {
       columns: tableColumns,
