@@ -14,33 +14,39 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     fontFamily: 'Roboto',
     fontSize: '8pt',
+    padding: '9mm 7mm 9mm 11mm'
   },
   section: {
-    margin: 10,
-    padding: 10,
+   
     flexGrow: 1,
   },
+
+
 });
 // Register Font
 Font.register({
   family: 'Roboto',
-  src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf',
+  src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf',
 });
 
 const Box = ({ children }) => {
   return (
     <View
+      wrap={false}
       style={{
         // sayfanın 4 eşit parçasına bölünmesi için
-        border: '1px solid black',
-        width: '24%',
-        margin: 2,
+      //  border: '1px solid black',
+        width: '25%',
+        margin: 0,
         display: 'flex',
         flexDirection: 'column',
         textOverflow: 'hidden',
         overflow: 'hidden',
-        height: '96px',
-        maxHeight: '96px',
+        height: '25.3mm',
+   
+      
+   
+        //maxHeight: '96px',
       }}
     >
       {children}
@@ -50,10 +56,13 @@ const Box = ({ children }) => {
 const BoxItem = ({ children }) => {
   return (
     <View
+      
+
       style={{
         borderBottom: '1px solid black',
         display: 'flex',
         alignItems: 'center',
+     
       }}
     >
       {children}
@@ -71,123 +80,128 @@ const MyDocument = ({ data }) => {
 
             flexDirection: 'row',
             flexWrap: 'wrap',
-            padding: '8mm',
+         
             width: '100%',
+           
           }}
         >
           {/* dinamik bir objeyi ekrana yazdır */}
 
-          {Object.keys(data).map((key) => {
+          {Object.keys(data).map((key,index1) => {
             // data?.sort((a, b) => a[key] - b[key]);
 
             return Object.keys(data[key]).map((key2, index) => {
               return (
-                <Box key={index}>
-                  <BoxItem>
-                    <Text style={{ fontSize: '12pt' }}>
-                      {key
-                        .slice(0, key.indexOf('#') === -1 ? key.length : key.indexOf('#'))
-                        .toLocaleLowerCase()
-                        .slice(0, 17)}
-                    </Text>
-                  </BoxItem>
-                  <BoxItem>
-                    <Text style={{ fontSize: '9pt' }}>{key2}</Text>
-                  </BoxItem>
+            
+                  <Box key={index} style={{ wrap: false}}>
+                    <BoxItem>
+                      <Text style={{ fontSize: '13pt', fontWeight: 'bold', paddingBottom: '10px' }}>
+                        {key
+                          .slice(0, key.indexOf('#') === -1 ? key.length : key.indexOf('#'))
+                          .toLocaleLowerCase()
+                          .slice(0, 17)}
+                      </Text>
+                    </BoxItem>
+                    <BoxItem>
+                    <Text style={{ fontSize: '9pt', fontWeight: 'bold', margin: '0 0 10 0', }}>{key2}</Text>
+                    </BoxItem>
 
                   <View
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      width: '100%',
-                      fontSize: '8pt',
-                      height: '100%',
-                    }}
-                  >
-                    <View
+
                       style={{
-                        width: '100%',
                         display: 'flex',
-                        flexDirection: 'column',
+                        flexDirection: 'row',
+                        width: '100%',
+                        fontSize: '8pt',
+                        height: '100%',
                       }}
                     >
                       <View
                         style={{
-                          borderBottom: '1px solid black',
-                          textAlign: 'center',
-                          fontSize: '8pt',
+                          width: '100%',
+                          display: 'flex',
+                          flexDirection: 'column',
                         }}
                       >
-                        <Text>B</Text>
-                      </View>
-                      <View style={{ textAlign: 'center' }}>
-                        <Text>
-                          {data[key][key2]['Beyaz'] !== undefined
-                            ? data[key][key2]['Beyaz'].map((item, index) => {
+                        <View
+                          style={{
+                            borderBottom: '1px solid black',
+                            textAlign: 'center',
+                            fontSize: '8pt',
+
+                          }}
+                        >
+                          <Text>B</Text>
+                        </View>
+                        <View style={{ textAlign: 'center' }}>
+                          <Text>
+                            {data[key][key2]['Beyaz'] !== undefined
+                              ? data[key][key2]['Beyaz'].map((item, index) => {
                                 if (index > 19) {
                                   return '';
                                 }
                                 return index === data[key][key2]['Beyaz']?.length - 1
                                   ? item
                                   : index === 19
-                                  ? item
-                                  : item + ',';
+                                    ? item
+                                    : item + ',';
                               })
-                            : ''}
-                        </Text>
-                      </View>
-                    </View>
-                    <View
-                      style={{
-                        width: '100%',
-                        borderRight: '1px solid black',
-                        borderLeft: '1px solid black',
-                      }}
-                    >
-                      <View
-                        style={{
-                          borderBottom: '1px solid black',
-                          textAlign: 'center',
-                        }}
-                      >
-                        <Text>K</Text>
+                              : ''}
+                          </Text>
+                        </View>
                       </View>
                       <View
                         style={{
-                          textAlign: 'center',
-                          fontSize: '8pt',
-                          overflow: 'hidden',
+                          width: '100%',
+                          borderRight: '1px solid black',
+                          borderLeft: '1px solid black',
+
                         }}
                       >
-                        <Text>
-                          {data[key][key2]['Kırmızı'] !== undefined
-                            ? data[key][key2]['Kırmızı'].map((item, index) => {
+                        <View
+                          style={{
+                            borderBottom: '1px solid black',
+                            textAlign: 'center',
+                          }}
+                        >
+                          <Text>K</Text>
+                        </View>
+                        <View
+                          style={{
+                            textAlign: 'center',
+                            fontSize: '8pt',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          <Text>
+                            {data[key][key2]['Kırmızı'] !== undefined
+                              ? data[key][key2]['Kırmızı'].map((item, index) => {
                                 if (index > 19) {
                                   return '';
                                 }
                                 return index === data[key][key2]['Kırmızı']?.length - 1
                                   ? item
                                   : index === 19
-                                  ? item
-                                  : item + ',';
+                                    ? item
+                                    : item + ',';
                               })
-                            : ''}
-                        </Text>
+                              : ''}
+                          </Text>
+                        </View>
                       </View>
-                    </View>
-                    <View style={{ width: '100%' }}>
-                      <View
-                        style={{
-                          borderBottom: '1px solid black',
-                          textAlign: 'center',
-                        }}
-                      >
-                        <Text>Y</Text>
-                      </View>
-                      <View style={{ textAlign: 'center', flexGrow: 0 }}>
-                        <Text>
-                          {data[key][key2]['Yeşil'] !== undefined
-                            ? data[key][key2]['Yeşil'].map((item, index) => {
+                      <View style={{ width: '100%' }}>
+                        <View
+                          style={{
+                            borderBottom: '1px solid black',
+                            textAlign: 'center',
+                          }}
+                        >
+                          <Text>Y</Text>
+                        </View>
+                        <View style={{ textAlign: 'center', flexGrow: 0 }}>
+                          <Text>
+                            {data[key][key2]['Yeşil'] !== undefined
+                              ? data[key][key2]['Yeşil'].map((item, index) => {
                                 if (index > 19) {
                                   return '';
                                 }
@@ -195,15 +209,15 @@ const MyDocument = ({ data }) => {
                                 return index === data[key][key2]['Yeşil']?.length - 1
                                   ? item
                                   : index === 19
-                                  ? item
-                                  : item + ',';
+                                    ? item
+                                    : item + ',';
                               })
-                            : ''}
-                        </Text>
+                              : ''}
+                          </Text>
+                        </View>
                       </View>
                     </View>
-                  </View>
-                </Box>
+                  </Box>               
               );
             });
           })}
