@@ -170,7 +170,7 @@ function Sidebar({ collapse, handleSidebar }) {
           <AiOutlineLogout size={20} className='font-bold ' />
           <span className={`${!collapse && 'hidden'} origin-left duration-200`}>Logout</span>
         </li>
-        <p>v1.2</p>
+        <p>v1.3</p>
 
       </ul>
     </aside>
