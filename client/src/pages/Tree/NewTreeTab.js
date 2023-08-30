@@ -23,10 +23,10 @@ function NewTreeTab({
 }) {
   const initialState = {
     newTree: {
-      treeNo: 1,
-      listeNo: 1,
-      agacAuto: false,
-      listeAuto: false,
+      treeNo: Number(sessionStorage.getItem("treeNo"))||1,
+      listeNo: Number(sessionStorage.getItem("listeNo"))||1,
+      agacAuto: Boolean(sessionStorage.getItem("agacAuto"))||false,
+      listeAuto: Boolean(sessionStorage.getItem("listeAuto"))||false,
       renkId: Number(sessionStorage.getItem('renkId')) || '',
       ayarId: Number(sessionStorage.getItem('ayarId')) || '',
       kalınlıkId: Number(sessionStorage.getItem('kalınlıkId')) || '',
@@ -179,6 +179,10 @@ function NewTreeTab({
       sessionStorage.removeItem('renkId');
       sessionStorage.removeItem('ayarId');
       sessionStorage.removeItem('kalınlıkId');
+      sessionStorage.removeItem("treeNo");
+      sessionStorage.removeItem("listeNo");
+      sessionStorage.removeItem("listeAuto");
+      sessionStorage.removeItem("agacAuto");
       controller.abort();
     } catch (err) {
       setLoading(false);
@@ -228,7 +232,11 @@ function NewTreeTab({
             labelMode={'floating'}
             mode={'text'}
             value={newTree?.desc}
-            onValueChanged={(e) => setNewTree({ ...newTree, desc: e.value })}
+            onValueChanged={(e) => {
+              setNewTree({...newTree, desc: e.value});
+              
+              
+            }}
           />
         </div>
         <div className='flex flex-row items-center justify-between'>
@@ -239,14 +247,20 @@ function NewTreeTab({
             labelMode={'floating'}
             value={newTree?.treeNo}
             min='1'
-            onValueChanged={(e) => setNewTree({ ...newTree, treeNo: e.value })}
+            onValueChanged={(e) => {
+              sessionStorage.setItem("treeNo",e.value);
+              setNewTree({...newTree, treeNo: e.value})
+            }}
           />
           <CheckBox
             id={'treeNoAuto'}
             name={'treeNoAuto'}
             text={'Otomatik Artır'}
             value={newTree.agacAuto}
-            onValueChanged={(e) => setNewTree({ ...newTree, agacAuto: !newTree.agacAuto })}
+            onValueChanged={(e) => {
+              sessionStorage.setItem("agacAuto",!Boolean(newTree.agacAuto));
+              setNewTree({...newTree, agacAuto: !newTree.agacAuto})
+            }}
           />
         </div>
         <div className='flex flex-row items-center justify-between '>
@@ -255,13 +269,19 @@ function NewTreeTab({
             labelMode={'floating'}
             value={newTree?.listeNo}
             min='1'
-            onValueChanged={(e) => setNewTree({ ...newTree, listeNo: e.value })}
+            onValueChanged={(e) => {
+              sessionStorage.setItem("listeNo",e.value);
+              setNewTree({...newTree, listeNo: e.value})
+            }}
           />
           <CheckBox
             id={'listeNoAuto'}
             text={'Otomatik Artır'}
             defaultValue={newTree.listeAuto}
-            onValueChanged={(e) => setNewTree({ ...newTree, listeAuto: !newTree.listeAuto })}
+            onValueChanged={(e) => {
+              sessionStorage.setItem("listeAuto",!newTree.listeAuto);
+              setNewTree({...newTree, listeAuto: !newTree.listeAuto})
+            }}
           />
         </div>
 
