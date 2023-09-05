@@ -1,9 +1,3 @@
-// select t.treeNo, opts.optionText, opts.optionId, c.colorName, c.colorId ,t.customerQuantity from trees t
-// left join options opts ON opts.optionId = t.optionId
-// left join jobgroups j on j.isDeleted=false and j.isFinished=false and j.id=t.jobGroupId
-// left join colors c on c.colorId = t.colorId
-// where t.finished=false
-// order by opts.optionId asc,t.customerQuantity DESC,t.treeNo ASC,c.colorName ASC
 const db = require("../../models");
 
 const musteriAdetSiraliMadenAyarlamaRaporu = async (req, res) => {
@@ -34,6 +28,8 @@ const musteriAdetSiraliMadenAyarlamaRaporu = async (req, res) => {
         model: db.color,
         attributes: ["colorName"],
         paranoid: false,
+        as:'color'
+        
       },
       {
         model: db.thick,
@@ -45,12 +41,13 @@ const musteriAdetSiraliMadenAyarlamaRaporu = async (req, res) => {
       ["optionId", "ASC"],
       ["customerQuantity", "DESC"],
       ["treeNo", "ASC"],
-      ["colorId", "ASC"],
+      ["color","colorName", "ASC"],
     ],
     raw: true,
   });
 
   res.status(200).send({ musteriAdetSiraliMadenAyarlamaRaporu });
 };
+
 
 module.exports = musteriAdetSiraliMadenAyarlamaRaporu;

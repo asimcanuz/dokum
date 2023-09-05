@@ -37,7 +37,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // routes
 //public routes for auth and refresh token
-app.use("/api/customers", require("./routes/customer.routes"));
 
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/refresh", require("./routes/refresh.routes"));
@@ -63,6 +62,8 @@ app.use("/api/order", require("./routes/order.routes"));
 app.use("/api/jobGroup", require("./routes/jobGroup.routes"));
 app.use("/api/oven", require("./routes/oven.routes"));
 app.use("/api/wallboard", require("./routes/wallboard.routes"));
+app.use("/api/customers", require("./routes/customer.routes"));
+
 
 // db.sequelize
 //   .sync({ force: true })

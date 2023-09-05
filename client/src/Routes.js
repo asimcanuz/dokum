@@ -13,10 +13,10 @@ import { rolesDesc } from './constants/RolesConstants';
 import TreePage from './pages/Tree';
 import EndDayMain from './pages/EndDay';
 import OrderMain from './pages/Orders';
-import CustomerTrackingPage from './pages/CustomerTracking';
 import ReportsPage from './pages/Reports';
 import OvenMainPage from './pages/Oven';
 import Wallboard from './pages/Wallboard';
+import CustomerTrackingPage from "./pages/CustomerTracking/CustomerTracking";
 
 function Routers() {
   return (

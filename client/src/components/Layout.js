@@ -5,10 +5,12 @@ import ScrollToTop from './ScrollToTop';
 import Navbar from './Navbar';
 
 function Layout() {
-  const [sidebarCollapse, setSidebarCollapse] = useState(false);
-
+  console.log(localStorage.getItem('collapse'))
+  const [sidebarCollapse, setSidebarCollapse] = useState(Boolean(localStorage.getItem('collapse')));
   const handleSidebar = () => {
     setSidebarCollapse(!sidebarCollapse);
+    localStorage.setItem('collapse',!sidebarCollapse);
+    
   };
 
   return (

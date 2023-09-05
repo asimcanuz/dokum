@@ -10,11 +10,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Input from '../../components/Input';
 
 function NewListNo({ open, toggle, replaceJobGroup, replacedTree, getTrees }) {
-  const [treeNo, setTreeNo] = useState(1);
+  const [treeNo, setTreeNo] = useState(replacedTree.treeNo);
   const [treeNoList, setTreeNoList] = useState([]);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
+  console.log(replacedTree)
   useEffect(() => {
     const controller = new AbortController();
 
