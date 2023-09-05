@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+ import React, {useState} from 'react';
 import Alert from '../../components/Alert/Alert';
 import Button from '../../components/Button';
 import {BiLabel} from 'react-icons/bi';
@@ -9,7 +9,7 @@ import CalculatedMineralWeight from '../../utils/calculateMineralWeight';
 import calculateMineralWeight from '../../utils/calculateMineralWeight';
 import {DataGrid, Lookup, SelectBox} from 'devextreme-react';
 import {
-  Column, Editing, Export, MasterDetail, Scrolling, Selection,
+  Column, Editing, Export, FilterRow, HeaderFilter, MasterDetail, Scrolling, Selection,
 } from 'devextreme-react/data-grid';
 import {Workbook} from 'exceljs';
 import {exportDataGrid} from 'devextreme/excel_exporter';
@@ -195,7 +195,9 @@ function TreeTable(
 
       <Scrolling mode='virtual'/>
       <Selection mode={'single'}/>
-
+      <FilterRow visible={true}
+                 applyFilter={'auto'} />
+      <HeaderFilter visible={true} />
       <Column
         dataField={'treeNo'}
         caption={'Ağaç No'}
@@ -401,7 +403,7 @@ function StatusUpdateDropdown({data, setTodayTrees, treeStatuses, todayTrees}) {
       await axiosPrivate.post(Endpoints.TREE.UPDATREESTATUS, {
         treeStatusId: newStatusId, treeId: rowData.treeId,
       });
-      console.log(trees);
+
       setTodayTrees(trees);
     }}
   />);

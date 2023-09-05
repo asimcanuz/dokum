@@ -221,10 +221,10 @@ function CustomerTrackingPage() {
          columnMinWidth={50}
          columnAutoWidth={true}
          columnHidingEnabled={true}
-         onExporting={onPDFExporting}>
-
+         onExporting={onPDFExporting}
+         remoteOperations={true}
+          
          >
-           
            <FilterRow visible={true}
                       applyFilter={applyFilterTypes[0].key} />
            <HeaderFilter visible={true} />

@@ -10,12 +10,12 @@ import ModalBody from '../../components/Modal/ModalBody';
 import ModalFooter from '../../components/Modal/ModalFooter';
 
 // Herma 5051 etiket boyutları (mm cinsinden)
-const labelWidth = 48.3;
-const labelHeight = 25.4;
+const labelWidth = 48.5;
+const labelHeight = 25.6;
 
 // Sayfa boyutları (A4)
-const pageWidth = 210 - (2 * 8.48); // Sağ ve sol kenarlarda 8.48mm boşluk bırakılıyor
-const pageHeight = 297 - (2 * 8.8); // Üst ve alt kenarlarda 8.8mm boşluk bırakılıyor
+const pageWidth = 210 - (2 * 8); // Sağ ve sol kenarlarda 8.48mm boşluk bırakılıyor
+const pageHeight = 297 - 8.2; // Üst ve alt kenarlarda 8.8mm boşluk bırakılıyor
 
 // Her satırda 4 etiket, toplamda 11 satır
 const labelsPerRow = 4;
@@ -30,10 +30,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width: `${pageWidth}mm`,
     height: `${pageHeight}mm`,
-    marginLeft: '8.48mm', // Sol kenar boşluğu
-    marginRight: '8.48mm', // Sağ kenar boşluğu
-    marginTop: '8.8mm', // Üst kenar boşluğu
-    marginBottom: '8.8mm', // Alt kenar boşluğu
+    marginLeft: '7mm', // Sol kenar boşluğu
+    marginRight: '8mm', // Sağ kenar boşluğu
+    marginTop: '7.2mm', // Üst kenar boşluğu
   }, section: {
 
     flexGrow: 1,
@@ -55,8 +54,7 @@ const Box = ({children}) => {
       //  border: '1px solid black',
       width: `${labelWidth}mm`,
       height: `${labelHeight}mm`,
-      margin: 0,
-      padding: 0,
+      padding: '0.3mm',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'flex-start'
@@ -76,7 +74,9 @@ const MyDocument = ({data}) => {
           <Text style={{
             textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid black', fontSize: '10pt'
           }}>
-            Rupen çirak
+            {key
+              .slice(0, key.indexOf('#') === -1 ? key.length : key.indexOf('#'))
+              .slice(0, 17)}
           </Text>
           <Text style={{
             fontSize: '9pt',
@@ -87,7 +87,7 @@ const MyDocument = ({data}) => {
             borderBottom: '1px solid black',
 
           }}>
-            18 Ayar
+            {key2}
           </Text>
           <View
             style={{
@@ -109,19 +109,19 @@ const MyDocument = ({data}) => {
               </View>
               <View style={{textAlign: 'center'}}>
                 <Text>
-         
-                    {data[key][key2]['Beyaz'] !== undefined
-                      ? data[key][key2]['Beyaz'].map((item, index) => {
-                        if (index > 19) {
-                          return '';
-                        }
-                        return index === data[key][key2]['Beyaz']?.length - 1
+
+                  {data[key][key2]['Beyaz'] !== undefined
+                    ? data[key][key2]['Beyaz'].map((item, index) => {
+                      if (index > 19) {
+                        return '';
+                      }
+                      return index === data[key][key2]['Beyaz']?.length - 1
+                        ? item
+                        : index === 19
                           ? item
-                          : index === 19
-                            ? item
-                            : item + ',';
-                      })
-                      : ''}
+                          : item + ',';
+                    })
+                    : ''}
                 </Text>
               </View>
             </View>
