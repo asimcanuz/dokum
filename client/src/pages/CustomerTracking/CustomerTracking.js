@@ -1,24 +1,21 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import Header from '../../components/Header';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import { Endpoints } from '../../constants/Endpoints';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { statusColorStyle } from '../../utils/StatusColor';
+import {Endpoints} from '../../constants/Endpoints';
+import {useLocation, useNavigate} from 'react-router-dom';
+import {statusColorStyle} from '../../utils/StatusColor';
 import Alert from '../../components/Alert/Alert';
 import Select from 'react-select';
 import DataGrid, {
-  Column,
-  FilterRow,
-  HeaderFilter,
-  Search,
-  SearchPanel,
-  ColumnChooser,
-  Position,
-  Export
+  Column, FilterRow, HeaderFilter, ColumnChooser, Position, Export
 } from 'devextreme-react/data-grid';
-import { jsPDF } from 'jspdf';
-import { exportDataGrid } from 'devextreme/pdf_exporter';
+import { exportDataGrid } from 'devextreme/excel_exporter';
+
+// import {jsPDF} from 'jspdf';
+// import {exportDataGrid} from 'devextreme/pdf_exporter';
 import {robotoFont} from "../../constants/robotoFont";
+import {Workbook} from "exceljs";
+import {saveAs} from 'file-saver'
 
 function CustomerTrackingPage() {
   const axiosPrivate = useAxiosPrivate();
@@ -75,12 +72,8 @@ function CustomerTrackingPage() {
 
           if (newArrItem[colorName].length > 0) {
             //treeId aynıysa quantity'yi topla
-            if (
-              newArrItem[colorName][newArrItem[colorName].length - 1].tree.treeId ===
-              sortedObj[key][key2][key3].tree.treeId
-            ) {
-              newArrItem[colorName][newArrItem[colorName].length - 1].quantity +=
-                sortedObj[key][key2][key3].quantity;
+            if (newArrItem[colorName][newArrItem[colorName].length - 1].tree.treeId === sortedObj[key][key2][key3].tree.treeId) {
+              newArrItem[colorName][newArrItem[colorName].length - 1].quantity += sortedObj[key][key2][key3].quantity;
               return;
             }
           }
@@ -104,7 +97,7 @@ function CustomerTrackingPage() {
         isMounted && setJobGroups(response.data.jobGroupList);
       } catch (err) {
         console.error(err);
-        navigate('/login', { state: { from: location }, replace: true });
+        navigate('/login', {state: {from: location}, replace: true});
       }
     };
 
@@ -113,13 +106,12 @@ function CustomerTrackingPage() {
         const response = await axiosPrivate.get(Endpoints.CUSTOMERTRACKING, {
           params: {
             jobGroupId: selectedJobGroup,
-          },
-          signal: controller.signal,
+          }, signal: controller.signal,
         });
         isMounted && setCustomerTrackingData(response.data);
       } catch (err) {
         console.error(err);
-        navigate('/login', { state: { from: location }, replace: true });
+        navigate('/login', {state: {from: location}, replace: true});
       }
     };
     getJobGroups();
@@ -140,8 +132,14 @@ function CustomerTrackingPage() {
   }, [selectedJobGroup]);
 
 
-
-  const getCellColor = (statusArray) => {
+  const getCellColor = (data) => {
+    var statusArray = [] ;
+    if (data!==undefined && data!==null) {
+      console.log(data)
+      data.forEach(tree => {
+        statusArray.push(tree.tree.treeStatus.treeStatusName)
+      })
+    }
     if (statusArray.includes('Hazırlanıyor')) {
       return statusColorStyle('Hazırlanıyor');
     } else if (statusArray.includes('Dökümde')) {
@@ -157,8 +155,7 @@ function CustomerTrackingPage() {
   const jobGroupOptions = useMemo(() => {
     return jobGroups.map((jobGroup) => {
       return {
-        value: jobGroup.id,
-        label: 'No: ' + jobGroup.number + ' (' + jobGroup.date + ')',
+        value: jobGroup.id, label: 'No: ' + jobGroup.number + ' (' + jobGroup.date + ')',
       };
     });
   }, [jobGroups]);
@@ -170,146 +167,128 @@ function CustomerTrackingPage() {
       return null;
     }
   };
-  
+
   const applyFilterTypes = [{
-    key: 'auto',
-    name: 'Immediately',
+    key: 'auto', name: 'Immediately',
   }, {
-    key: 'onClick',
-    name: 'On Button Click',
+    key: 'onClick', name: 'On Button Click',
   }];
 
   const resizingModes = ['nextColumn', 'widget'];
-  
-  const onPDFExporting = React.useCallback((e) => {
-    const doc = new jsPDF();
-    doc.addFileToVFS("Amiri-Regular.ttf", robotoFont);
-    doc.addFont("Amiri-Regular.ttf", "Amiri", "normal");
-    doc.setFont("Amiri");
+
+  // const onPDFExporting = React.useCallback((e) => {
+  //   const doc = new jsPDF();
+  //   doc.addFileToVFS("Amiri-Regular.ttf", robotoFont);
+  //   doc.addFont("Amiri-Regular.ttf", "Amiri", "normal");
+  //   doc.setFont("Amiri");
+  //
+  //   exportDataGrid({
+  //     jsPDFDocument: doc, component: e.component, indent: 5,
+  //   }).then(() => {
+  //     doc.save(`Müşteri-Takibi (${jobGroups.find(job => job.id === selectedJobGroup).number}).pdf`);
+  //   });
+  // });
+
+  const onExcelExporting = useCallback((e) => {
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet('Main sheet');
 
     exportDataGrid({
-      jsPDFDocument: doc,
-      component: e.component,
-      indent: 5,
+      component: e.component, worksheet, autoFilterEnabled: true,
     }).then(() => {
-      doc.save(`Müşteri-Takibi (${jobGroups.find(job=>job.id===selectedJobGroup).number}).pdf`);
+      workbook.xlsx.writeBuffer().then((buffer) => {
+        saveAs(new Blob([buffer], {type: 'application/octet-stream'}), 'DataGrid.xlsx');
+      });
     });
-  });
+  })
+  return (<div className='space-y-4'>
+    <Header title={'Müşteri Takip'} description={'Müşterilerinin takibini gerçekleştir'}/>
+    <Select
+      className='w-1/2'
+      value={getJobGroupValue()}
+      options={jobGroupOptions}
+      onChange={(e) => {
+        setSelectedJobGroup(e.value);
+      }}
+    />
+    <div className='overflow-x-scroll'>
+      {customersTracking?.length > 0 ? (
+        <DataGrid
+          id={'grid-container'}
+          dataSource={customersTracking}
+          showBorders={true}
+          showRowLines={true}
+          showColumnLines={true}
+          allowColumnResizing={true}
+          columnResizingMode={resizingModes[0]}
+          onExporting={onExcelExporting}
+          remoteOperations={true}
+        >
 
-  return (
-    <div className='space-y-4'>
-      <Header title={'Müşteri Takip'} description={'Müşterilerinin takibini gerçekleştir'} />
-      <Select
-        className='w-1/2'
-        value={getJobGroupValue()}
-        options={jobGroupOptions}
-        onChange={(e) => {
-          setSelectedJobGroup(e.value);
-        }}
-      />
-      <div className='overflow-x-scroll'>
-        {customersTracking?.length > 0 ? (
-         <DataGrid
-         id={'grid-container'}
-         dataSource={customersTracking}
-         showBorders={true}
-         showRowLines={true}
-         showColumnLines={true}
-         allowColumnResizing={true}
+          <FilterRow visible={true}
+                     applyFilter={applyFilterTypes[0].key}/>
+          <HeaderFilter visible={true}/>
+          <Export enabled={true} allowExportSelectedData={true}/>
 
-         columnResizingMode={resizingModes[0]}
-         columnMinWidth={50}
-         columnAutoWidth={true}
-         columnHidingEnabled={true}
-         onExporting={onPDFExporting}
-         remoteOperations={true}
-          
-         >
-           <FilterRow visible={true}
-                      applyFilter={applyFilterTypes[0].key} />
-           <HeaderFilter visible={true} />
-           <Export enabled={true} formats={['pdf']} />
+          <Column width={'70px'} caption={'Müşteri No.'} dataField={'accountNumber'}/>
+          <Column width={'200px'} caption={'Müşteri'} dataField={'customer'}/>
+          <Column width={'70px'} caption={'Ayar'} dataField={'option'}/>
+          <Column allowExporting={false} caption={'Beyaz'} dataField={'Beyaz'} cellRender={({data}) => {
+            return data.Beyaz !== undefined ? data.Beyaz.map((item) => {
+              // son item değilse
+              var borderClass = '';
+              if (data.Beyaz.length > 1) {
+                borderClass = 'border-b  border-dashed border-spacing-2 border-black';
+              }
+              return (<div className={`d-flex flex-col justify-between ${borderClass} py-2 }`}>
+                {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${item.tree.treeStatus.treeStatusName}, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt.slice(0, 10,)}`}
+              </div>);
+            }) : null;
+          }}/>
+          <Column bac allowExporting={false} dataField={'Kırmızı'} cellRender={({data}) => {
 
-           <Column width={'70px'} caption={'Müşteri No.'} dataField={'accountNumber'}/>
-        <Column width={'200px'} caption={'Müşteri'} dataField={'customer'}/>
-        <Column width={'70px'} caption={'Ayar'} dataField={'option'} />
-        <Column caption={'Beyaz'}  allowExporting={false} dataField={'Beyaz'} cellRender={({data})=>{
-          return data.Beyaz !== undefined ? data.Beyaz.map((item) => {
-            // son item değilse
-            var borderClass = '';
-            if ( data.Beyaz.length >1) {
-              borderClass = 'border-b  border-dashed border-spacing-2 border-black';
-            }
-            return (
-              <div className={`d-flex flex-col justify-between ${borderClass} py-2 }`}>
-                {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${
-                  item.tree.treeStatus.treeStatusName
-                }, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt.slice(
-                  0,
-                  10,
-                )}`}
-              </div>
-            );
-          }) : null;
-        }}/>
-        <Column dataField={'Kırmızı'} allowExporting={false} cellRender={({data})=>{
-          return data.Kırmızı !== undefined ? data.Kırmızı.map((item) => {
-            // son item değilse
-            var borderClass = '';
-            if ( data.Kırmızı.length >1) {
-              borderClass = 'border-b  border-dashed border-spacing-2 border-black';
-            }
-            return (
-              <div className={`d-flex flex-col justify-between ${borderClass} py-2 px-2 }`}>
-                {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${
-                  item.tree.treeStatus.treeStatusName
-                }, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt.slice(
-                  0,
-                  10,
-                )}`}
-              </div>
-            );
-          }) : null;
-        }}/>
-        <Column dataField={'Yeşil'} allowExporting={false} cellRender={({data})=>{
-          return data.Yeşil !== undefined ? data.Yeşil.map((item) => {
-            // son item değilse
-            var borderClass = '';
-            if ( data.Yeşil.length >1) {
-              borderClass = 'border-b  border-dashed border-spacing-2 border-black';
-            }
-            return (
-              <div className={`d-flex flex-col justify-between ${borderClass} py-2 px-2 }`}>
-                {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${
-                  item.tree.treeStatus.treeStatusName
-                }, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt.slice(
-                  0,
-                  10,
-                )}`}
-              </div>
-            );
-          }) : null;
-        }}/>
+            var colorClass = getCellColor(data.Kırmızı);
+  
+            return data.Kırmızı !== undefined ? data.Kırmızı.map((item) => {
+              // son item değilse
+              var borderClass = '';
+              if (data.Kırmızı.length > 1) {
+                borderClass = 'border-b  border-dashed border-spacing-2 border-black';
+              }
+        
+              return (<div className={`d-flex flex-col justify-between ${borderClass} py-2 px-2 ${colorClass }`}>
+                {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${item.tree.treeStatus.treeStatusName}, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt.slice(0, 10,)}`}
+              </div>);
+            }) : null;
+          }}/>
+          <Column allowExporting={false} dataField={'Yeşil'} cellRender={({data}) => {
+            return data.Yeşil !== undefined ? data.Yeşil.map((item,index) => {
+              // son item değilse
+              var borderClass = '';
+              if (data.Yeşil.length > 1 && data.Yeşil.length-1===index) {
+                borderClass = 'border-b  border-dashed border-spacing-2 border-black';
+              }
+              return (<div className={`d-flex flex-col justify-between ${borderClass} py-2 px-2 }`}>
+                {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${item.tree.treeStatus.treeStatusName}, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt.slice(0, 10,)}`}
+              </div>);
+            }) : null;
+          }}/>
 
-           <ColumnChooser
-             enabled={true}
-             mode={'aria-label'}
-           >
-             <Position
-               my="right top"
-               at="right top"
-               of=".dx-datagrid-column-chooser-button"
-             />
+          <ColumnChooser
+            enabled={true}
+            mode={'aria-label'}
+          >
+            <Position
+              my="right top"
+              at="right top"
+              of=".dx-datagrid-column-chooser-button"
+            />
 
-           </ColumnChooser>
+          </ColumnChooser>
 
-         </DataGrid>
-        ) : (
-          <Alert apperance={'danger'}>Aktif Ağaç bulunamadı</Alert>
-        )}
-      </div>
+        </DataGrid>) : (<Alert apperance={'danger'}>Aktif Ağaç bulunamadı</Alert>)}
     </div>
-  );
+  </div>);
 }
 
 export default CustomerTrackingPage;

@@ -1,5 +1,4 @@
 import React, {Fragment, useEffect, useState} from 'react';
-import Select from 'react-select';
 import Button from '../../components/Button';
 import {AiOutlinePlus} from 'react-icons/ai';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
@@ -42,8 +41,8 @@ function NewOrderTab({
   const [customerName, setCustomerName] = useState('');
   const [customers, setCustomers] = useState();
   const [modalOpen, setModalOpen] = useState(false);
-  const [limit, setLimit] = useState(100);
-  const [skip, setSkip] = useState(0);
+  const limit = 100;
+  const skip = 0;
 
   useEffect(() => {
     let isMounted = true;
@@ -109,6 +108,7 @@ function NewOrderTab({
         headers: {'Content-Type': 'application/json'},
         withCredentials: true,
       });
+
       const response = await axiosPrivate.get(Endpoints.TREE.TODAY, {
         params: {
           jobGroupId: selectedJobGroup,
@@ -116,8 +116,6 @@ function NewOrderTab({
       });
       if (response.status === 200) {
         setLoading(true);
-
-
       }
 
       setTodayTrees(response.data.trees);
@@ -130,15 +128,11 @@ function NewOrderTab({
         title: 'Sipariş Ekleme Hatası',
       });
 
-      // alert(error.message);
-      // if (error.response.status === 401) {
-      //   navigate('/login', { state: { from: location }, replace: true });
-      // }
     }
     controller.abort();
   }
 
-  console.log(order)
+
   const customFilter = async (option, searchText) => {
     setCustomerName(searchText);
   };
@@ -182,32 +176,14 @@ function NewOrderTab({
 
         <div className='grid grid-rows-3'>
           <div className='flex flex-col'>
-            {/* <SelectBox
-              className='hover:cursor-pointer text-sm'
-              dataSource={customerOptions}
-              displayExpr={'label'}
-              valueExpr='value'
-              label='Müşteri'
-              labelMode='floating'
-              value={
-                customerOptions?.filter((option) => option.value === order.customerId)[0]?.value
-              }
-              onValueChanged={(e) => {
-                setOrder({ ...order, customerId: e.value });
-              }}
 
-              searchEnabled={true}
-              searchMode='startswith'
-              searchExpr={'label'}
-              minSearchLength={'2'}
-            /> */}
             <ReactSelect
               className='hover:cursor-pointer text-sm'
               options={customerOptions}
               onChange={(e) => {
                 setOrder({...order, customerId: e.value});
               }}
-              value={order.customerId !== null ? customerOptions?.find((option) => option.value === order.customerId) : null}
+              value={order.customerId !== null ? customerOptions?.find((option) => option.value === order.customerId) : ''}
               isSearchable={true}
               filterOption={customFilter}
             />
@@ -264,17 +240,10 @@ function NewOrderTab({
           />
           <Button
             appearance={'primary'}
-            disabled={Object.values(tree).includes('') ? false : !loading ? true : false}
-            onClick={() => addOrder().then(() => {
-              setOrder({
-                treeId: tree.agacId,
-                customerId: null,
-                descriptionId: null,
-                quantity: '',
-                createdBy: auth.auth.id,
-                isImmediate: false,
-              })
-            })}
+            disabled={Object.values(tree).includes('') ? false : !loading}
+            onClick={() => {
+              addOrder()
+            }}
           >
             Sipariş Ekle
           </Button>
