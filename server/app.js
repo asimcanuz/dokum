@@ -64,16 +64,16 @@ app.use("/api/jobGroup", require("./routes/jobGroup.routes"));
 app.use("/api/oven", require("./routes/oven.routes"));
 app.use("/api/wallboard", require("./routes/wallboard.routes"));
 
-// db.sequelize
-//   .sync({ force: true })
-//   .then(() => {
-//     console.log("Synced db.");
-//     initDB();
-//   })
-//   .catch((err) => {
-//     console.log("Failed to sync db: " + err.message);
-//   });
-db.sequelize.sync({ alter: true });
+ db.sequelize
+   .sync({ force: true })
+   .then(() => {
+     console.log("Synced db.");
+     initDB();
+   })
+   .catch((err) => {
+     console.log("Failed to sync db: " + err.message);
+   });
+//db.sequelize.sync({ alter: true });
 // db.sequelize.sync();
 
 async function initDB() {
