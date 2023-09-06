@@ -7,16 +7,17 @@ import Header from '../../components/Header';
 import WallboardFilter from './WallboardFilter';
 import {JobGroupSelect} from "../../components/JobGroupSelect";
 import Alert from "../../components/Alert/Alert";
+import ayar from "../Configurations/Ayar";
 
 function Wallboard() {
   const axiosPrivate = useAxiosPrivate();
   const location = useLocation();
   const navigate = useNavigate();
   const [wallboards, setWallboards] = useState([]);
-  const [filter, setFilter] = useState({
-    filterText: '',
-    filterField: '',
-  });
+
+  const [ayarFilter, setAyarFilter] = useState('');
+  const [renkFilter, setRenkFilter] = useState('')
+  const [durumFilter, setDurumFilter] = useState('')
 
   const [jobGroupId, setJobGroupId] = useState(null);
 
@@ -56,8 +57,8 @@ function Wallboard() {
         }
       }
     };
-    const getTreeStatus = async ()=>{
-      
+    const getTreeStatus = async () => {
+
     };
 
     getWallboardTree();
@@ -73,28 +74,42 @@ function Wallboard() {
 
   const filteredWallboard = useMemo(() => {
     let wallboardItems = wallboards;
-
-
-    if (filter.filterField !== '' && filter.filterText !== '' && wallboards.length > 0) {
-      if (filter.filterField === 'optionId') {
-        wallboardItems = wallboardItems.filter(wallboard => wallboard.option.optionText.toLowerCase().includes(filter.filterText.toLowerCase())
-        );
-      } else if (filter.filterField === 'colorId') {
-        wallboardItems = wallboardItems.filter(wallboard => wallboard.color.colorName.toLowerCase().includes(filter.filterText.toLowerCase()));
-      }
+    if (ayarFilter !== '' || durumFilter !== '' || renkFilter !== '') {
+      wallboardItems = wallboardItems.filter(wallboard => {
+        if (ayarFilter && ! wallboard.option.optionText.toLowerCase().includes(ayarFilter.toLowerCase())) {
+          return false;
+        }
+        if (durumFilter && !wallboard.treeStatus.treeStatusName.toLowerCase().includes(durumFilter.toLowerCase())) {
+          return false;
+        }
+        if (renkFilter && !wallboard.color.colorName.toLowerCase().includes(renkFilter.toLowerCase())) {
+          return false;
+        }
+        return true;
+      })
     }
-    return wallboardItems;
-    
-  }, [wallboards, filter.filterField, filter.filterText]);
 
-  console.log(filteredWallboard)
+
+    return wallboardItems;
+
+  }, [wallboards, renkFilter, durumFilter, ayarFilter]);
+
 
   return (
     <div className='space-y-4 h-full'>
       <Header title={'Wallboard'}/>
       <div className={"flex flex-row justify-between"}>
         <JobGroupSelect setJobGroupId={setJobGroupId}/>
-        <WallboardFilter filter={filter} setFilter={setFilter}/>
+        <WallboardFilter
+
+          ayarFilter={ayarFilter}
+          setAyarFilter={setAyarFilter}
+          renkFilter={renkFilter}
+          setRenkFilter={setRenkFilter}
+          durumFilter={durumFilter}
+          setDurumFilter={setDurumFilter}
+
+        />
       </div>
 
       {jobGroupId !== null && jobGroupId !== undefined ?

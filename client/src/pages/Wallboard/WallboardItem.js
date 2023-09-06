@@ -7,12 +7,12 @@ const WallboardItem = ({ wallboard }) => {
     var hours = milliseconds / (1000 * 60 * 60);
     var absoluteHours = Math.floor(hours);
     var h = absoluteHours;
-    //Get remainder from hours and convert to minutes
+    //Get reminder from hours and convert to minutes
     var minutes = (hours - absoluteHours) * 60;
     var absoluteMinutes = Math.floor(minutes);
     var m = absoluteMinutes > 9 ? absoluteMinutes : '0' + absoluteMinutes;
 
-    //Get remainder from minutes and convert to seconds
+    //Get reminder from minutes and convert to seconds
     var seconds = (minutes - absoluteMinutes) * 60;
     var absoluteSeconds = Math.floor(seconds);
     var s = absoluteSeconds > 9 ? absoluteSeconds : '0' + absoluteSeconds;
@@ -51,7 +51,7 @@ const WallboardItem = ({ wallboard }) => {
       clearInterval(intervalId);
     };
   }, []);
-
+  
   return (
     <div
       className={
@@ -72,7 +72,7 @@ const WallboardItem = ({ wallboard }) => {
       </div>
       <div className={'w-full flex flex-col items-start justify-start'}>
         <p>İşlem Adımı : {wallboard.treeStatus.treeStatusName}</p>
-        <p>Son İşlem Saati : {wallboard.statusDate?.treeStatusDate?.slice(11, 16)}</p>
+        <p>Son İşlem Saati : {wallboard.statusDate?.updatedAt?.slice(11, 16)}</p>
         <p>Tahmini Kalan Süre: {remainingTime} </p>
       </div>
     </div>

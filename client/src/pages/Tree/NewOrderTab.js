@@ -1,23 +1,22 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import Select from 'react-select';
+import React, {Fragment, useEffect, useState} from 'react';
 import Button from '../../components/Button';
-import { AiOutlinePlus } from 'react-icons/ai';
+import {AiOutlinePlus} from 'react-icons/ai';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import { Endpoints } from '../../constants/Endpoints';
+import {Endpoints} from '../../constants/Endpoints';
 import useAuth from '../../hooks/useAuth';
-import { CheckBox, NumberBox, SelectBox } from 'devextreme-react';
+import {CheckBox, NumberBox, SelectBox} from 'devextreme-react';
 import ErrorModal from '../../components/ErrorModal';
 import AddNewDescriptionModal from './AddNewDescriptionModal';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import ReactSelect from 'react-select';
 
 function NewOrderTab({
-  clickTree: tree,
-  descriptions,
-  setTodayTrees,
-  selectedJobGroup,
-  setDescriptions,
-}) {
+                       clickTree: tree,
+                       descriptions,
+                       setTodayTrees,
+                       selectedJobGroup,
+                       setDescriptions,
+                     }) {
   const auth = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -42,8 +41,8 @@ function NewOrderTab({
   const [customerName, setCustomerName] = useState('');
   const [customers, setCustomers] = useState();
   const [modalOpen, setModalOpen] = useState(false);
-  const [limit, setLimit] = useState(100);
-  const [skip, setSkip] = useState(0);
+  const limit = 100;
+  const skip = 0;
 
   useEffect(() => {
     let isMounted = true;
@@ -59,7 +58,7 @@ function NewOrderTab({
         if (isMounted) {
           if (response.data.customers.length === 0) {
             response.data.customers[0] = {
-              customerId: 1,
+              customerId: null,
               customerName: 'Lütfen Geçerli Müşteri Giriniz!',
             };
           }
@@ -67,7 +66,7 @@ function NewOrderTab({
         }
       } catch (err) {
         console.error(err);
-        navigate('/login', { state: { from: location }, replace: true });
+        navigate('/login', {state: {from: location}, replace: true});
       }
     };
 
@@ -80,18 +79,19 @@ function NewOrderTab({
   }, [customerName]);
 
   useEffect(() => {
-    setOrder({ ...order, treeId: tree.agacId });
+    setOrder({...order, treeId: tree.agacId});
   }, [tree]);
 
   const customerOptions = customers?.map((customer) => ({
     value: customer.customerId,
     label: customer.customerName,
   }));
+
   const descriptionOptions = descriptions.map((description) => ({
     value: description.descriptionId,
     label: description.descriptionText,
   }));
-  descriptionOptions.unshift({ value: null, label: 'Açıklama Yok' });
+  descriptionOptions.unshift({value: null, label: 'Açıklama Yok'});
 
   async function addOrder() {
     const controller = new AbortController();
@@ -100,14 +100,15 @@ function NewOrderTab({
         throw new Error('Lütfen ağaç seçiniz!');
       }
       setLoading(false);
-      if (order.customerId === '' || order.quantity === '') {
+      if (order.customerId === '' || order.quantity === '' || order.customerId === null) {
         throw new Error('Lütfen müşteri ve/veya adet alanlarını doldurunuz.');
       }
 
       await axiosPrivate.post(Endpoints.ORDER, order, {
-        headers: { 'Content-Type': 'application/json' },
+        headers: {'Content-Type': 'application/json'},
         withCredentials: true,
       });
+
       const response = await axiosPrivate.get(Endpoints.TREE.TODAY, {
         params: {
           jobGroupId: selectedJobGroup,
@@ -127,13 +128,10 @@ function NewOrderTab({
         title: 'Sipariş Ekleme Hatası',
       });
 
-      // alert(error.message);
-      // if (error.response.status === 401) {
-      //   navigate('/login', { state: { from: location }, replace: true });
-      // }
     }
     controller.abort();
   }
+
 
   const customFilter = async (option, searchText) => {
     setCustomerName(searchText);
@@ -178,32 +176,14 @@ function NewOrderTab({
 
         <div className='grid grid-rows-3'>
           <div className='flex flex-col'>
-            {/* <SelectBox
-              className='hover:cursor-pointer text-sm'
-              dataSource={customerOptions}
-              displayExpr={'label'}
-              valueExpr='value'
-              label='Müşteri'
-              labelMode='floating'
-              value={
-                customerOptions?.filter((option) => option.value === order.customerId)[0]?.value
-              }
-              onValueChanged={(e) => {
-                setOrder({ ...order, customerId: e.value });
-              }}
 
-              searchEnabled={true}
-              searchMode='startswith'
-              searchExpr={'label'}
-              minSearchLength={'2'}
-            /> */}
             <ReactSelect
               className='hover:cursor-pointer text-sm'
               options={customerOptions}
               onChange={(e) => {
-                setOrder({ ...order, customerId: e.value });
+                setOrder({...order, customerId: e.value});
               }}
-              value={customerOptions?.filter((option) => option.value === order.customerId)[0]}
+              value={order.customerId !== null ? customerOptions?.find((option) => option.value === order.customerId) : ''}
               isSearchable={true}
               filterOption={customFilter}
             />
@@ -217,7 +197,7 @@ function NewOrderTab({
               onValueChanged={(e) => {
                 if (parseInt(e.value) <= 0) {
                 }
-                setOrder({ ...order, quantity: e.value });
+                setOrder({...order, quantity: e.value});
               }}
             />
           </div>
@@ -229,7 +209,7 @@ function NewOrderTab({
                 }}
                 className='flex flex-row justify-between items-center text-blue-600 hover:cursor-pointer hover:animate-pulse'
               >
-                <AiOutlinePlus /> <span>Yeni Açıklama</span>
+                <AiOutlinePlus/> <span>Yeni Açıklama</span>
               </p>
             </div>
             <SelectBox
@@ -243,7 +223,7 @@ function NewOrderTab({
                 descriptionOptions?.filter((desc) => desc.value === order.descriptionId)[0]?.value
               }
               onValueChanged={(e) => {
-                setOrder({ ...order, descriptionId: e.value });
+                setOrder({...order, descriptionId: e.value});
               }}
             />
           </div>
@@ -254,19 +234,22 @@ function NewOrderTab({
             name={'isImmediate'}
             text={'Acil mi?'}
             onValueChanged={(e) => {
-              setOrder({ ...order, isImmediate: e.value });
+              setOrder({...order, isImmediate: e.value});
             }}
             checked={order.isImmediate}
           />
           <Button
             appearance={'primary'}
-            disabled={Object.values(tree).includes('') ? false : !loading ? true : false}
-            onClick={addOrder}
+            disabled={Object.values(tree).includes('') ? false : !loading}
+            onClick={() => {
+              addOrder()
+            }}
           >
             Sipariş Ekle
           </Button>
         </div>
-      </section>{' '}
+      </section>
+      {' '}
       {errorModal.visible && (
         <ErrorModal
           title={errorModal.title}

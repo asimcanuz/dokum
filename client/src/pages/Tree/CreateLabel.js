@@ -1,9 +1,9 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react';
-import { Page, Text, View, Document, StyleSheet, PDFViewer, Font } from '@react-pdf/renderer';
+import React, {Fragment, useEffect, useRef, useState} from 'react';
+import {Page, Text, View, Document, StyleSheet, PDFViewer, Font} from '@react-pdf/renderer';
 import Button from '../../components/Button';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Endpoints } from '../../constants/Endpoints';
+import {useLocation, useNavigate} from 'react-router-dom';
+import {Endpoints} from '../../constants/Endpoints';
 import Modal from '../../components/Modal/Modal';
 import ModalHeader from '../../components/Modal/ModalHeader';
 import ModalBody from '../../components/Modal/ModalBody';
@@ -14,10 +14,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     fontFamily: 'Roboto',
     fontSize: '8pt',
-    padding: '9mm 7mm 9mm 11mm'
+    padding: '8.8mm 7.5mm 3.8mm 10.3mm'
   },
   section: {
-   
+
     flexGrow: 1,
   },
 
@@ -29,40 +29,36 @@ Font.register({
   src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf',
 });
 
-const Box = ({ children }) => {
+const Box = ({children}) => {
   return (
     <View
       wrap={false}
+      debug={true}
       style={{
         // sayfanın 4 eşit parçasına bölünmesi için
-      //  border: '1px solid black',
-        width: '25%',
+        //  border: '1px solid black',
+        width: '48.3mm',
         margin: 0,
         display: 'flex',
         flexDirection: 'column',
         textOverflow: 'hidden',
-        overflow: 'hidden',
-        height: '25.3mm',
-   
-      
-   
-        //maxHeight: '96px',
+        height: '25.4mm',
+        justifyContent: 'flex-start'
+
       }}
     >
       {children}
     </View>
   );
 };
-const BoxItem = ({ children }) => {
+const BoxItem = ({children}) => {
   return (
     <View
-      
-
+      wrap={false}
       style={{
-        borderBottom: '1px solid black',
         display: 'flex',
         alignItems: 'center',
-     
+        borderBottom: '1px solid black'
       }}
     >
       {children}
@@ -70,154 +66,156 @@ const BoxItem = ({ children }) => {
   );
 };
 
-const MyDocument = ({ data }) => {
+const MyDocument = ({data}) => {
   return (
     <Document>
-      <Page size='A4' style={styles.page}>
+      <Page size='A4' style={styles.page} debug={true}>
         <View
           style={{
             display: 'flex',
-
             flexDirection: 'row',
             flexWrap: 'wrap',
-         
             width: '100%',
-           
+
           }}
         >
           {/* dinamik bir objeyi ekrana yazdır */}
 
-          {Object.keys(data).map((key,index1) => {
+          {Object.keys(data).map((key, index1) => {
             // data?.sort((a, b) => a[key] - b[key]);
 
             return Object.keys(data[key]).map((key2, index) => {
               return (
-            
-                  <Box key={index} style={{ wrap: false}}>
-                    <BoxItem>
-                      <Text style={{ fontSize: '13pt', fontWeight: 'bold', paddingBottom: '10px' }}>
-                        {key
-                          .slice(0, key.indexOf('#') === -1 ? key.length : key.indexOf('#'))
-                          .toLocaleLowerCase()
-                          .slice(0, 17)}
-                      </Text>
-                    </BoxItem>
-                    <BoxItem>
-                    <Text style={{ fontSize: '9pt', fontWeight: 'bold', margin: '0 0 10 0', }}>{key2}</Text>
-                    </BoxItem>
 
+                <Box key={index} style={{wrap: false}}>
+                  <BoxItem>
+                    <Text style={{
+                      fontSize: '13pt',
+                      fontWeight: 'bold',
+                      padding: 0,
+                      margin: 0
+                    }}>
+                      {key
+                        .slice(0, key.indexOf('#') === -1 ? key.length : key.indexOf('#'))
+                        .slice(0, 17)}
+                    </Text>
+                  </BoxItem>
+                  <BoxItem>
+                    <Text style={{
+                      fontSize: '9pt', fontWeight: 'bold', padding: 0,
+                      margin: 0
+                    }}>{key2}</Text>
+                  </BoxItem>
                   <View
-
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      fontSize: '8pt',
+                      flexGrow:1
+                    }}
+                  >
+                    <View
                       style={{
-                        display: 'flex',
-                        flexDirection: 'row',
                         width: '100%',
-                        fontSize: '8pt',
-                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
                       }}
                     >
                       <View
                         style={{
-                          width: '100%',
-                          display: 'flex',
-                          flexDirection: 'column',
+                          borderBottom: '1px solid black',
+                          textAlign: 'center',
+                          fontSize: '8pt',
+
                         }}
                       >
-                        <View
-                          style={{
-                            borderBottom: '1px solid black',
-                            textAlign: 'center',
-                            fontSize: '8pt',
+                        <Text>B</Text>
+                      </View>
+                      <View style={{textAlign: 'center'}}>
+                        {/*<Text>*/}
+                        {/*  {data[key][key2]['Beyaz'] !== undefined*/}
+                        {/*    ? data[key][key2]['Beyaz'].map((item, index) => {*/}
+                        {/*      if (index > 19) {*/}
+                        {/*        return '';*/}
+                        {/*      }*/}
+                        {/*      return index === data[key][key2]['Beyaz']?.length - 1*/}
+                        {/*        ? item*/}
+                        {/*        : index === 19*/}
+                        {/*          ? item*/}
+                        {/*          : item + ',';*/}
+                        {/*    })*/}
+                        {/*    : ''}*/}
+                        {/*</Text>*/}
+                      </View>
+                    </View>
+                    <View
+                      style={{
+                        width: '100%',
+                        borderRight: '1px solid black',
+                        borderLeft: '1px solid black',
 
-                          }}
-                        >
-                          <Text>B</Text>
-                        </View>
-                        <View style={{ textAlign: 'center' }}>
-                          <Text>
-                            {data[key][key2]['Beyaz'] !== undefined
-                              ? data[key][key2]['Beyaz'].map((item, index) => {
-                                if (index > 19) {
-                                  return '';
-                                }
-                                return index === data[key][key2]['Beyaz']?.length - 1
-                                  ? item
-                                  : index === 19
-                                    ? item
-                                    : item + ',';
-                              })
-                              : ''}
-                          </Text>
-                        </View>
+                      }}
+                    >
+                      <View
+                        style={{
+                          borderBottom: '1px solid black',
+                          textAlign: 'center',
+                        }}
+                      >
+                        <Text>K</Text>
                       </View>
                       <View
                         style={{
-                          width: '100%',
-                          borderRight: '1px solid black',
-                          borderLeft: '1px solid black',
-
+                          textAlign: 'center',
+                          fontSize: '8pt',
+                          overflow: 'hidden',
                         }}
                       >
-                        <View
-                          style={{
-                            borderBottom: '1px solid black',
-                            textAlign: 'center',
-                          }}
-                        >
-                          <Text>K</Text>
-                        </View>
-                        <View
-                          style={{
-                            textAlign: 'center',
-                            fontSize: '8pt',
-                            overflow: 'hidden',
-                          }}
-                        >
-                          <Text>
-                            {data[key][key2]['Kırmızı'] !== undefined
-                              ? data[key][key2]['Kırmızı'].map((item, index) => {
-                                if (index > 19) {
-                                  return '';
-                                }
-                                return index === data[key][key2]['Kırmızı']?.length - 1
-                                  ? item
-                                  : index === 19
-                                    ? item
-                                    : item + ',';
-                              })
-                              : ''}
-                          </Text>
-                        </View>
-                      </View>
-                      <View style={{ width: '100%' }}>
-                        <View
-                          style={{
-                            borderBottom: '1px solid black',
-                            textAlign: 'center',
-                          }}
-                        >
-                          <Text>Y</Text>
-                        </View>
-                        <View style={{ textAlign: 'center', flexGrow: 0 }}>
-                          <Text>
-                            {data[key][key2]['Yeşil'] !== undefined
-                              ? data[key][key2]['Yeşil'].map((item, index) => {
-                                if (index > 19) {
-                                  return '';
-                                }
-
-                                return index === data[key][key2]['Yeşil']?.length - 1
-                                  ? item
-                                  : index === 19
-                                    ? item
-                                    : item + ',';
-                              })
-                              : ''}
-                          </Text>
-                        </View>
+                        {/*<Text>*/}
+                        {/*  {data[key][key2]['Kırmızı'] !== undefined*/}
+                        {/*    ? data[key][key2]['Kırmızı'].map((item, index) => {*/}
+                        {/*      if (index > 19) {*/}
+                        {/*        return '';*/}
+                        {/*      }*/}
+                        {/*      return index === data[key][key2]['Kırmızı']?.length - 1*/}
+                        {/*        ? item*/}
+                        {/*        : index === 19*/}
+                        {/*          ? item*/}
+                        {/*          : item + ',';*/}
+                        {/*    })*/}
+                        {/*    : ''}*/}
+                        {/*</Text>*/}
                       </View>
                     </View>
-                  </Box>               
+                    <View style={{width: '100%'}}>
+                      <View
+                        style={{
+                          borderBottom: '1px solid black',
+                          textAlign: 'center',
+                        }}
+                      >
+                        <Text>Y</Text>
+                      </View>
+                      <View style={{textAlign: 'center', flexGrow: 0}}>
+                        {/*<Text>*/}
+                        {/*  {data[key][key2]['Yeşil'] !== undefined*/}
+                        {/*    ? data[key][key2]['Yeşil'].map((item, index) => {*/}
+                        {/*      if (index > 19) {*/}
+                        {/*        return '';*/}
+                        {/*      }*/}
+                        
+                        {/*      return index === data[key][key2]['Yeşil']?.length - 1*/}
+                        {/*        ? item*/}
+                        {/*        : index === 19*/}
+                        {/*          ? item*/}
+                        {/*          : item + ',';*/}
+                        {/*    })*/}
+                        {/*    : ''}*/}
+                        {/*</Text>*/}
+                      </View>
+                    </View>
+                  </View>
+                </Box>
               );
             });
           })}
@@ -227,7 +225,7 @@ const MyDocument = ({ data }) => {
   );
 };
 
-export default function CreateLabel({ open, toggle, jobGroupId }) {
+export default function CreateLabel({open, toggle, jobGroupId}) {
   const [data, setData] = useState([]);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -274,7 +272,7 @@ export default function CreateLabel({ open, toggle, jobGroupId }) {
         setData(sortedObj);
       } catch (error) {
         console.error(error);
-        navigate('/login', { state: { from: location }, replace: true });
+        navigate('/login', {state: {from: location}, replace: true});
       }
     };
 
@@ -284,12 +282,12 @@ export default function CreateLabel({ open, toggle, jobGroupId }) {
 
   return (
     <Modal open={open} size={'normal'}>
-      <ModalHeader title={'Etiket Oluştur'} toogle={toggle} />
+      <ModalHeader title={'Etiket Oluştur'} toogle={toggle}/>
       <ModalBody>
         {Object.keys(data).length > 0 && (
           <Fragment>
-            <PDFViewer style={{ width: '720px', height: '720px' }}>
-              <MyDocument data={data} />
+            <PDFViewer style={{width: '720px', height: '720px'}}>
+              <MyDocument data={data}/>
             </PDFViewer>
           </Fragment>
         )}

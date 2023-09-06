@@ -10,11 +10,11 @@ import MusteriSiparisRaporu from './MusteriSiparişRaporu';
 
 const reports = [
   {
-    title: 'Maden Ayarlama Raporu',
+    title: 'Liste',
     src: 'madenAyarlamaRaporu',
   },
   {
-    title: 'Müşteri Adet Sıralı Maden Ayarlama Raporu',
+    title: 'Maden Ayarlama Sıralı',
     src: 'musteriAdetSiraliMadenAyarlamaRaporu',
   },
   {
