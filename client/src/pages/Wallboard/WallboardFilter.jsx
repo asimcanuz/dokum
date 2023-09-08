@@ -1,6 +1,5 @@
-import { SelectBox, TextBox } from 'devextreme-react';
+import {CheckBox, SelectBox, TextBox} from 'devextreme-react';
 import React from 'react';
-import CheckBox from '../../components/Input/CheckBox';
 
 
 function WallboardFilter({
@@ -15,7 +14,7 @@ function WallboardFilter({
   setAcilMiFilter
 }) {
   return (
-    <div className='flex flex-row justify-end'>
+    <div className='flex flex-row justify-end  md:space-x-2'>
       <TextBox
         valueChangeEvent={"keyup"}
         value={durumFilter}
@@ -33,10 +32,10 @@ function WallboardFilter({
         placeholder={'Aranacak renk giriniz...'}
         onValueChanged={e => setRenkFilter(e.value)} />
       <CheckBox
-        valueChangeEvent={"onChange"}
-        value={renkFilter}
+        value={acilMiFilter}
         placeholder={'Acilleri Getir'}
         onValueChanged={e => setAcilMiFilter(e.value)}
+        text={"Acil Olanlar"}
       />
   
 

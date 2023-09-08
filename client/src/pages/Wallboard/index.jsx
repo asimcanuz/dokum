@@ -18,7 +18,7 @@ function Wallboard() {
   const [ayarFilter, setAyarFilter] = useState('');
   const [renkFilter, setRenkFilter] = useState('')
   const [durumFilter, setDurumFilter] = useState('')
-  const [acilMiFilter, setAcilMiFilter] = useState(null)
+  const [acilMiFilter, setAcilMiFilter] = useState(false)
 
   const [jobGroupId, setJobGroupId] = useState(null);
 
@@ -58,14 +58,11 @@ function Wallboard() {
         }
       }
     };
-    const getTreeStatus = async () => {
-
-    };
 
     getWallboardTree();
     let interval = setInterval(() => {
       getWallboardTree();
-    }, 30000);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
@@ -75,11 +72,10 @@ function Wallboard() {
 
   const filteredWallboard = useMemo(() => {
     let wallboardItems = wallboards;
-    if (ayarFilter !== '' || durumFilter !== '' || renkFilter !== '' || acilMiFilter !=='') {
+    if (ayarFilter !== '' || durumFilter !== '' || renkFilter !== '' || acilMiFilter !== '') {
       wallboardItems = wallboardItems.filter(wallboard => {
-
-
-        if (ayarFilter && ! wallboard.option.optionText.toLowerCase().startsWith(ayarFilter.toLowerCase())) {
+        
+        if (ayarFilter && !wallboard.option.optionText.toLowerCase().startsWith(ayarFilter.toLowerCase())) {
           return false;
         }
         if (durumFilter && !wallboard.treeStatus.treeStatusName.toLowerCase().includes(durumFilter.toLowerCase())) {
@@ -88,22 +84,17 @@ function Wallboard() {
         if (renkFilter && !wallboard.color.colorName.toLowerCase().includes(renkFilter.toLowerCase())) {
           return false;
         }
-        if (acilMiFilter && !wallboard.treeStatus.toLowerCase().includes(acilMiFilter.toLowerCase())) {
-
+        if (acilMiFilter && wallboard.isImmediate !== acilMiFilter) {
           return false;
         }
-
-
-
 
         return true;
       })
     }
-
-
+    
     return wallboardItems;
 
-  }, [wallboards, renkFilter, durumFilter, ayarFilter,acilMiFilter]);
+  }, [wallboards, renkFilter, durumFilter, ayarFilter, acilMiFilter]);
 
 
   return (
@@ -112,16 +103,14 @@ function Wallboard() {
       <div className={"flex flex-row justify-between"}>
         <JobGroupSelect setJobGroupId={setJobGroupId}/>
         <WallboardFilter
-
           ayarFilter={ayarFilter}
           setAyarFilter={setAyarFilter}
           renkFilter={renkFilter}
           setRenkFilter={setRenkFilter}
           durumFilter={durumFilter}
           setDurumFilter={setDurumFilter}
-          setAcilMiFilter={acilMiFilter}
-
-
+          acilMiFilter={acilMiFilter}
+          setAcilMiFilter={setAcilMiFilter}
         />
       </div>
 

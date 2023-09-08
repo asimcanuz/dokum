@@ -1,12 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
+import statusColor from "../../utils/StatusColor";
 
-const WallboardItem = ({ wallboard }) => {
+/**
+ * hazırlanıyor - dökümde - döküldü - kesimde
+ * Hazırlanıyor durumundan sonra saymaya bailar
+ * adım sürelerinin geri sayımını yapar
+ *
+ */
+
+const WallboardItem = ({wallboard}) => {
   const [remainingTime, setRemainingTime] = useState();
+  const [colorClass, setColorClass] = useState('');
+
   function parseMillisecondsIntoReadableTime(milliseconds) {
     //Get hours from milliseconds
     var hours = milliseconds / (1000 * 60 * 60);
     var absoluteHours = Math.floor(hours);
     var h = absoluteHours;
+
     //Get reminder from hours and convert to minutes
     var minutes = (hours - absoluteHours) * 60;
     var absoluteMinutes = Math.floor(minutes);
@@ -16,21 +27,18 @@ const WallboardItem = ({ wallboard }) => {
     var seconds = (minutes - absoluteMinutes) * 60;
     var absoluteSeconds = Math.floor(seconds);
     var s = absoluteSeconds > 9 ? absoluteSeconds : '0' + absoluteSeconds;
+
     if (milliseconds < 0) {
-      h = h * -1;
+      let hours = milliseconds / (1000 * 60 * 60);
+      let absoluteHours = Math.ceil(hours);
+      h = absoluteHours === 0 ? "-" + absoluteHours : absoluteHours;
       m = (Number(m) - 60) * -1;
       s = (Number(s) - 60) * -1;
       s = s > 9 ? s : '0' + s;
       m = m > 9 ? m : '0' + m;
     }
 
-    if (setRemainingTime > wallboard.treeStatus.statusCompleteTime) {
-      return 'Zaman Doldu';
-
-    }
-    else {
-      return h + ':' + m + ':' + s;
-    }
+    return h + ':' + m + ':' + s;
   }
 
   let remaininTime = () => {
@@ -43,17 +51,22 @@ const WallboardItem = ({ wallboard }) => {
     wallboardStatusDateTime.setHours(wallboardStatusDateTime.getHours() + parseInt(hour));
     wallboardStatusDateTime.setMinutes(wallboardStatusDateTime.getMinutes() + parseInt(minutes));
     wallboardStatusDateTime.setSeconds(wallboardStatusDateTime.getSeconds() + parseInt(seconds));
-
+    
+    
     let duration = wallboardStatusDateTime - now;
     let time = parseMillisecondsIntoReadableTime(duration);
 
-
-
-
+    let _status = wallboard.treeStatus.treeStatusName;
+    let _color = statusColor(_status);
+   
+    if(duration<0 && _status!=='Hazırlanıyor') {
+      setColorClass("bg-red-300")
+    }else{
+      setColorClass(_color);
+    }
+    
+    
     setRemainingTime(time);
-
-
-
 
   };
 
@@ -61,57 +74,26 @@ const WallboardItem = ({ wallboard }) => {
     let intervalId = setInterval(() => {
       remaininTime();
     }, 1000);
+    
     return () => {
       clearInterval(intervalId);
     };
-  }, []);
-
-  //  return (
-  //    <div 
-  //      className={'rounded-md inline-grid grid-cols-2 gap-5 justify-items-start  px-2 py-4 border border-gray-400 space-y-2 text-xl font-medium'
-  //      }
-  //    >
-  //      <div >
-
-  //        <p className={'font-bold text-4xl'}>{wallboard.treeNo}</p>
-  //      </div>
-  //      <div >
-
-  //      {wallboard.isImmediate && (
-  //        <p className={'font-bold text-red-700 text-3xl text-center'}>ACİL</p>
-  //        )}
-  //      </div>
-
-
-  //      {/*<div className={'w-full flex flex-col items-start justify-start'}>*/}
-  //      <p >{/*Ayar :*/} {wallboard.option.optionText}</p>
-  //        <p>{/*Renk :*/} {wallboard.color.colorName}</p>
-  //      {/*  <p>Müşteri Adeti : {wallboard.customerQuantity}</p>*/}
-  //      {/*</div>*/}
-  //      <div className={'w-full flex flex-col items-start justify-start'}>
-  //     {/* İŞLEM ADIMI*/}
-  //        <p>{wallboard.treeStatus.treeStatusName}-{wallboard.statusDate?.updatedAt?.slice(11, 16)}</p>
-  //{/*        <p>*/}{/*Son İşlem Saati :*/}{/* {wallboard.statusDate?.updatedAt?.slice(11, 16)}</p>*/}
-  //        <p>{/*Tahmini Kalan Süre:*/} {remainingTime} </p>
-  //      </div>
-  //    </div>
-  //  );
-  //};
-
+  }, [wallboard]);
+  
 
 
   return (
     <div
-      className={'rounded-md inline-grid grid-cols-2 gap-2 justify-items-start  px-2 py-4 border border-gray-400 text-xl font-medium'
-      }
+      className={`rounded-md inline-grid grid-cols-2 gap-2 justify-items-start  px-2 py-4 border border-gray-400 text-xl font-medium ${colorClass}`}
     >
-      <div className={'rounded-md border border-gray-400  w-16 bg-orange-300 text-center   '} >
+      <div className={'rounded-md w-16 text-center'}>
 
-        <p className={'font-bold text-4xl'}>{wallboard.treeNo}</p>
+        <p className={'font-bold text-5xl text-black'}>{wallboard.treeNo}</p>
       </div>
 
 
-      <div className={'rounded-md border border-red-400 w-24 bg-orange-300  text-red-700  font-bold text-4xl text-center'}>
+      <div
+        className={`rounded-md  w-24 ${wallboard.isImmediate ? 'bg-red-700  text-white' : 'bg-transparent'}  font-bold text-4xl text-center`}>
 
         {wallboard.isImmediate && (
           <p>ACİL</p>
@@ -119,26 +101,26 @@ const WallboardItem = ({ wallboard }) => {
       </div>
 
 
-      <div className={ 'text-center'} >
-        <p className={'text-center'}  > {wallboard.option.optionText}</p>
+      <div className={'text-center'}>
+        <p className={'text-center'}> {wallboard.option.optionText}</p>
       </div>
       <div>
-        <p className={'text-center'} >{wallboard.color.colorName}</p>
-      </div>
-
-      <div >
-
-        <p className={'text-center'} >{wallboard.treeStatus.treeStatusName}</p>
-
-
+        <p className={'text-center'}>{wallboard.color.colorName}</p>
       </div>
 
       <div>
-        <p className={'text-center'} >({wallboard.statusDate?.updatedAt?.slice(11, 16)})</p>
+
+        <p className={'text-center'}>{wallboard.treeStatus.treeStatusName}</p>
+
+
+      </div>
+
+      <div>
+        <p className={'text-center'}>({wallboard.statusDate?.updatedAt?.slice(11, 16)})</p>
       </div>
       <div></div>
       <div>
-        <p> {remainingTime} </p>
+        <p className={`${wallboard.treeStatus.treeStatusName==='Hazırlanıyor' && 'text-transparent'}`}> {remainingTime} </p>
       </div>
 
     </div>

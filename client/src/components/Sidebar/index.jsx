@@ -150,7 +150,7 @@ function Sidebar({ collapse, handleSidebar }) {
                     {Menu.title}
                   </span>
                 </li>
-                {!collapse && <Tooltip id={Menu.title} place='right' style={{ zIndex: '99999' }} />}
+                {!collapse && <Tooltip id={Menu.title} place='right' style={{ zIndex: 999999999 }} />}
               </Link>
             ),
         )}
