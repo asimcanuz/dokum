@@ -25,3 +25,8 @@ body,
 .dx-texteditor-input {
   border-radius: 0;
 }
+.myclass[role=gridcell] {
+  padding: 0 !important;
+}
+
+

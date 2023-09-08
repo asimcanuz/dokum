@@ -18,6 +18,7 @@ function Wallboard() {
   const [ayarFilter, setAyarFilter] = useState('');
   const [renkFilter, setRenkFilter] = useState('')
   const [durumFilter, setDurumFilter] = useState('')
+  const [acilMiFilter, setAcilMiFilter] = useState(null)
 
   const [jobGroupId, setJobGroupId] = useState(null);
 
@@ -74,9 +75,11 @@ function Wallboard() {
 
   const filteredWallboard = useMemo(() => {
     let wallboardItems = wallboards;
-    if (ayarFilter !== '' || durumFilter !== '' || renkFilter !== '') {
+    if (ayarFilter !== '' || durumFilter !== '' || renkFilter !== '' || acilMiFilter !=='') {
       wallboardItems = wallboardItems.filter(wallboard => {
-        if (ayarFilter && ! wallboard.option.optionText.toLowerCase().includes(ayarFilter.toLowerCase())) {
+
+
+        if (ayarFilter && ! wallboard.option.optionText.toLowerCase().startsWith(ayarFilter.toLowerCase())) {
           return false;
         }
         if (durumFilter && !wallboard.treeStatus.treeStatusName.toLowerCase().includes(durumFilter.toLowerCase())) {
@@ -85,6 +88,14 @@ function Wallboard() {
         if (renkFilter && !wallboard.color.colorName.toLowerCase().includes(renkFilter.toLowerCase())) {
           return false;
         }
+        if (acilMiFilter && !wallboard.treeStatus.toLowerCase().includes(acilMiFilter.toLowerCase())) {
+
+          return false;
+        }
+
+
+
+
         return true;
       })
     }
@@ -92,7 +103,7 @@ function Wallboard() {
 
     return wallboardItems;
 
-  }, [wallboards, renkFilter, durumFilter, ayarFilter]);
+  }, [wallboards, renkFilter, durumFilter, ayarFilter,acilMiFilter]);
 
 
   return (
@@ -108,12 +119,14 @@ function Wallboard() {
           setRenkFilter={setRenkFilter}
           durumFilter={durumFilter}
           setDurumFilter={setDurumFilter}
+          setAcilMiFilter={acilMiFilter}
+
 
         />
       </div>
 
       {jobGroupId !== null && jobGroupId !== undefined ?
-        <div className={'grid xs:grid-cols-1 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-9 gap-2 '}>
+        <div className={' grid xs:grid-cols-1 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-2 '}>
           {filteredWallboard.length > 0
             ? filteredWallboard.map((wallboard) => (
               <WallboardItem key={wallboard.treeId} wallboard={wallboard}/>

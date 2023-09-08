@@ -169,14 +169,7 @@ async function initDB() {
     fırınKonum: "alt",
   });
 
-  for (let index = 0; index < 4000; index++) {
-    await db.customer.create({
-      accountNumber: index,
-      customerName: index + ". Müsteri",
-      email: "index@mail.com",
-      phone: "2378564762",
-    });
-  }
+
 }
 
 module.exports = app;

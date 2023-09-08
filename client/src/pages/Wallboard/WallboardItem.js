@@ -24,7 +24,13 @@ const WallboardItem = ({ wallboard }) => {
       m = m > 9 ? m : '0' + m;
     }
 
-    return h + ':' + m + ':' + s;
+    if (setRemainingTime > wallboard.treeStatus.statusCompleteTime) {
+      return 'Zaman Doldu';
+
+    }
+    else {
+      return h + ':' + m + ':' + s;
+    }
   }
 
   let remaininTime = () => {
@@ -40,7 +46,15 @@ const WallboardItem = ({ wallboard }) => {
 
     let duration = wallboardStatusDateTime - now;
     let time = parseMillisecondsIntoReadableTime(duration);
+
+
+
+
     setRemainingTime(time);
+
+
+
+
   };
 
   useEffect(() => {
@@ -51,31 +65,85 @@ const WallboardItem = ({ wallboard }) => {
       clearInterval(intervalId);
     };
   }, []);
-  
+
+  //  return (
+  //    <div 
+  //      className={'rounded-md inline-grid grid-cols-2 gap-5 justify-items-start  px-2 py-4 border border-gray-400 space-y-2 text-xl font-medium'
+  //      }
+  //    >
+  //      <div >
+
+  //        <p className={'font-bold text-4xl'}>{wallboard.treeNo}</p>
+  //      </div>
+  //      <div >
+
+  //      {wallboard.isImmediate && (
+  //        <p className={'font-bold text-red-700 text-3xl text-center'}>ACİL</p>
+  //        )}
+  //      </div>
+
+
+  //      {/*<div className={'w-full flex flex-col items-start justify-start'}>*/}
+  //      <p >{/*Ayar :*/} {wallboard.option.optionText}</p>
+  //        <p>{/*Renk :*/} {wallboard.color.colorName}</p>
+  //      {/*  <p>Müşteri Adeti : {wallboard.customerQuantity}</p>*/}
+  //      {/*</div>*/}
+  //      <div className={'w-full flex flex-col items-start justify-start'}>
+  //     {/* İŞLEM ADIMI*/}
+  //        <p>{wallboard.treeStatus.treeStatusName}-{wallboard.statusDate?.updatedAt?.slice(11, 16)}</p>
+  //{/*        <p>*/}{/*Son İşlem Saati :*/}{/* {wallboard.statusDate?.updatedAt?.slice(11, 16)}</p>*/}
+  //        <p>{/*Tahmini Kalan Süre:*/} {remainingTime} </p>
+  //      </div>
+  //    </div>
+  //  );
+  //};
+
+
+
   return (
     <div
-      className={
-        'flex flex-col justify-items-start  px-2 py-4 border border-gray-400 space-y-2 text-xl font-medium'
+      className={'rounded-md inline-grid grid-cols-2 gap-2 justify-items-start  px-2 py-4 border border-gray-400 text-xl font-medium'
       }
     >
-      <div className={' w-full flex flex-col items-center justify-start'}>
-        <h4 className={'text-xl'}>Ağaç Numarası</h4>
+      <div className={'rounded-md border border-gray-400  w-16 bg-orange-300 text-center   '} >
+
         <p className={'font-bold text-4xl'}>{wallboard.treeNo}</p>
       </div>
-      {wallboard.isImmediate && (
-        <p className={'font-bold text-red-700 text-3xl text-center'}>ACİL</p>
-      )}
-      <div className={'w-full flex flex-col items-start justify-start'}>
-        <p>Ayar : {wallboard.option.optionText}</p>
-        <p>Renk : {wallboard.color.colorName}</p>
-        <p>Müşteri Adeti : {wallboard.customerQuantity}</p>
+
+
+      <div className={'rounded-md border border-red-400 w-24 bg-orange-300  text-red-700  font-bold text-4xl text-center'}>
+
+        {wallboard.isImmediate && (
+          <p>ACİL</p>
+        )}
       </div>
-      <div className={'w-full flex flex-col items-start justify-start'}>
-        <p>İşlem Adımı : {wallboard.treeStatus.treeStatusName}</p>
-        <p>Son İşlem Saati : {wallboard.statusDate?.updatedAt?.slice(11, 16)}</p>
-        <p>Tahmini Kalan Süre: {remainingTime} </p>
+
+
+      <div className={ 'text-center'} >
+        <p className={'text-center'}  > {wallboard.option.optionText}</p>
       </div>
+      <div>
+        <p className={'text-center'} >{wallboard.color.colorName}</p>
+      </div>
+
+      <div >
+
+        <p className={'text-center'} >{wallboard.treeStatus.treeStatusName}</p>
+
+
+      </div>
+
+      <div>
+        <p className={'text-center'} >({wallboard.statusDate?.updatedAt?.slice(11, 16)})</p>
+      </div>
+      <div></div>
+      <div>
+        <p> {remainingTime} </p>
+      </div>
+
     </div>
   );
 };
+
+
 export default WallboardItem;

@@ -1,21 +1,24 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Header from '../../components/Header';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import {Endpoints} from '../../constants/Endpoints';
-import {useLocation, useNavigate} from 'react-router-dom';
-import {statusColorStyle} from '../../utils/StatusColor';
+import { Endpoints } from '../../constants/Endpoints';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { statusColorStyle } from '../../utils/StatusColor';
 import Alert from '../../components/Alert/Alert';
 import Select from 'react-select';
 import DataGrid, {
+  Scrolling, Pager, Paging, FilterPanel,
+
   Column, FilterRow, HeaderFilter, ColumnChooser, Position, Export
 } from 'devextreme-react/data-grid';
+
 import { exportDataGrid } from 'devextreme/excel_exporter';
 
 // import {jsPDF} from 'jspdf';
 // import {exportDataGrid} from 'devextreme/pdf_exporter';
-import {robotoFont} from "../../constants/robotoFont";
-import {Workbook} from "exceljs";
-import {saveAs} from 'file-saver'
+import { robotoFont } from "../../constants/robotoFont";
+import { Workbook } from "exceljs";
+import { saveAs } from 'file-saver'
 
 function CustomerTrackingPage() {
   const axiosPrivate = useAxiosPrivate();
@@ -97,7 +100,7 @@ function CustomerTrackingPage() {
         isMounted && setJobGroups(response.data.jobGroupList);
       } catch (err) {
         console.error(err);
-        navigate('/login', {state: {from: location}, replace: true});
+        navigate('/login', { state: { from: location }, replace: true });
       }
     };
 
@@ -111,7 +114,7 @@ function CustomerTrackingPage() {
         isMounted && setCustomerTrackingData(response.data);
       } catch (err) {
         console.error(err);
-        navigate('/login', {state: {from: location}, replace: true});
+        navigate('/login', { state: { from: location }, replace: true });
       }
     };
     getJobGroups();
@@ -121,7 +124,7 @@ function CustomerTrackingPage() {
       getCustomerTracking();
       interval = setInterval(() => {
         getCustomerTracking();
-      }, 20000);
+      }, 2000);
     }
 
     return () => {
@@ -133,8 +136,8 @@ function CustomerTrackingPage() {
 
 
   const getCellColor = (data) => {
-    var statusArray = [] ;
-    if (data!==undefined && data!==null) {
+    var statusArray = [];
+    if (data !== undefined && data !== null) {
       console.log(data)
       data.forEach(tree => {
         statusArray.push(tree.tree.treeStatus.treeStatusName)
@@ -197,12 +200,12 @@ function CustomerTrackingPage() {
       component: e.component, worksheet, autoFilterEnabled: true,
     }).then(() => {
       workbook.xlsx.writeBuffer().then((buffer) => {
-        saveAs(new Blob([buffer], {type: 'application/octet-stream'}), 'DataGrid.xlsx');
+        saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'DataGrid.xlsx');
       });
     });
   })
-  return (<div className='space-y-4'>
-    <Header title={'Müşteri Takip'} description={'Müşterilerinin takibini gerçekleştir'}/>
+  return (<div>
+    <Header title={'Müşteri Takip'} description={'Müşterilerinin takibini gerçekleştir'} />
     <Select
       className='w-1/2'
       value={getJobGroupValue()}
@@ -211,9 +214,15 @@ function CustomerTrackingPage() {
         setSelectedJobGroup(e.value);
       }}
     />
-    <div className='overflow-x-scroll'>
+
+
+
+
+
+    <div className='overflow-x-scroll' >
       {customersTracking?.length > 0 ? (
         <DataGrid
+          height={700}
           id={'grid-container'}
           dataSource={customersTracking}
           showBorders={true}
@@ -223,56 +232,97 @@ function CustomerTrackingPage() {
           columnResizingMode={resizingModes[0]}
           onExporting={onExcelExporting}
           remoteOperations={true}
+          wordWrapEnabled={true}
+
+
+
         >
 
+          <FilterRow visible={true} />
+          <FilterPanel visible={true} />
+
+
+          <Scrolling rowRenderingMode='virtual'></Scrolling>
           <FilterRow visible={true}
-                     applyFilter={applyFilterTypes[0].key}/>
-          <HeaderFilter visible={true}/>
-          <Export enabled={true} allowExportSelectedData={true}/>
+            applyFilter={applyFilterTypes[0].key} />
+          <HeaderFilter visible={true} />
+          <Export enabled={true} allowExportSelectedData={true} />
 
-          <Column width={'70px'} caption={'Müşteri No.'} dataField={'accountNumber'}/>
-          <Column width={'200px'} caption={'Müşteri'} dataField={'customer'}/>
-          <Column width={'70px'} caption={'Ayar'} dataField={'option'}/>
-          <Column allowExporting={false} caption={'Beyaz'} dataField={'Beyaz'} cellRender={({data}) => {
-            return data.Beyaz !== undefined ? data.Beyaz.map((item) => {
-              // son item değilse
-              var borderClass = '';
-              if (data.Beyaz.length > 1) {
-                borderClass = 'border-b  border-dashed border-spacing-2 border-black';
-              }
-              return (<div className={`d-flex flex-col justify-between ${borderClass} py-2 }`}>
-                {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${item.tree.treeStatus.treeStatusName}, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt.slice(0, 10,)}`}
-              </div>);
-            }) : null;
-          }}/>
-          <Column bac allowExporting={false} dataField={'Kırmızı'} cellRender={({data}) => {
+          <Column width={70} caption={'M No.'} cssClass="text-center" dataField={'accountNumber'} />
+          <Column width={200} caption={'Müşteri'} dataField={'customer'} />
+          <Column width={70} caption={'Ayar'} dataField={'option'} />
 
+          <Column cssClass="myclass" allowExporting={false} caption={'Beyaz'} dataField={'Beyaz'} cellRender={({ data }) => {
+            var k = 0;
+            var colorClass = getCellColor(data.Beyaz);
+
+            return <div className={` d-flex w-full flex-col justify-between /*bg-[${colorClass}]*/  p-1 }`} style={{ backgroundColor: `${colorClass}` }} >
+              {data.Beyaz !== undefined ? data.Beyaz.map((item) => {
+
+                // son item değilse
+                var borderClass = '';
+                k++;
+                if (data.Beyaz.length > 1 && data.Beyaz.length - 1 === k) {
+                  borderClass = 'border-b border-dashed border-spacing-2 border-black';
+                }
+
+
+                return (<div className={`d-flex flex-col justify-between ${borderClass}  }`}>
+                  {`Agaç =, ${item.tree.treeNo}, İşlem Adımı= ${item.tree.treeStatus.treeStatusName}, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt}`}
+                </div>);
+
+              }) : null}
+
+            </div>
+
+          }
+
+          }
+
+
+          />
+          <Column cssClass="myclass" bac allowExporting={false} dataField={'Kırmızı'} cellRender={({ data }) => {
+
+            var k = 0;
             var colorClass = getCellColor(data.Kırmızı);
-  
-            return data.Kırmızı !== undefined ? data.Kırmızı.map((item) => {
-              // son item değilse
-              var borderClass = '';
-              if (data.Kırmızı.length > 1) {
-                borderClass = 'border-b  border-dashed border-spacing-2 border-black';
-              }
-        
-              return (<div className={`d-flex flex-col justify-between ${borderClass} py-2 px-2 ${colorClass }`}>
-                {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${item.tree.treeStatus.treeStatusName}, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt.slice(0, 10,)}`}
-              </div>);
-            }) : null;
-          }}/>
-          <Column allowExporting={false} dataField={'Yeşil'} cellRender={({data}) => {
-            return data.Yeşil !== undefined ? data.Yeşil.map((item,index) => {
-              // son item değilse
-              var borderClass = '';
-              if (data.Yeşil.length > 1 && data.Yeşil.length-1===index) {
-                borderClass = 'border-b  border-dashed border-spacing-2 border-black';
-              }
-              return (<div className={`d-flex flex-col justify-between ${borderClass} py-2 px-2 }`}>
-                {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${item.tree.treeStatus.treeStatusName}, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt.slice(0, 10,)}`}
-              </div>);
-            }) : null;
-          }}/>
+
+            return <div className={` d-flex w-full flex-col justify-between /*bg-[${colorClass}]*/  p-1 }`} style={{ backgroundColor: `${colorClass}` }} >
+              {data.Kırmızı !== undefined ? data.Kırmızı.map((item) => {
+                k++;
+                // son item değilse
+                var borderClass = '';
+                if (data.Kırmızı.length > 1 && data.Kırmızı.length - 1 === k) {
+                  borderClass = 'border-b  border-dashed border-spacing-2 border-black';
+                }
+
+                return (<div  className={`d-flex flex-col justify-between ${borderClass} py-2 px-2 ${colorClass}`}>
+                  {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${item.tree.treeStatus.treeStatusName}, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt}`}
+                </div>);
+
+              }) : null}
+            </div>
+
+          }} />
+          <Column cssClass="myclass" allowExporting={false} dataField={'Yeşil'} cellRender={({ data }) => {
+            var k = 0;
+            var colorClass = getCellColor(data.Yeşil);
+
+            return <div className={` d-flex w-full flex-col justify-between /*bg-[${colorClass}]*/  p-1 }`} style={{ backgroundColor: `${colorClass}` }} >
+              {data.Yeşil !== undefined ? data.Yeşil.map((item, index) => {
+                k++;
+                // son item değilse
+                var borderClass = '';
+
+
+                if (data.Yeşil.length > 1 && data.Yeşil.length - 1 === k) {
+                  borderClass = 'border-b  border-dashed border-spacing-2 border-black';
+                }
+                return (<div className={`d-flex flex-col justify-between ${borderClass} py-2 px-2 }`}>
+                  {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${item.tree.treeStatus.treeStatusName}, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt}`}
+                </div>);
+              }) : null}
+            </div>
+          }} />
 
           <ColumnChooser
             enabled={true}
@@ -286,7 +336,7 @@ function CustomerTrackingPage() {
 
           </ColumnChooser>
 
-        </DataGrid>) : (<Alert apperance={'danger'}>Aktif Ağaç bulunamadı</Alert>)}
+        </DataGrid>) : (<div className="my-10"><Alert apperance={'danger'}>İş Grubu Seçiniz</Alert></div>)}
     </div>
   </div>);
 }
