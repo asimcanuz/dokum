@@ -65,17 +65,7 @@ app.use("/api/wallboard", require("./routes/wallboard.routes"));
 app.use("/api/customers", require("./routes/customer.routes"));
 
 
- db.sequelize
-   .sync({ force: true })
-   .then(() => {
-     console.log("Synced db.");
-     initDB();
-   })
-   .catch((err) => {
-     console.log("Failed to sync db: " + err.message);
-   });
-//db.sequelize.sync({ alter: true });
-// db.sequelize.sync();
+db.sequelize.sync();
 
 async function initDB() {
   await Role.create({
@@ -156,6 +146,7 @@ async function initDB() {
     fırınSıra: 2,
     fırınKonum: "ust",
   });
+  
   await Fırın.create({
     fırınSıra: 2,
     fırınKonum: "alt",
