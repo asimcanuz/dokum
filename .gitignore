@@ -92,3 +92,4 @@ lerna-debug.log
 Thumbs.db
 server/env/development.env
 server/env/production.env
+*.env
