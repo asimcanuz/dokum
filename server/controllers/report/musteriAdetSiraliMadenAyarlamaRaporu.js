@@ -28,7 +28,7 @@ const musteriAdetSiraliMadenAyarlamaRaporu = async (req, res) => {
         model: db.color,
         attributes: ["colorName"],
         paranoid: false,
-        as:'color'
+        as: 'color'
         
       },
       {
@@ -41,7 +41,7 @@ const musteriAdetSiraliMadenAyarlamaRaporu = async (req, res) => {
       ["optionId", "ASC"],
       ["customerQuantity", "DESC"],
       ["treeNo", "ASC"],
-      ["color","colorName", "ASC"],
+      ["color","colorName", "ASC"]
     ],
     raw: true,
   });

@@ -1,4 +1,6 @@
-import React, {Fragment, useEffect, useMemo, useState} from 'react';
+//liste
+
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import Select from 'react-select';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import {Endpoints} from '../../constants/Endpoints';
@@ -68,8 +70,8 @@ function MadenAyarlamaRaporu({selectedJobGroup, setSelectedJobGroup, jobGroups})
           ) : (
             <Fragment>
               {trees.length > 0 ? (
-                <PDFViewer className='w-full' style={{height: '79vh'}}>
-                  <MadenAyarlamaRaporuPDF trees={trees} jobGroup={getJobGroupValue()}/>
+                  <PDFViewer className='w-full' style={{height: '79vh'}}>
+                    <MadenAyarlamaRaporuPDF trees={trees} jobGroup={getJobGroupValue()}/>
                 </PDFViewer>
               ) : (
                 <Alert apperance={'warning'}>Seçilen iş grubunda ağaç girilmemiş.</Alert>
@@ -207,63 +209,63 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
       trees: groupedTrees[key],
     }))
 
-    const eightAyarTrees = [];
-    const gumusTrees = [];
-    const bronzTrees = [];
-    const otherTrees = [];
-    // Her ağacı optionText'e göre ilgili diziye ekleyin
+    //const eightAyarTrees = [];
+    //const gumusTrees = [];
+    //const bronzTrees = [];
+    //const otherTrees = [];
+    //// Her ağacı optionText'e göre ilgili diziye ekleyin
 
+
+    //groupedTrees.forEach((group) => {
+    //  switch (group.optionText.toLowerCase()) {
+    //    case '8 ayar':
+    //      eightAyarTrees.push(...group.trees);
+    //      break;
+    //    case 'gümüş':
+    //      gumusTrees.push(...group.trees);
+    //      break;
+    //    case 'bronz':
+    //      bronzTrees.push(...group.trees);
+    //      break;
+    //    default:
+    //      otherTrees.push(group);
+    //      break;
+    //  }
+    //});
+    //let revisedGroupedTreesArray = otherTrees;
+    //if (eightAyarTrees.length > 0) {
+    //  revisedGroupedTreesArray.push({
+    //    optionText:'8 Ayar',
+    //    trees:eightAyarTrees
+    //  });
+    //}
+    //if (gumusTrees.length > 0) {
+    //  revisedGroupedTreesArray.push({
+    //    optionText:'Gümüş',
+    //    trees:gumusTrees
+    //  });
+    //}
+    //if (bronzTrees.length > 0) {
+    //  revisedGroupedTreesArray.push({
+    //    optionText:'Bronz',
+    //    trees:bronzTrees
+    //  })
+    //}
 
     groupedTrees.forEach((group) => {
-      switch (group.optionText.toLowerCase()) {
-        case '8 ayar':
-          eightAyarTrees.push(...group.trees);
-          break;
-        case 'gümüş':
-          gumusTrees.push(...group.trees);
-          break;
-        case 'bronz':
-          bronzTrees.push(...group.trees);
-          break;
-        default:
-          otherTrees.push(group);
-          break;
-      }
-    });
-    let revisedGroupedTreesArray = otherTrees;
-    if (eightAyarTrees.length > 0) {
-      revisedGroupedTreesArray.push({
-        optionText:'8 Ayar',
-        trees:eightAyarTrees
-      });
-    }
-    if (gumusTrees.length > 0) {
-      revisedGroupedTreesArray.push({
-        optionText:'Gümüş',
-        trees:gumusTrees
-      });
-    }
-    if (bronzTrees.length > 0) {
-      revisedGroupedTreesArray.push({
-        optionText:'Bronz',
-        trees:bronzTrees
-      })
-    }
-
-    revisedGroupedTreesArray.forEach((group) => {
       group.trees?.sort((a, b) => {
-        if (a['color.colorName'] > b['color.colorName']) {
-          return -1;
-        }
-        if (a['color.colorName'] > b['color.colorName']) {
+        if (a['color.colorName'] < b['color.colorName']) {
           return 1;
+        }
+        if (a['color.colorName'] < b['color.colorName']) {
+          return -1;
         }
         return 0;
       });
     })
 
 
-    return revisedGroupedTreesArray;
+    return groupedTrees;
   };
 
   const groupedTrees = groupTrees();
@@ -287,7 +289,7 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
 
                 >
                   <View fixed>
-                    <Text style={{fontSize: 12, fontWeight: 'bold'}}>{jobGroup.label}</Text>
+                    <Text style={{fontSize: 12, fontWeight: 'bold'}}>{jobGroup.label} - (Liste)</Text>
                   </View>
                   <View fixed>
                     <Text style={{fontSize: 12, fontWeight: 'bold'}}>
@@ -296,7 +298,7 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
                   </View>
                   <View fixed style={{display: 'flex', flexDirection: 'row'}}>
                     <Text style={{fontSize: 12, fontWeight: 'bold'}}>
-                      Toplam Mum Ağırlık :
+                      Mum Ağırlık :
                       {mineralWaxTotalWeights[groupedTree['optionText']].totalWaxWeight}
                     </Text>
                     <Text
@@ -306,7 +308,7 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
                         marginLeft: '12px',
                       }}
                     >
-                      Toplam Maden Ağırlık :
+                      Maden Ağırlık :
                       {
                         mineralWaxTotalWeights[groupedTree['optionText']]
                           .totalMineralWeight

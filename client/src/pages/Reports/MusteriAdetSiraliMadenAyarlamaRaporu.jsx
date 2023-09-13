@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     borderColor: '#bfbfbf',
     borderRightWidth: 0,
     borderBottomWidth: 0,
-    marginTop: 2,
+    marginTop: 8,
     fontSize: 8,
   },
   tableRow: {
@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: '32px',
+
   },
   tableCol: {
     height: '32px',
@@ -254,10 +255,10 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
     
     revisedGroupedTreesArray.forEach((group) => {
       group.trees?.sort((a, b) => {
-        if (a['color.colorName'] > b['color.colorName']) {
+        if (a['color.colorName'] < b['color.colorName']) {
           return -1;
         }
-        if (a['color.colorName'] > b['color.colorName']) {
+        if (a['color.colorName'] < b['color.colorName']) {
           return 1;
         }
         return 0;
@@ -269,7 +270,8 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
   };
 
   const groupedTree = groupTrees();
-
+  var styler = ((groupedTree.optionText !== 'Gümüş' && groupedTree.optionText !== 'Bronz') ? 'marginTop:\'100px\'' :'');
+  console.log(styler);
   return (
     <Document>
       <Page size='A4' style={styles.page} wrap>
@@ -278,18 +280,26 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
 
           const breakLine = index > 0 && (groupedTree.optionText !== 'Gümüş' && groupedTree.optionText !== 'Bronz');
           return (
+
+
+
             <View key={index} wrap={false} break={breakLine}>
               <View
-                style={{
+          
+                style=     {     styler,{
                   display: 'flex',
                   flexDirection: 'row',
                   justifyContent: 'space-between',
+
+                 marginTop: '10px'
+                
+            
                 }}
                 wrap={false}
 
               >
                 <View fixed>
-                  <Text style={{fontSize: 12, fontWeight: 'bold'}}>{jobGroup.label}</Text>
+                  <Text style={{fontSize: 12, fontWeight: 'bold'}}>{jobGroup.label} - (Maden Ayarlama)</Text>
                 </View>
                 <View fixed>
                   <Text style={{fontSize: 12, fontWeight: 'bold'}}>
@@ -298,7 +308,7 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
                 </View>
                 <View fixed style={{display: 'flex', flexDirection: 'row'}}>
                   <Text style={{fontSize: 12, fontWeight: 'bold'}}>
-                    Toplam Mum Ağırlık :
+                    Mum Ağırlık :
                     {mineralWaxTotalWeights[groupedTree['optionText']]?.totalWaxWeight}
                   </Text>
                   <Text
@@ -308,7 +318,7 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
                       marginLeft: '12px',
                     }}
                   >
-                    Toplam Maden Ağırlık :
+                    Maden Ağırlık :
                     {
                       mineralWaxTotalWeights[groupedTree['optionText']]?.totalMineralWeight
                     }

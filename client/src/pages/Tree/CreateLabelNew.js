@@ -10,12 +10,12 @@ import ModalBody from '../../components/Modal/ModalBody';
 import ModalFooter from '../../components/Modal/ModalFooter';
 
 // Herma 5051 etiket boyutları (mm cinsinden)
-const labelWidth = 48.5;
-const labelHeight = 25.6;
+const labelWidth = 50.0;
+const labelHeight = 26.2;
 
 // Sayfa boyutları (A4)
-const pageWidth = 210 - (2 * 8); // Sağ ve sol kenarlarda 8.48mm boşluk bırakılıyor
-const pageHeight = 297 - 8.2; // Üst ve alt kenarlarda 8.8mm boşluk bırakılıyor
+const pageWidth = 210; // Sağ ve sol kenarlarda 8.48mm boşluk bırakılıyor
+const pageHeight = 297; // Üst ve alt kenarlarda 8.8mm boşluk bırakılıyor
 
 // Her satırda 4 etiket, toplamda 11 satır
 const labelsPerRow = 4;
@@ -30,12 +30,12 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width: `${pageWidth}mm`,
     height: `${pageHeight}mm`,
-    marginLeft: '7mm', // Sol kenar boşluğu
-    marginRight: '8mm', // Sağ kenar boşluğu
-    marginTop: '7.2mm', // Üst kenar boşluğu
+    marginLeft: '5mm', // Sol kenar boşluğu
+  //  marginRight: '8mm', // Sağ kenar boşluğu
+   marginTop: '4mm', // Üst kenar boşluğu
   }, section: {
 
-    flexGrow: 1,
+   // flexGrow: 1,
   },
 
 
@@ -54,10 +54,12 @@ const Box = ({children}) => {
       //  border: '1px solid black',
       width: `${labelWidth}mm`,
       height: `${labelHeight}mm`,
-      padding: '0.3mm',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'flex-start'
+    //  padding: '0.3mm',
+     // display: 'flex',
+   //   flexDirection: 'column',
+   //   justifyContent: 'flex-start',
+    //  border: '1px solid black',
+      margin: '0px',
 
     }}
   >
