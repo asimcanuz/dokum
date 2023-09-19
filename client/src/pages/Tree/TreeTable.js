@@ -7,8 +7,8 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import {Endpoints} from '../../constants/Endpoints';
 import CalculatedMineralWeight from '../../utils/calculateMineralWeight';
 import calculateMineralWeight from '../../utils/calculateMineralWeight';
-import {DataGrid, SelectBox} from 'devextreme-react';
-import {Row,Column, Editing,Lookup,Paging, Export, FilterRow, HeaderFilter, MasterDetail, Scrolling, Selection,Item} from 'devextreme-react/data-grid';
+import { DataGrid, SelectBox, Lookup  } from 'devextreme-react';
+import { Row, Column, Editing, Paging,  Export, FilterRow, HeaderFilter, MasterDetail, Scrolling, Selection,Item} from 'devextreme-react/data-grid';
 import {Workbook} from 'exceljs';
 import {exportDataGrid} from 'devextreme/excel_exporter';
 import {saveAs} from 'file-saver';
@@ -23,15 +23,7 @@ import CreateLabelNew from "./CreateLabelNew";
 function onFocusedRowChanged(e) {
 
   console.log("row cchanged"+ e.row)
-//  const dataRow = e.row && e.row.data;
- // const progress = dataRow && dataRow.Task_Completion ? `${dataRow.Task_Completion}%` : '';
-  //this.setState({
-  //  taskSubject: dataRow && dataRow.Task_Subject,
-  //  taskDetails: dataRow && dataRow.Task_Description,
-  //  taskStatus: dataRow && dataRow.Task_Status,
-  //  taskProgress: progress,
-  //  focusedRowKey: e.component.option('focusedRowKey'),
-  //});
+
 };
 
 function onRowInserted(e) {
@@ -40,10 +32,7 @@ function onRowInserted(e) {
 };
 
 function onRowClick(e) {
-  //açık olan detay penceresini kapatmak için buraya aldım
 
- //const focusedRowKey= e.component.option('focusedRowKey');
- // const dataRow = e.row && e.row.data;
 
   e.component.collapseAll(-1);
 

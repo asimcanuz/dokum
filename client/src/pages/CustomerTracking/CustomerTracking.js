@@ -220,7 +220,8 @@ function CustomerTrackingPage() {
 
 
     <div className='overflow-x-scroll' >
-      {customersTracking?.length > 0 ? (
+      {
+        customersTracking?.length > 0 ? (
         <DataGrid
           height={700}
           id={'grid-container'}
@@ -234,7 +235,7 @@ function CustomerTrackingPage() {
           remoteOperations={true}
           wordWrapEnabled={true}
 
-
+ 
 
         >
 
@@ -252,46 +253,37 @@ function CustomerTrackingPage() {
           <Column width={200} caption={'Müşteri'} dataField={'customer'} />
           <Column width={70} caption={'Ayar'} dataField={'option'} />
 
-          <Column cssClass="myclass" allowExporting={false} caption={'Beyaz'} dataField={'Beyaz'} cellRender={({ data }) => {
+            <Column  cssClass="myclass d-flex " allowExporting={false} caption={'Beyaz'} dataField={'Beyaz'} cellRender={({ data }) => {
             var k = 0;
             var colorClass = getCellColor(data.Beyaz);
 
-            return <div className={` d-flex w-full flex-col justify-between /*bg-[${colorClass}]*/  p-1 }`} style={{ backgroundColor: `${colorClass}` }} >
+            return <div className={`text-middle align-center d-flex w-full flex-col justify-between /*bg-[${colorClass}]*/  p-1 }`} style={{ display: 'flex', justifycontent:'center',   backgroundColor: `${colorClass}` }} >
               {data.Beyaz !== undefined ? data.Beyaz.map((item) => {
-
+                k++;
                 // son item değilse
                 var borderClass = '';
-                k++;
-                if (data.Beyaz.length > 1 && data.Beyaz.length - 1 === k) {
-                  borderClass = 'border-b border-dashed border-spacing-2 border-black';
+                if (data.Beyaz.length > 1 && data.Beyaz.length !== k) {
+                  borderClass = 'border-b  border-dashed border-spacing-2 border-black';
                 }
 
-
-                return (<div className={`d-flex flex-col justify-between ${borderClass}  }`}>
-                  {`Agaç =, ${item.tree.treeNo}, İşlem Adımı= ${item.tree.treeStatus.treeStatusName}, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt}`}
+                return (<div className={`d-flex flex-col justify-between ${borderClass} py-2 px-2 ${colorClass}`} style={{  display: 'flex', justifycontent: 'center', } }>
+                  {` Agaç = ${item.tree.treeNo}, İşlem Adımı= ${item.tree.treeStatus.treeStatusName}, Urun Miktarı = ${item.quantity}, Islem Tarihi = ${item.updatedAt}`}
                 </div>);
 
               }) : null}
-
             </div>
-
-          }
-
-          }
-
-
-          />
-          <Column cssClass="myclass" bac allowExporting={false} dataField={'Kırmızı'} cellRender={({ data }) => {
+          }}/>
+          <Column  cssClass="myclass" bac allowExporting={false} dataField={'Kırmızı'} cellRender={({ data }) => {
 
             var k = 0;
             var colorClass = getCellColor(data.Kırmızı);
 
-            return <div className={` d-flex w-full flex-col justify-between /*bg-[${colorClass}]*/  p-1 }`} style={{ backgroundColor: `${colorClass}` }} >
+            return <div className={` d-flex w-full flex-col justify-between /*bg-[${colorClass}]*/  p-1 }`} style={{  backgroundColor: `${colorClass}` }} >
               {data.Kırmızı !== undefined ? data.Kırmızı.map((item) => {
                 k++;
                 // son item değilse
                 var borderClass = '';
-                if (data.Kırmızı.length > 1 && data.Kırmızı.length - 1 === k) {
+                if (data.Kırmızı.length > 1 && data.Kırmızı.length   !== k) {
                   borderClass = 'border-b  border-dashed border-spacing-2 border-black';
                 }
 
@@ -314,7 +306,7 @@ function CustomerTrackingPage() {
                 var borderClass = '';
 
 
-                if (data.Yeşil.length > 1 && data.Yeşil.length - 1 === k) {
+                if (data.Yeşil.length > 1 && data.Yeşil.length   !== k) {
                   borderClass = 'border-b  border-dashed border-spacing-2 border-black';
                 }
                 return (<div className={`d-flex flex-col justify-between ${borderClass} py-2 px-2 }`}>
