@@ -81,7 +81,7 @@ function UpdateTreeModal({
       colorId,
       creatorId,
       desc,
-      listNo,
+    //  listNo,
       optionId,
       processId,
       thickId,
@@ -96,9 +96,9 @@ function UpdateTreeModal({
       try {
 
         todayTrees.forEach((tree) => {
-          if (tree['listNo'] === Number(values.listNo) && tree['jobGroupId'] === selectedJobGroup) {
-            throw new Error(`Tekrar eden bir Liste numarası girdiniz!`);
-          }
+          //if (tree['listNo'] === Number(values.listNo) && tree['jobGroupId'] === selectedJobGroup) {
+          //  throw new Error(`Tekrar eden bir Liste numarası girdiniz!`);
+          //}
           if (tree['treeNo'] === Number(values.treeNo) && tree['jobGroupId'] === selectedJobGroup) {
             throw new Error(`Tekrar eden bir Agaç numarası girdiniz!`);
           }
@@ -193,36 +193,36 @@ function UpdateTreeModal({
                     <div className='text-red-600'>{treeNoError.message}</div>
                   ) : null}
                 </div>
-                <div>
-                  <label htmlFor='listNo'>Liste Numarası</label>
-                  <Input
-                    id='listNo'
-                    name='listNo'
-                    type={'text'}
-                    value={formik.values.listNo}
-                    onChange={(e) => {
-                      formik.setFieldValue('listNo', e.target.value);
+                {/*<div>*/}
+                {/*  <label htmlFor='listNo'>Liste Numarası</label>*/}
+                {/*  <Input*/}
+                {/*    id='listNo'*/}
+                {/*    name='listNo'*/}
+                {/*    type={'text'}*/}
+                {/*    value={formik.values.listNo}*/}
+                {/*    onChange={(e) => {*/}
+                {/*      formik.setFieldValue('listNo', e.target.value);*/}
 
-                      let sameNumber = treeIndexes.find(
-                        (tree) => tree.listNo === parseInt(e.target.value),
-                      );
-                      if (sameNumber !== undefined || sameNumber !== null) {
-                        setListNoError({
-                          show: true,
-                          message: 'İş grubunda aynı liste numarası bulunmaktadır.',
-                        });
-                      } else {
-                        setListNoError({
-                          show: false,
-                          message: '',
-                        });
-                      }
-                    }}
-                  />
-                  {listNoError.show ? (
-                    <div className='text-red-600'>{listNoError.message}</div>
-                  ) : null}
-                </div>
+                {/*      let sameNumber = treeIndexes.find(*/}
+                {/*        (tree) => tree.listNo === parseInt(e.target.value),*/}
+                {/*      );*/}
+                {/*      if (sameNumber !== undefined || sameNumber !== null) {*/}
+                {/*        setListNoError({*/}
+                {/*          show: true,*/}
+                {/*          message: 'İş grubunda aynı liste numarası bulunmaktadır.',*/}
+                {/*        });*/}
+                {/*      } else {*/}
+                {/*        setListNoError({*/}
+                {/*          show: false,*/}
+                {/*          message: '',*/}
+                {/*        });*/}
+                {/*      }*/}
+                {/*    }}*/}
+                {/*  />*/}
+                {/*  {listNoError.show ? (*/}
+                {/*    <div className='text-red-600'>{listNoError.message}</div>*/}
+                {/*  ) : null}*/}
+                {/*</div>*/}
                
               </div>
               <div className='flex flex-row justify-between space-x-4'>
