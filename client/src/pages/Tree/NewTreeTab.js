@@ -26,7 +26,7 @@ function NewTreeTab({
       treeNo: Number(sessionStorage.getItem("treeNo"))||1,
       listeNo: Number(sessionStorage.getItem("listeNo"))||1,
       agacAuto: Boolean(sessionStorage.getItem("agacAuto"))||false,
-      listeAuto: Boolean(sessionStorage.getItem("listeAuto"))||false,
+      //listeAuto: Boolean(sessionStorage.getItem("listeAuto"))||false,
       renkId: Number(sessionStorage.getItem('renkId')) || '',
       ayarId: Number(sessionStorage.getItem('ayarId')) || '',
       kalınlıkId: Number(sessionStorage.getItem('kalınlıkId')) || '',
@@ -62,7 +62,7 @@ function NewTreeTab({
         setNewTree({
           ...newTree,
           treeNo: newTree.treeNo + 1,
-          listeNo: newTree.listeNo + 1,
+          //listeNo: newTree.listeNo + 1,
           renkId: '',
           ayarId: '',
           kalınlıkId: '',
@@ -87,9 +87,9 @@ function NewTreeTab({
         throw new Error('İş grubu seçilmedi!');
       }
       todayTrees.forEach((tree) => {
-        if (tree['listNo'] === Number(newTree.listeNo) && tree['jobGroupId'] === selectedJobGroup) {
-          throw new Error(`Tekrar eden bir Liste numarası girdiniz!`);
-        }
+        //if (tree['listNo'] === Number(newTree.listeNo) && tree['jobGroupId'] === selectedJobGroup) {
+        //  throw new Error(`Tekrar eden bir Liste numarası girdiniz!`);
+        //}
         if (tree['treeNo'] === Number(newTree.treeNo) && tree['jobGroupId'] === selectedJobGroup) {
           throw new Error(`Tekrar eden bir Agaç numarası girdiniz!`);
         }
@@ -98,9 +98,9 @@ function NewTreeTab({
       if (newTree.agacNo === '' && newTree.agacAuto === false) {
         throw new Error('Agaç Numarası Girilmedi!');
       }
-      if (newTree.listeNo === '' && newTree.listeAuto === false) {
-        throw new Error('Liste Numarası Girilmedi!');
-      }
+      //if (newTree.listeNo === '' && newTree.listeAuto === false) {
+      //  throw new Error('Liste Numarası Girilmedi!');
+      //}
       if (newTree.renkId === '') {
         throw new Error('Renk Seçilmedi!');
       }
@@ -126,7 +126,7 @@ function NewTreeTab({
         thickId: newTree.kalınlıkId,
         colorId: newTree.renkId,
         date: treeDate,
-        listNo: _listeNo,
+        //listNo: _listeNo,
         treeNo: _agacNo,
         treeStatusId: 1,
         active: true,
@@ -137,9 +137,9 @@ function NewTreeTab({
       if (newTree.agacAuto) {
         _agacNo = parseInt(_agacNo) + 1;
       }
-      if (newTree.listeAuto) {
-        _listeNo = parseInt(_listeNo) + 1;
-      }
+      //if (newTree.listeAuto) {
+      //  _listeNo = parseInt(_listeNo) + 1;
+      //}
 
       let insertTreeReq = await axiosPrivate.post(Endpoints.TREE.MAIN, treeBody, {
         signal: controller.signal,
@@ -149,7 +149,7 @@ function NewTreeTab({
       if (insertTreeReq.status === 200) {
         setTimeout(() => {
           setNewTree({
-            listeNo: _listeNo,
+            //listeNo: _listeNo,
             renkId: '',
             ayarId: '',
             kalınlıkId: '',
@@ -180,7 +180,7 @@ function NewTreeTab({
       sessionStorage.removeItem('ayarId');
       sessionStorage.removeItem('kalınlıkId');
       sessionStorage.removeItem("treeNo");
-      sessionStorage.removeItem("listeNo");
+     // sessionStorage.removeItem("listeNo");
       sessionStorage.removeItem("listeAuto");
       sessionStorage.removeItem("agacAuto");
       controller.abort();
@@ -263,27 +263,27 @@ function NewTreeTab({
             }}
           />
         </div>
-        <div className='flex flex-row items-center justify-between '>
-          <NumberBox
-            label={'Liste No'}
-            labelMode={'floating'}
-            value={newTree?.listeNo}
-            min='1'
-            onValueChanged={(e) => {
-              sessionStorage.setItem("listeNo",e.value);
-              setNewTree({...newTree, listeNo: e.value})
-            }}
-          />
-          <CheckBox
-            id={'listeNoAuto'}
-            text={'Otomatik Artır'}
-            defaultValue={newTree.listeAuto}
-            onValueChanged={(e) => {
-              sessionStorage.setItem("listeAuto",!newTree.listeAuto);
-              setNewTree({...newTree, listeAuto: !newTree.listeAuto})
-            }}
-          />
-        </div>
+        {/*<div className='flex flex-row items-center justify-between '>*/}
+        {/*  <NumberBox*/}
+        {/*    label={'Liste No'}*/}
+        {/*    labelMode={'floating'}*/}
+        {/*    value={newTree?.listeNo}*/}
+        {/*    min='1'*/}
+        {/*    onValueChanged={(e) => {*/}
+        {/*      sessionStorage.setItem("listeNo",e.value);*/}
+        {/*      setNewTree({...newTree, listeNo: e.value})*/}
+        {/*    }}*/}
+        {/*  />*/}
+        {/*  <CheckBox*/}
+        {/*    id={'listeNoAuto'}*/}
+        {/*    text={'Otomatik Artır'}*/}
+        {/*    defaultValue={newTree.listeAuto}*/}
+        {/*    onValueChanged={(e) => {*/}
+        {/*      sessionStorage.setItem("listeAuto",!newTree.listeAuto);*/}
+        {/*      setNewTree({...newTree, listeAuto: !newTree.listeAuto})*/}
+        {/*    }}*/}
+        {/*  />*/}
+        {/*</div>*/}
 
         <div className='grid grid-cols-3 grid-rows-2 '>
           <div className='border border-slate-400'>

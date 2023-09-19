@@ -1,8 +1,8 @@
-import React, {Fragment, useEffect, useMemo, useState} from 'react';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import Select from 'react-select';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import {Endpoints} from '../../constants/Endpoints';
-import {Document, Font, Page, PDFViewer, StyleSheet, Text, View} from '@react-pdf/renderer';
+import { Endpoints } from '../../constants/Endpoints';
+import { Document, Font, Page, PDFViewer, StyleSheet, Text, View } from '@react-pdf/renderer';
 import Alert from '../../components/Alert/Alert';
 
 // import PdfTable from "./PdfTable";
@@ -72,8 +72,8 @@ function MusteriAdetSiraliMadenAyarlamaRaporu(
           ) : (
             <Fragment>
               {trees.length > 0 ? (
-                <PDFViewer className='w-full' style={{height: '79vh'}}>
-                  <MadenAyarlamaRaporuPDF trees={trees} jobGroup={getJobGroupValue()}/>
+                <PDFViewer className='w-full' style={{ height: '79vh' }}>
+                  <MadenAyarlamaRaporuPDF trees={trees} jobGroup={getJobGroupValue()} />
                 </PDFViewer>
               ) : (
                 <Alert apperance={'warning'}>Seçilen iş grubunda ağaç girilmemiş.</Alert>
@@ -166,10 +166,10 @@ Font.register({
   src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-medium-webfont.ttf',
 });
 
-const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
+const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
   let mineralWaxTotalWeights = {};
 
-  const groupTrees =()=>{
+  const groupTrees = () => {
     let groupedTrees = [];
 
     // mineralWaxTotalWeights ["option.optionText"] = {totalMineralWeight: 0, totalWaxWeight: 0}
@@ -236,23 +236,23 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
     let revisedGroupedTreesArray = otherTrees;
     if (eightAyarTrees.length > 0) {
       revisedGroupedTreesArray.push({
-        optionText:'8 Ayar',
-        trees:eightAyarTrees
+        optionText: '8 Ayar',
+        trees: eightAyarTrees
       });
     }
     if (gumusTrees.length > 0) {
       revisedGroupedTreesArray.push({
-        optionText:'Gümüş',
-        trees:gumusTrees
+        optionText: 'Gümüş',
+        trees: gumusTrees
       });
     }
     if (bronzTrees.length > 0) {
       revisedGroupedTreesArray.push({
-        optionText:'Bronz',
-        trees:bronzTrees
+        optionText: 'Bronz',
+        trees: bronzTrees
       })
     }
-    
+
     revisedGroupedTreesArray.forEach((group) => {
       group.trees?.sort((a, b) => {
         if (a['color.colorName'] < b['color.colorName']) {
@@ -270,7 +270,7 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
   };
 
   const groupedTree = groupTrees();
-  var styler = ((groupedTree.optionText !== 'Gümüş' && groupedTree.optionText !== 'Bronz') ? 'marginTop:\'100px\'' :'');
+  var styler = ((groupedTree.optionText !== 'Gümüş' && groupedTree.optionText !== 'Bronz') ? 'marginTop:\'100px\'' : '');
   console.log(styler);
   return (
     <Document>
@@ -283,31 +283,30 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
 
 
 
-            <View key={index} wrap={false} break={breakLine}>
+            <View key={index} wrap={true} break={breakLine}>
               <View
-          
-                style=     {     styler,{
+
+                style={styler, {
                   display: 'flex',
                   flexDirection: 'row',
                   justifyContent: 'space-between',
+                  marginTop: '10px'
 
-                 marginTop: '10px'
-                
-            
+
                 }}
-                wrap={false}
+                wrap={true}
 
               >
                 <View fixed>
-                  <Text style={{fontSize: 12, fontWeight: 'bold'}}>{jobGroup.label} - (Maden Ayarlama)</Text>
+                  <Text style={{ fontSize: 12, fontWeight: 'bold' }}>{jobGroup.label} - (Maden Ayarlama)</Text>
                 </View>
                 <View fixed>
-                  <Text style={{fontSize: 12, fontWeight: 'bold'}}>
+                  <Text style={{ fontSize: 12, fontWeight: 'bold' }}>
                     {groupedTree['optionText']}
                   </Text>
                 </View>
-                <View fixed style={{display: 'flex', flexDirection: 'row'}}>
-                  <Text style={{fontSize: 12, fontWeight: 'bold'}}>
+                <View fixed style={{ display: 'flex', flexDirection: 'row' }}>
+                  <Text style={{ fontSize: 12, fontWeight: 'bold' }}>
                     Mum Ağırlık :
                     {mineralWaxTotalWeights[groupedTree['optionText']]?.totalWaxWeight}
                   </Text>
@@ -325,44 +324,44 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
                   </Text>
                 </View>
               </View>
-              <View style={styles.table} wrap={false}>
+              <View style={styles.table} >
                 <View style={styles.tableRow} fixed>
-                  <View style={[styles.tableColHeader, {width: 20}]}>
+                  <View style={[styles.tableColHeader, { width: 20 }]}>
                     <Text style={styles.tableCellHeader}>Ağaç No</Text>
                   </View>
-                  <View style={[styles.tableColHeader, {width: 117}]}>
+                  <View style={[styles.tableColHeader, { width: 117 }]}>
                     <Text style={styles.tableCellHeader}>Ağaç Tipi</Text>
                   </View>
-                  <View style={[styles.tableColHeader, {width: 30}]}>
+                  <View style={[styles.tableColHeader, { width: 30 }]}>
                     <Text style={styles.tableCellHeader}>Müş. Adet</Text>
                   </View>
-                  <View style={[styles.tableColHeader, {width: 35}]}>
+                  <View style={[styles.tableColHeader, { width: 35 }]}>
                     <Text style={styles.tableCellHeader}>Ayar</Text>
                   </View>
-                  <View style={[styles.tableColHeader, {width: 40}]}>
+                  <View style={[styles.tableColHeader, { width: 40 }]}>
                     <Text style={styles.tableCellHeader}>Kalınlık</Text>
                   </View>
-                  <View style={[styles.tableColHeader, {width: 30}]}>
+                  <View style={[styles.tableColHeader, { width: 30 }]}>
                     <Text style={styles.tableCellHeader}>Renk</Text>
                   </View>
-                  <View style={[styles.tableColHeader, {width: 40}]}>
+                  <View style={[styles.tableColHeader, { width: 40 }]}>
                     <Text style={styles.tableCellHeader}>Mum Ağırlık</Text>
                   </View>
-                  <View style={[styles.tableColHeader, {width: 40}]}>
+                  <View style={[styles.tableColHeader, { width: 40 }]}>
                     <Text style={styles.tableCellHeader}>Maden Ağırlık</Text>
                   </View>
-                  <View style={[styles.tableColHeader, {width: 105}]}>
+                  <View style={[styles.tableColHeader, { width: 105 }]}>
                     <Text style={[styles.tableCellHeader]}></Text>
                   </View>
 
-                  <View style={[styles.tableColHeader, {width: 105}]}>
+                  <View style={[styles.tableColHeader, { width: 105 }]}>
                     <Text style={styles.tableCellHeader}></Text>
                   </View>
                 </View>
                 {groupedTree.trees.map((row, index) => {
                   return (
                     <View style={styles.tableRow} key={index} wrap={false}>
-                      <View style={[styles.tableCol, {width: 20}]} wrap={false}>
+                      <View style={[styles.tableCol, { width: 20 }]} wrap={false}>
                         <Text wrap={false}>{row['treeNo']}</Text>
                       </View>
 
@@ -387,20 +386,20 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
                           ]}
                         >
                           {row['isImmediate'] ? (
-                            <Text wrap style={{color: 'red'}}>
+                            <Text wrap style={{ color: 'red' }}>
                               (A)
                             </Text>
                           ) : null}
 
                           {row['isOld'] ? (
-                            <Text wrap style={{color: 'red'}}>
+                            <Text wrap style={{ color: 'red' }}>
                               (E)
                             </Text>
                           ) : null}
                           <Text wrap>{row['treeType']}</Text>
                         </View>
 
-                        <View style={{overflow: 'hidden'}}>
+                        <View style={{ overflow: 'hidden' }}>
                           <Text
                             style={{
                               color: 'blue',
@@ -412,28 +411,28 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
                           </Text>
                         </View>
                       </View>
-                      <View style={[styles.tableCol, {width: 30}]} wrap={false}>
+                      <View style={[styles.tableCol, { width: 30 }]} wrap={false}>
                         <Text wrap={false}>{row['customerQuantity']}</Text>
                       </View>
-                      <View style={[styles.tableCol, {width: 35}]} wrap={false}>
+                      <View style={[styles.tableCol, { width: 35 }]} wrap={false}>
                         <Text wrap={false}>{row['option.optionText']}</Text>
                       </View>
-                      <View style={[styles.tableCol, {width: 40}]} wrap={false}>
+                      <View style={[styles.tableCol, { width: 40 }]} wrap={false}>
                         <Text wrap={false}>{row['thick.thickName']}</Text>
                       </View>
-                      <View style={[styles.tableCol, {width: 30}]} wrap={false}>
+                      <View style={[styles.tableCol, { width: 30 }]} wrap={false}>
                         <Text wrap={false}>{row['color.colorName']}</Text>
                       </View>
-                      <View style={[styles.tableCol, {width: 40}]} wrap={false}>
+                      <View style={[styles.tableCol, { width: 40 }]} wrap={false}>
                         <Text wrap={false}>{row['waxWeight']}</Text>
                       </View>
-                      <View style={[styles.tableCol, {width: 40}]} wrap={false}>
+                      <View style={[styles.tableCol, { width: 40 }]} wrap={false}>
                         <Text wrap={false}>{row['mineralWeight']}</Text>
                       </View>
-                      <View style={[styles.tableCol, {width: 105}]} wrap={false}>
+                      <View style={[styles.tableCol, { width: 105 }]} wrap={false}>
                         <Text wrap={false}>{''}</Text>
                       </View>
-                      <View style={[styles.tableCol, {width: 105}]} key={index} wrap={false}>
+                      <View style={[styles.tableCol, { width: 105 }]} key={index} wrap={false}>
                         <Text wrap={false}>{''}</Text>
                       </View>
                     </View>
@@ -445,7 +444,7 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
         }) : null}
         <Text
           style={styles.pageNumber}
-          render={({pageNumber, totalPages}) => `${pageNumber} / ${totalPages}`}
+          render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
           fixed
         />
       </Page>

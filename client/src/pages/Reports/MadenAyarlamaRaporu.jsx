@@ -269,23 +269,26 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
   };
 
   const groupedTrees = groupTrees();
-  console.log(groupedTrees)
+//  console.log(groupedTrees)
   return (
     <Document>
       <Page size='A4' style={styles.page} wrap>
-        {groupedTrees.length > 0 ?
-          groupedTrees.map((groupedTree, index) => {
-            const breakLine = index > 0 && (groupedTree.optionText !== 'Gümüş' && groupedTree.optionText !== 'Bronz');
+        {groupedTrees.length > 0 ? groupedTrees.map((groupedTree, index) => {
+            const breakLine = index > 0  && (groupedTree.optionText !== 'Gümüş' && groupedTree.optionText !== 'Bronz');
+
+   
+
 
             return (
-              <View key={index} wrap={false} break={breakLine}>
+              <View key={index} wrap={true} break={breakLine}>
                 <View
                   style={{
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'space-between',
+                    marginTop: '10px'
                   }}
-                  wrap={false}
+                  wrap={true}
 
                 >
                   <View fixed>
@@ -316,7 +319,7 @@ const MadenAyarlamaRaporuPDF = ({trees, jobGroup}) => {
                     </Text>
                   </View>
                 </View>
-                <View style={styles.table}>
+                <View style={styles.table} >
                   <View style={styles.tableRow} fixed>
                     <View style={[styles.tableColHeader, {width: 20}]}>
                       <Text style={styles.tableCellHeader}>Ağaç No</Text>

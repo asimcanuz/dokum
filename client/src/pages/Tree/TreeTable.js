@@ -61,7 +61,7 @@ function TreeTable(
     setClickTree({
       agacId: clickedTree.treeId,
       agacNo: clickedTree.treeNo,
-      listeNo: clickedTree.listNo,
+    //  listeNo: clickedTree.listNo,
       siparisSayisi: clickedTree.orders.length,
       renk: clickedTree.color.colorName,
       ayar: clickedTree.option.optionText,
@@ -78,7 +78,7 @@ function TreeTable(
       colorId,
       creatorId,
       isImmediate,
-      listNo,
+    //  listNo,
       optionId,
       processId,
       thickId,
@@ -96,7 +96,7 @@ function TreeTable(
       creatorId,
       desc,
       isImmediate,
-      listNo,
+    //  listNo,
       optionId,
       processId,
       thickId,
@@ -207,7 +207,7 @@ function TreeTable(
         defaultSortOrder={'asc'}
         // cellRender={({ value }) => parseInt(value)}
       />
-      <Column dataField={'listNo'} caption={'Liste No'} width={'70px'} allowEditing={false}/>
+      {/*<Column dataField={'listNo'} caption={'Liste No'} width={'70px'} allowEditing={false}/>*/}
       <Column
         dataField={'isImmediate'}
         caption={'Acil Mi'}
