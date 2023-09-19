@@ -7,10 +7,8 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import {Endpoints} from '../../constants/Endpoints';
 import CalculatedMineralWeight from '../../utils/calculateMineralWeight';
 import calculateMineralWeight from '../../utils/calculateMineralWeight';
-import {DataGrid, Lookup, SelectBox} from 'devextreme-react';
-import {
-  Column, Editing, Export, FilterRow, HeaderFilter, MasterDetail, Scrolling, Selection,
-} from 'devextreme-react/data-grid';
+import {DataGrid, SelectBox} from 'devextreme-react';
+import {Row,Column, Editing,Lookup,Paging, Export, FilterRow, HeaderFilter, MasterDetail, Scrolling, Selection,Item} from 'devextreme-react/data-grid';
 import {Workbook} from 'exceljs';
 import {exportDataGrid} from 'devextreme/excel_exporter';
 import {saveAs} from 'file-saver';
@@ -18,6 +16,52 @@ import {statusColorStyle} from '../../utils/StatusColor';
 import {axiosPrivate} from '../../api/axios';
 import {Link} from "react-router-dom";
 import CreateLabelNew from "./CreateLabelNew";
+
+
+
+
+function onFocusedRowChanged(e) {
+
+  console.log("row cchanged"+ e.row)
+//  const dataRow = e.row && e.row.data;
+ // const progress = dataRow && dataRow.Task_Completion ? `${dataRow.Task_Completion}%` : '';
+  //this.setState({
+  //  taskSubject: dataRow && dataRow.Task_Subject,
+  //  taskDetails: dataRow && dataRow.Task_Description,
+  //  taskStatus: dataRow && dataRow.Task_Status,
+  //  taskProgress: progress,
+  //  focusedRowKey: e.component.option('focusedRowKey'),
+  //});
+};
+
+function onRowInserted(e) {
+  console.log("row added");
+
+};
+
+function onRowClick(e) {
+  //açık olan detay penceresini kapatmak için buraya aldım
+
+ //const focusedRowKey= e.component.option('focusedRowKey');
+ // const dataRow = e.row && e.row.data;
+
+  e.component.collapseAll(-1);
+
+  if (e.isExpanded) {
+    e.component.collapseRow(e.component.option('focusedRowKey'));
+
+    console.log(e.isExpanded);
+
+  } else
+  {
+    e.component.expandRow(e.key);
+  }
+
+};
+
+
+
+
 
 function TreeTable(
   {
@@ -46,8 +90,10 @@ function TreeTable(
   };
 
   function selectionChanged(e) {
-    e.component.collapseAll(-1);
-    e.component.expandRow(e.currentSelectedRowKeys[0]);
+
+
+   // e.component.collapseAll(-1);
+   // e.component.expandRow(e.currentSelectedRowKeys[0]);
     
     
     let clickedTree = e.selectedRowsData[0];
@@ -84,7 +130,7 @@ function TreeTable(
       thickId,
       treeNo,
       treeStatusId,
-      waxId,
+     // waxId,
       treeId,
       desc,
     } = data;
@@ -102,7 +148,7 @@ function TreeTable(
       thickId,
       treeNo,
       treeStatusId,
-      waxId,
+     // waxId,
     });
   }
 
@@ -122,6 +168,8 @@ function TreeTable(
     handleSaveMineralWeight(e.data);
   }
 
+
+
   function onExporting(e) {
     const workbook = new Workbook();
     const worksheet = workbook.addWorksheet('Main sheet');
@@ -135,6 +183,7 @@ function TreeTable(
     });
     e.cancel = true;
   }
+
 
   return (<div className='space-y-4'>
     <div className='flex flex-row justify-between items-center'>
@@ -164,6 +213,8 @@ function TreeTable(
     </div>
 
     {todayTrees.length > 0 ? (<DataGrid
+
+      focusedRowEnabled={true}
       id={'grid-container'}
       dataSource={todayTrees}
       showBorders={true}
@@ -176,6 +227,15 @@ function TreeTable(
       onRowUpdated={onRowUpdate}
       onExporting={onExporting}
       onRowDblClick={rowDblClick}
+      onRowClick={onRowClick}
+      autoNavigateToFocusedRow={true}
+      onRowInserted={onRowInserted}
+
+      onFocusedRowChanged={onFocusedRowChanged}
+      
+   
+
+      
 
       onRowPrepared={function (e) {
         if (e.rowType === 'data') {
@@ -194,11 +254,15 @@ function TreeTable(
       />
 
       <Scrolling mode='virtual'/>
-      <Selection mode={'single'}/>
+      <Selection mode={ "single"} />
+      
+      
       <FilterRow visible={true}
                  applyFilter={'auto'} />
       <HeaderFilter visible={true} />
       <Column
+
+
         dataField={'treeNo'}
         caption={'Ağaç No'}
         width={'70px'}
@@ -261,7 +325,7 @@ function TreeTable(
         }}
         allowEditing={false}
       />
-      <Column caption={'Mum Türü'} dataField={'wax.waxName'} allowEditing={false}/>
+{/*      <Column caption={'Mum Türü'} dataField={'wax.waxName'} allowEditing={false}/>*/}
       <Column caption={'Ayar'} dataField={'option.optionText'} allowEditing={false}/>
       <Column caption={'Kalınlık'} dataField={'thick.thickName'} allowEditing={false}/>
       <Column caption={'Renk'} dataField={'color.colorName'} allowEditing={false}/>

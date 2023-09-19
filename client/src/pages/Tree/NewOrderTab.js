@@ -96,6 +96,8 @@ function NewOrderTab({
   async function addOrder() {
     const controller = new AbortController();
     try {
+
+
       if (!tree.agacId) {
         throw new Error('Lütfen ağaç seçiniz!');
       }
@@ -129,6 +131,8 @@ function NewOrderTab({
       });
 
     }
+
+   
     controller.abort();
   }
 
@@ -138,40 +142,31 @@ function NewOrderTab({
   };
   return (
     <Fragment>
-      <section className='flex flex-col space-y-4 '>
-        <div className='grid grid-cols-4 gap-4'>
-          <div className='flex flex-col '>
-            <p className='font-bold text-red-400'>Id</p>
+      <section className=' px-4 flex flex-col space-y-4 row-span-1   '>
+        <div className='grid grid-cols-3 gap-3 items-center ' >
+          <div className='flex flex-col items-center '>
+            <p className='font-bold text-red-400   '>Id</p>
             <p className='text-blue-600'>{tree.agacId}</p>
           </div>
-          <div className='flex flex-col'>
-            <p className='font-bold text-red-400'>Agaç No</p>
+          <div className='flex flex-col items-center'>
+            <p className='font-bold text-red-400 '>Ağaç No</p>
             <p className='text-blue-600'>{tree.agacNo}</p>
           </div>
-          <div className='flex flex-col'>
-            <p className='font-bold text-red-400'>Liste No</p>
-            <p className='text-blue-600'>{tree.listeNo}</p>
-          </div>
-          <div className='flex flex-col'>
-            <p className='font-bold text-red-400'>Ağaçtaki Sipariş Adeti</p>
-            <p className='text-blue-600'>{tree.siparisSayisi}</p>
-          </div>
-          <div className='flex flex-col'>
+
+
+          <div className='flex flex-col items-center' >
             <p className='font-bold text-red-400'>Renk</p>
             <p className='text-blue-600'>{tree.renk}</p>
           </div>
-          <div className='flex flex-col'>
-            <p className='font-bold text-red-400'>Ayar</p>
+          <div className='flex flex-col items-center'>
+            <p className='font-bold text-red-400 '>Ayar</p>
             <p className='text-blue-600'>{tree.ayar}</p>
           </div>
-          <div className='flex flex-col'>
-            <p className='font-bold text-red-400'>Kalınlık</p>
+          <div className='flex flex-col items-center'>
+            <p className='font-bold text-red-400 '>Kalınlık</p>
             <p className='text-blue-600'>{tree.kalinlik}</p>
           </div>
-          <div className='flex flex-col'>
-            <p className='font-bold text-red-400'>Ağaçtaki Müşteri Adeti</p>
-            <p className='text-blue-600'>{tree.musteriSayisi}</p>
-          </div>
+
         </div>
 
         <div className='grid grid-rows-3'>
@@ -213,6 +208,7 @@ function NewOrderTab({
               </p>
             </div>
             <SelectBox
+            id='aaa'
               className='hover:cursor-pointer text-sm'
               dataSource={descriptionOptions}
               displayExpr={'label'}

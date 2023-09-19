@@ -9,6 +9,9 @@ import ErrorModal from '../../components/ErrorModal';
 
 // TODO: Buraya tekrar bak. Agac Numarası state ile güncellenmiyor. Şuanda çalışıyor ama bozuk
 
+
+
+
 function NewTreeTab({
   colors,
   options,
@@ -24,7 +27,7 @@ function NewTreeTab({
   const initialState = {
     newTree: {
       treeNo: Number(sessionStorage.getItem("treeNo"))||1,
-      listeNo: Number(sessionStorage.getItem("listeNo"))||1,
+   //   listeNo: Number(sessionStorage.getItem("listeNo"))||1,
       agacAuto: Boolean(sessionStorage.getItem("agacAuto"))||false,
       //listeAuto: Boolean(sessionStorage.getItem("listeAuto"))||false,
       renkId: Number(sessionStorage.getItem('renkId')) || '',
@@ -81,7 +84,7 @@ function NewTreeTab({
     e.preventDefault();
 
     let _agacNo = newTree?.treeNo;
-    let _listeNo = newTree?.listeNo;
+  //  let _listeNo = newTree?.listeNo;
     try {
       if (!newTree.jobGroupId) {
         throw new Error('İş grubu seçilmedi!');
@@ -113,9 +116,9 @@ function NewTreeTab({
       if (newTree.hazırlayanId === '') {
         throw new Error('Hazırlayan Seçilmedi!');
       }
-      if (newTree.mumTurId === '') {
-        throw new Error('Mum Turu Seçilmedi');
-      }
+      //if (newTree.mumTurId === '') {
+      //  throw new Error('Mum Turu Seçilmedi');
+      //}
 
       const treeDate = jobGroups.filter((jobGroup) => jobGroup.id === newTree.jobGroupId)[0].date;
 
@@ -181,7 +184,7 @@ function NewTreeTab({
       sessionStorage.removeItem('kalınlıkId');
       sessionStorage.removeItem("treeNo");
      // sessionStorage.removeItem("listeNo");
-      sessionStorage.removeItem("listeAuto");
+    //  sessionStorage.removeItem("listeAuto");
       sessionStorage.removeItem("agacAuto");
       controller.abort();
     } catch (err) {
@@ -239,7 +242,7 @@ function NewTreeTab({
             }}
           />
         </div>
-        <div className='flex flex-row items-center justify-between'>
+        <div className='grid grid-cols-2  flex flex-row items-center justify-between'>
           <NumberBox
             label={'Agaç No'}
             name={'treeNo'}
@@ -252,7 +255,7 @@ function NewTreeTab({
               setNewTree({...newTree, treeNo: e.value})
             }}
           />
-          <CheckBox
+          <CheckBox className='mx-5'
             id={'treeNoAuto'}
             name={'treeNoAuto'}
             text={'Otomatik Artır'}
@@ -285,7 +288,7 @@ function NewTreeTab({
         {/*  />*/}
         {/*</div>*/}
 
-        <div className='grid grid-cols-3 grid-rows-2 '>
+        <div className='grid grid-cols-2 grid-rows-2 '>
           <div className='border border-slate-400'>
             <div className='font-bold flex flex-row items-center justify-around border-b border-slate-400'>
               Renk
@@ -361,7 +364,7 @@ function NewTreeTab({
             </ul>
           </div>
 
-          <div className='border border-l-0 border-slate-400'>
+          <div className='border border-slate-400'>
             <div className=' font-bold flex flex-row items-center justify-around border-b border-slate-400 '>
               Kalınlık
             </div>
@@ -419,35 +422,35 @@ function NewTreeTab({
               })}
             </ul>
           </div>
-          <div className='border-r border-b border-slate-400 col-span-2 md:col-span-1'>
-            <div className=' font-bold flex flex-row items-center justify-around border-b border-slate-400 '>
-              Mum Türü
-            </div>
-            <ul
-              className={`mt-1 max-h-44  ${
-                waxes.length > 7 && 'overflow-y-scroll'
-              } scroll-m-1 scroll-smooth`}
-            >
-              {waxes.map((wax) => {
-                return (
-                  <li
-                    key={wax.waxId}
-                    className={`${
-                      newTree.mumTurId === wax.waxId ? 'bg-gray-300 dark:bg-slate-800' : ''
-                    } p-1 hover:cursor-pointer`}
-                    onClick={() => {
-                      setNewTree({ ...newTree, mumTurId: wax.waxId });
-                    }}
-                  >
-                    {Capitalize(wax.waxName)}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+          {/*<div className='border-r border-b border-slate-400 col-span-2 md:col-span-1'>*/}
+          {/*  <div className=' font-bold flex flex-row items-center justify-around border-b border-slate-400 '>*/}
+          {/*    Mum Türü*/}
+          {/*  </div>*/}
+          {/*  <ul*/}
+          {/*    className={`mt-1 max-h-44  ${*/}
+          {/*      waxes.length > 7 && 'overflow-y-scroll'*/}
+          {/*    } scroll-m-1 scroll-smooth`}*/}
+          {/*  >*/}
+          {/*    {waxes.map((wax) => {*/}
+          {/*      return (*/}
+          {/*        <li*/}
+          {/*          key={wax.waxId}*/}
+          {/*          className={`${*/}
+          {/*            newTree.mumTurId === wax.waxId ? 'bg-gray-300 dark:bg-slate-800' : ''*/}
+          {/*          } p-1 hover:cursor-pointer`}*/}
+          {/*          onClick={() => {*/}
+          {/*            setNewTree({ ...newTree, mumTurId: wax.waxId });*/}
+          {/*          }}*/}
+          {/*        >*/}
+          {/*          {Capitalize(wax.waxName)}*/}
+          {/*        </li>*/}
+          {/*      );*/}
+          {/*    })}*/}
+          {/*  </ul>*/}
+          {/*</div>*/}
         </div>
         <div className='flex justify-end items-end'>
-          <Button type='submit' appearance={'primary'} disabled={loading}>
+          <Button type='submit' appearance={'primary'} disabled={loading} >
             Agaç Ekle
           </Button>
         </div>
@@ -477,6 +480,7 @@ function NewTreeTab({
       )}
     </>
   );
+
 }
 
 export default NewTreeTab;

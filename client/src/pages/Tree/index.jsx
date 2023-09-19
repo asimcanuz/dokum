@@ -266,10 +266,10 @@ function TreePage() {
     <Fragment>
       <section className='space-y-2'>
         <Header title={'Ağaç Girişi'} description={'Döküme girecek ağaç girişleri'} />
-        <div className='grid grid-cols-12 mt-4 gap-x-4 gap-y-4'>
-          <div className='col-span-12 lg:col-span-3 max-w-lg md:w-full'>
-            <Tabs tabsList={tabList} setSelected={setSelectedTab} selectedTab={selectedTab} />
-            <div className='px-6 py-4'>
+        <div className='grid grid-cols-12 mt-4 gap-x-4 gap-y-4  '>
+          <div className='col-span-12 lg:col-span-3 max-w-lg md:w-full hover:cursor-pointer  '>
+            <Tabs tabsList={tabList} setSelected={setSelectedTab} selectedTab={selectedTab}  />
+            <div className='px-0 py-4 '>
               {selectedTab === tabs.agac ? (
                 <NewTreeTab
                   colors={colors}
