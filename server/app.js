@@ -64,7 +64,6 @@ app.use("/api/oven", require("./routes/oven.routes"));
 app.use("/api/wallboard", require("./routes/wallboard.routes"));
 app.use("/api/customers", require("./routes/customer.routes"));
 
-
 db.sequelize.sync();
 
 async function initDB() {
@@ -146,7 +145,7 @@ async function initDB() {
     fırınSıra: 2,
     fırınKonum: "ust",
   });
-  
+
   await Fırın.create({
     fırınSıra: 2,
     fırınKonum: "alt",
@@ -159,8 +158,6 @@ async function initDB() {
     fırınSıra: 3,
     fırınKonum: "alt",
   });
-
-
 }
 
 module.exports = app;

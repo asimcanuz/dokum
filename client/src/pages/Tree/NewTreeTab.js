@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Button from '../../components/Button';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
@@ -8,9 +8,6 @@ import { CheckBox, NumberBox, SelectBox, TextBox } from 'devextreme-react';
 import ErrorModal from '../../components/ErrorModal';
 
 // TODO: Buraya tekrar bak. Agac Numarası state ile güncellenmiyor. Şuanda çalışıyor ama bozuk
-
-
-
 
 function NewTreeTab({
   colors,
@@ -26,9 +23,10 @@ function NewTreeTab({
 }) {
   const initialState = {
     newTree: {
-      treeNo: Number(sessionStorage.getItem("treeNo"))||1,
-   //   listeNo: Number(sessionStorage.getItem("listeNo"))||1,
-      agacAuto: Boolean(sessionStorage.getItem("agacAuto"))||false,
+      treeNo: Number(sessionStorage.getItem('treeNo')) || 1,
+      agacAuto: Boolean(sessionStorage.getItem('agacAuto')) || false,
+
+      //   listeNo: Number(sessionStorage.getItem("listeNo"))||1,
       //listeAuto: Boolean(sessionStorage.getItem("listeAuto"))||false,
       renkId: Number(sessionStorage.getItem('renkId')) || '',
       ayarId: Number(sessionStorage.getItem('ayarId')) || '',
@@ -59,37 +57,19 @@ function NewTreeTab({
   });
   const axiosPrivate = useAxiosPrivate();
 
-  useEffect(() => {
-    if (loading === true) {
-      if (newTree.agacAuto) {
-        setNewTree({
-          ...newTree,
-          treeNo: newTree.treeNo + 1,
-          //listeNo: newTree.listeNo + 1,
-          renkId: '',
-          ayarId: '',
-          kalınlıkId: '',
-          hazırlayanId: '',
-          mumTurId: '',
-          desc: '',
-        });
-      }
-    }
-  }, [loading]);
-
   const onFormSubmit = async (e) => {
     const controller = new AbortController();
 
     setLoading(true);
     e.preventDefault();
 
-    let _agacNo = newTree?.treeNo;
-  //  let _listeNo = newTree?.listeNo;
+    let _agacNo = await newTree?.treeNo;
+    //  let _listeNo = newTree?.listeNo;
     try {
       if (!newTree.jobGroupId) {
         throw new Error('İş grubu seçilmedi!');
       }
-      todayTrees.forEach((tree) => {
+      await todayTrees.forEach((tree) => {
         //if (tree['listNo'] === Number(newTree.listeNo) && tree['jobGroupId'] === selectedJobGroup) {
         //  throw new Error(`Tekrar eden bir Liste numarası girdiniz!`);
         //}
@@ -120,7 +100,8 @@ function NewTreeTab({
       //  throw new Error('Mum Turu Seçilmedi');
       //}
 
-      const treeDate = jobGroups.filter((jobGroup) => jobGroup.id === newTree.jobGroupId)[0].date;
+      const treeDate = await jobGroups.filter((jobGroup) => jobGroup.id === newTree.jobGroupId)[0]
+        .date;
 
       var treeBody = {
         optionId: newTree.ayarId,
@@ -138,7 +119,9 @@ function NewTreeTab({
       };
 
       if (newTree.agacAuto) {
-        _agacNo = parseInt(_agacNo) + 1;
+        _agacNo = await (parseInt(_agacNo) + 1);
+      } else {
+        _agacNo = '';
       }
       //if (newTree.listeAuto) {
       //  _listeNo = parseInt(_listeNo) + 1;
@@ -150,22 +133,20 @@ function NewTreeTab({
         withCredentials: true,
       });
       if (insertTreeReq.status === 200) {
-        setTimeout(() => {
-          setNewTree({
-            //listeNo: _listeNo,
-            renkId: '',
-            ayarId: '',
-            kalınlıkId: '',
-            hazırlayanId: '',
-            mumTurId: '',
-            desc: '',
-            treeNo: _agacNo,
-            agacAuto: newTree.agacAuto,
-            date: newTree.date,
-            jobGroupId: newTree.jobGroupId,
-            listeAuto: newTree.listeAuto,
-          });
-        }, 300);
+        await setNewTree({
+          //listeNo: _listeNo,
+          renkId: '',
+          ayarId: '',
+          kalınlıkId: '',
+          hazırlayanId: '',
+          mumTurId: '',
+          desc: '',
+          treeNo: _agacNo,
+          agacAuto: newTree.agacAuto,
+          date: newTree.date,
+          jobGroupId: newTree.jobGroupId,
+          // listeAuto: newTree.listeAuto,
+        });
       }
 
       const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
@@ -182,10 +163,10 @@ function NewTreeTab({
       sessionStorage.removeItem('renkId');
       sessionStorage.removeItem('ayarId');
       sessionStorage.removeItem('kalınlıkId');
-      sessionStorage.removeItem("treeNo");
-     // sessionStorage.removeItem("listeNo");
-    //  sessionStorage.removeItem("listeAuto");
-      sessionStorage.removeItem("agacAuto");
+      sessionStorage.removeItem('treeNo');
+      // sessionStorage.removeItem("listeNo");
+      //  sessionStorage.removeItem("listeAuto");
+      sessionStorage.removeItem('agacAuto');
       controller.abort();
     } catch (err) {
       setLoading(false);
@@ -203,6 +184,8 @@ function NewTreeTab({
       label: 'No: ' + jobGroup.number,
     };
   });
+
+  console.log(newTree);
 
   return (
     <>
@@ -230,39 +213,48 @@ function NewTreeTab({
         </div>
         <div className='flex items-center w-full'>
           <TextBox
-            className={'text-sm w-full'}
             label={'Açıklama'}
+            name={'description'}
+            id={'desc'}
             labelMode={'floating'}
-            mode={'text'}
-            value={newTree?.desc}
+            value={newTree.desc}
+            className={'text-sm w-full'}
+            valueChangeEvent='input'
             onValueChanged={(e) => {
-              setNewTree({...newTree, desc: e.value});
-              
-              
+              console.log('aaa');
+              console.log(e);
+              if (e.event !== undefined) {
+                setNewTree({ ...newTree, desc: e.value });
+              }
             }}
           />
         </div>
-        <div className='grid grid-cols-2  flex flex-row items-center justify-between'>
+        <div className='grid grid-cols-2 flex flex-row items-center justify-between'>
           <NumberBox
             label={'Agaç No'}
             name={'treeNo'}
             id={'treeNo'}
             labelMode={'floating'}
             value={newTree?.treeNo}
-            min='1'
+            className={'text-sm w-full'}
+            min={'1'}
+            valueChangeEvent='input'
             onValueChanged={(e) => {
-              sessionStorage.setItem("treeNo",e.value);
-              setNewTree({...newTree, treeNo: e.value})
+              if (e.event !== undefined) {
+                sessionStorage.setItem('treeNo', e.value);
+                setNewTree({ ...newTree, treeNo: e.value });
+              }
             }}
           />
-          <CheckBox className='mx-5'
+          <CheckBox
+            className='mx-5'
             id={'treeNoAuto'}
             name={'treeNoAuto'}
             text={'Otomatik Artır'}
             value={newTree.agacAuto}
             onValueChanged={(e) => {
-              sessionStorage.setItem("agacAuto",!Boolean(newTree.agacAuto));
-              setNewTree({...newTree, agacAuto: !newTree.agacAuto})
+              sessionStorage.setItem('agacAuto', !Boolean(newTree.agacAuto));
+              setNewTree({ ...newTree, agacAuto: !newTree.agacAuto });
             }}
           />
         </div>
@@ -450,7 +442,7 @@ function NewTreeTab({
           {/*</div>*/}
         </div>
         <div className='flex justify-end items-end'>
-          <Button type='submit' appearance={'primary'} disabled={loading} >
+          <Button type='submit' appearance={'primary'} disabled={loading}>
             Agaç Ekle
           </Button>
         </div>
@@ -480,7 +472,6 @@ function NewTreeTab({
       )}
     </>
   );
-
 }
 
 export default NewTreeTab;

@@ -43,12 +43,14 @@ function OvenMainPage() {
   const [allDisabled, setAllDisabled] = React.useState(false);
   const [trees, setTrees] = useState([]);
   const [treeLoading, setTreeLoading] = useState(false);
+  const [isOven, setIsOven] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
     let isMounted = true;
     const getFirinListesi = async () => {
       try {
+        setIsOven(true);
         const res = await axiosPrivate.post(
           Endpoints.OVEN + '/query',
           { jobGroupId: selectedJobGroup },
@@ -60,6 +62,7 @@ function OvenMainPage() {
 
         if (isMounted) {
           setFirinListesi(res.data.firinListesi);
+          setIsOven(false);
         }
       } catch (error) {
         console.error(error);
@@ -221,30 +224,55 @@ function OvenMainPage() {
         <Header title='Fırın' description='Fırınlarınızı bu sayfadan yönetebilirsiniz.' />
         <div className='space-y-4'>
           {/* seçilen iş grubu erkenFırınGrubuOlusturulduMu false ise erken firin oluştur button disabled:false  */}
-          <Select
-            className='hover:cursor-pointer md:w-1/4'
-            options={jobGroupOptions}
-            value={jobGroupOptions.filter((option) => option.value === selectedJobGroup)[0]}
-            onChange={(e) => {
-              setSelectedJobGroupName(e.name);
-              setErkenGrupDisabled(e.erkenGrupOlusturulduMu);
-              setSelectedJobGroup(e.value);
+          <div className='flex flex-row items-center space-x-4 '>
+            <Select
+              className='hover:cursor-pointer md:w-1/4'
+              options={jobGroupOptions}
+              value={jobGroupOptions.filter((option) => option.value === selectedJobGroup)[0]}
+              onChange={(e) => {
+                setSelectedJobGroupName(e.name);
+                setErkenGrupDisabled(e.erkenGrupOlusturulduMu);
+                setSelectedJobGroup(e.value);
 
-              if (e.erkenGrupOlusturulduMu) {
-                setCheckedGroup('normal');
-              }
-              if (e.normalFırınGrubuOlusturulduMu) {
-                setAllDisabled(true);
-              }
-              if (!e.erkenGrupOlusturulduMu && !e.normalFırınGrubuOlusturulduMu) {
-                setFirinListesi(initialFirinListesi);
-              }
-              if (!e.normalFırınGrubuOlusturulduMu) {
-                setAllDisabled(false);
-              }
-            }}
-          />
+                if (e.erkenGrupOlusturulduMu) {
+                  setCheckedGroup('normal');
+                }
+                if (e.normalFırınGrubuOlusturulduMu) {
+                  setAllDisabled(true);
+                }
+                if (!e.erkenGrupOlusturulduMu && !e.normalFırınGrubuOlusturulduMu) {
+                  setFirinListesi(initialFirinListesi);
+                }
+                if (!e.normalFırınGrubuOlusturulduMu) {
+                  setAllDisabled(false);
+                }
+              }}
+            />
 
+            {selectedJobGroup !== null &&
+            (firinListesi[1].ust.length > 0 ||
+              firinListesi[1].alt.length ||
+              firinListesi[2].ust.length > 0 ||
+              firinListesi[2].alt.length ||
+              firinListesi[3].ust.length > 0 ||
+              firinListesi[3].alt.length) ? (
+              <Button
+                appearance={'danger'}
+                onClick={async () => {
+                  let res = await axiosPrivate.post(Endpoints.OVEN + '/clear', {
+                    jobGroupId: selectedJobGroup,
+                  });
+
+                  if (res.status === 200) {
+                    setFirinListesi(initialFirinListesi);
+                    setAllDisabled(false);
+                  }
+                }}
+              >
+                Fırını Temizle
+              </Button>
+            ) : null}
+          </div>
           {selectedJobGroup !== null && !allDisabled && (
             <div
               style={{ display: allDisabled ? 'none' : 'block' }}
@@ -290,7 +318,7 @@ function OvenMainPage() {
                       jobGroupId: selectedJobGroup,
                     });
                   }
-                  setTimeout(async () => {
+                  await setTimeout(async () => {
                     const res = await axiosPrivate.post(
                       Endpoints.OVEN + '/query',
                       { jobGroupId: selectedJobGroup },

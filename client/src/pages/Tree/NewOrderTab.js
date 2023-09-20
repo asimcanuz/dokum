@@ -1,22 +1,22 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Button from '../../components/Button';
-import {AiOutlinePlus} from 'react-icons/ai';
+import { AiOutlinePlus } from 'react-icons/ai';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import {Endpoints} from '../../constants/Endpoints';
+import { Endpoints } from '../../constants/Endpoints';
 import useAuth from '../../hooks/useAuth';
-import {CheckBox, NumberBox, SelectBox} from 'devextreme-react';
+import { CheckBox, NumberBox, SelectBox } from 'devextreme-react';
 import ErrorModal from '../../components/ErrorModal';
 import AddNewDescriptionModal from './AddNewDescriptionModal';
-import {useLocation, useNavigate} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ReactSelect from 'react-select';
 
 function NewOrderTab({
-                       clickTree: tree,
-                       descriptions,
-                       setTodayTrees,
-                       selectedJobGroup,
-                       setDescriptions,
-                     }) {
+  clickTree: tree,
+  descriptions,
+  setTodayTrees,
+  selectedJobGroup,
+  setDescriptions,
+}) {
   const auth = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -43,6 +43,7 @@ function NewOrderTab({
   const [modalOpen, setModalOpen] = useState(false);
   const limit = 100;
   const skip = 0;
+  const selectInputRef = useRef();
 
   useEffect(() => {
     let isMounted = true;
@@ -62,11 +63,15 @@ function NewOrderTab({
               customerName: 'Lütfen Geçerli Müşteri Giriniz!',
             };
           }
+          // if (response.data.customers.length > 0) {
+          //   response.data.customer.push({ customerId: null, customerName: 'Seçiniz' });
+          // }
+
           setCustomers(response.data.customers);
         }
       } catch (err) {
         console.error(err);
-        navigate('/login', {state: {from: location}, replace: true});
+        navigate('/login', { state: { from: location }, replace: true });
       }
     };
 
@@ -79,25 +84,24 @@ function NewOrderTab({
   }, [customerName]);
 
   useEffect(() => {
-    setOrder({...order, treeId: tree.agacId});
+    setOrder({ ...order, treeId: tree.agacId });
   }, [tree]);
 
   const customerOptions = customers?.map((customer) => ({
     value: customer.customerId,
     label: customer.customerName,
   }));
+  customerOptions?.unshift({ value: null, label: 'Müşteri Seçiniz' });
 
   const descriptionOptions = descriptions.map((description) => ({
     value: description.descriptionId,
     label: description.descriptionText,
   }));
-  descriptionOptions.unshift({value: null, label: 'Açıklama Yok'});
+  descriptionOptions.unshift({ value: null, label: 'Açıklama Yok' });
 
   async function addOrder() {
     const controller = new AbortController();
     try {
-
-
       if (!tree.agacId) {
         throw new Error('Lütfen ağaç seçiniz!');
       }
@@ -107,7 +111,7 @@ function NewOrderTab({
       }
 
       await axiosPrivate.post(Endpoints.ORDER, order, {
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
       });
 
@@ -118,8 +122,15 @@ function NewOrderTab({
       });
       if (response.status === 200) {
         setLoading(true);
-      }
 
+        setOrder({
+          ...order,
+          quantity: '',
+          customerId: null,
+          descriptionId: '',
+          isImmediate: false,
+        });
+      }
       setTodayTrees(response.data.trees);
     } catch (error) {
       setLoading(true);
@@ -129,13 +140,10 @@ function NewOrderTab({
         message: error.message,
         title: 'Sipariş Ekleme Hatası',
       });
-
     }
 
-   
     controller.abort();
   }
-
 
   const customFilter = async (option, searchText) => {
     setCustomerName(searchText);
@@ -143,7 +151,7 @@ function NewOrderTab({
   return (
     <Fragment>
       <section className=' px-4 flex flex-col space-y-4 row-span-1   '>
-        <div className='grid grid-cols-3 gap-3 items-center ' >
+        <div className='grid grid-cols-3 gap-3 items-center '>
           <div className='flex flex-col items-center '>
             <p className='font-bold text-red-400   '>Id</p>
             <p className='text-blue-600'>{tree.agacId}</p>
@@ -153,8 +161,7 @@ function NewOrderTab({
             <p className='text-blue-600'>{tree.agacNo}</p>
           </div>
 
-
-          <div className='flex flex-col items-center' >
+          <div className='flex flex-col items-center'>
             <p className='font-bold text-red-400'>Renk</p>
             <p className='text-blue-600'>{tree.renk}</p>
           </div>
@@ -166,19 +173,22 @@ function NewOrderTab({
             <p className='font-bold text-red-400 '>Kalınlık</p>
             <p className='text-blue-600'>{tree.kalinlik}</p>
           </div>
-
         </div>
 
         <div className='grid grid-rows-3'>
           <div className='flex flex-col'>
-
             <ReactSelect
+              ref={selectInputRef}
               className='hover:cursor-pointer text-sm'
               options={customerOptions}
               onChange={(e) => {
-                setOrder({...order, customerId: e.value});
+                setOrder({ ...order, customerId: e.value });
               }}
-              value={order.customerId !== null ? customerOptions?.find((option) => option.value === order.customerId) : ''}
+              value={
+                order.customerId !== null
+                  ? customerOptions?.find((option) => option.value === order.customerId)
+                  : ''
+              }
               isSearchable={true}
               filterOption={customFilter}
             />
@@ -191,8 +201,11 @@ function NewOrderTab({
               min='1'
               onValueChanged={(e) => {
                 if (parseInt(e.value) <= 0) {
+                  return;
                 }
-                setOrder({...order, quantity: e.value});
+                if (e.event !== undefined) {
+                  setOrder({ ...order, quantity: e.value });
+                }
               }}
             />
           </div>
@@ -204,11 +217,11 @@ function NewOrderTab({
                 }}
                 className='flex flex-row justify-between items-center text-blue-600 hover:cursor-pointer hover:animate-pulse'
               >
-                <AiOutlinePlus/> <span>Yeni Açıklama</span>
+                <AiOutlinePlus /> <span>Yeni Açıklama</span>
               </p>
             </div>
             <SelectBox
-            id='aaa'
+              id='aaa'
               className='hover:cursor-pointer text-sm'
               dataSource={descriptionOptions}
               displayExpr={'label'}
@@ -219,7 +232,9 @@ function NewOrderTab({
                 descriptionOptions?.filter((desc) => desc.value === order.descriptionId)[0]?.value
               }
               onValueChanged={(e) => {
-                setOrder({...order, descriptionId: e.value});
+                if (e.event !== undefined) {
+                  setOrder({ ...order, descriptionId: e.value });
+                }
               }}
             />
           </div>
@@ -230,22 +245,23 @@ function NewOrderTab({
             name={'isImmediate'}
             text={'Acil mi?'}
             onValueChanged={(e) => {
-              setOrder({...order, isImmediate: e.value});
+              if (e.event !== undefined) {
+                setOrder({ ...order, isImmediate: e.value });
+              }
             }}
-            checked={order.isImmediate}
+            value={order.isImmediate === true}
           />
           <Button
             appearance={'primary'}
             disabled={Object.values(tree).includes('') ? false : !loading}
             onClick={() => {
-              addOrder()
+              addOrder();
             }}
           >
             Sipariş Ekle
           </Button>
         </div>
-      </section>
-      {' '}
+      </section>{' '}
       {errorModal.visible && (
         <ErrorModal
           title={errorModal.title}
