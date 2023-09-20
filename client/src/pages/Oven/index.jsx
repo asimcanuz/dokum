@@ -7,7 +7,7 @@ import Select from 'react-select';
 import Button from '../../components/Button';
 import OvenTable from './OvenTable';
 import { DataGrid } from 'devextreme-react';
-import { Column, Export } from 'devextreme-react/data-grid';
+import { Column, Editing, Export } from 'devextreme-react/data-grid';
 import { Workbook } from 'exceljs';
 import { exportDataGrid } from 'devextreme/excel_exporter';
 import { saveAs } from 'file-saver';
@@ -218,6 +218,26 @@ function OvenMainPage() {
     e.cancel = true;
   }
 
+  function onRowRemoving(e) {
+    const { data } = e;
+    let deletedtree = axiosPrivate.post(Endpoints.OVEN + '/firinListesindenCikar', {
+      treeId: data.treeId,
+    });
+
+    deletedtree.then(async () => {
+      const res = axiosPrivate.post(
+        Endpoints.OVEN + '/query',
+        { jobGroupId: selectedJobGroup },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        },
+      );
+
+      setFirinListesi(res.data.firinListesi);
+    });
+  }
+
   return (
     <div>
       <section className='space-y-4'>
@@ -394,6 +414,8 @@ function OvenMainPage() {
             showRowLines={true}
             keyExpr={'treeId'}
             onExporting={onExporting}
+            remoteOperations={true}
+            onRowRemoving={onRowRemoving}
             onRowPrepared={function (e) {
               if (e.rowType === 'data' && e.data.fırınId === null) {
                 e.rowElement.style.backgroundColor = '#f87171';
@@ -401,6 +423,13 @@ function OvenMainPage() {
               }
             }}
           >
+            {/* <Editing
+              mode={'cell'}
+              useIcons={true}
+              allowAdding={false}
+              allowUpdating={false}
+              allowDeleting={true}
+            /> */}
             <Export enabled={true} />
             <Column caption={'Sıra'} dataField={'siraNo'} />
             <Column dataField={'treeNo'} caption={'Ağaç Numarası'} alignment={'center'} />

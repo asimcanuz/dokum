@@ -1,10 +1,6 @@
 const db = require("../../models");
-const firinlar = require("../../constants/firinConstans");
-const firinListesi = require("../../constants/firinListesiConstant");
-const { Op } = require("sequelize");
 
 const JobGroup = db.jobGroup;
-const Oven = db.oven;
 const Tree = db.tree;
 
 const firinTemizle = async (req, res) => {
