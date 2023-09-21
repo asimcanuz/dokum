@@ -102,7 +102,6 @@ function ProcessTimes() {
               <b>İşlem Zamanları</b>
               <b>İşlemler</b>
             </div>
-            {console.log(treeStatuses)}
             {treeStatuses.map((treeStatus, index) => {
               return (
                 <div

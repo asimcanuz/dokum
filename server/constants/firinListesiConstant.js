@@ -193,11 +193,7 @@ const firinListesi = {
         renk: "Yeşil",
         ayar: "20 Ayar",
       },
-      {
-        kalinlik: "Orta",
-        renk: "Yeşil",
-        ayar: "14 Ayar",
-      },
+   
       {
         kalinlik: "Kalın",
         renk: "Yeşil",
@@ -213,7 +209,26 @@ const firinListesi = {
         renk: "Yeşil",
         ayar: "14 Ayar",
       },
-
+      {
+        kalinlik: "Orta",
+        renk: "Yeşil",
+        ayar: "10 Ayar",
+      },
+      {
+        kalinlik: "Orta",
+        renk: "Yeşil",
+        ayar: "9 Ayar",
+      },
+      {
+        kalinlik: "Orta",
+        renk: "Yeşil",
+        ayar: "8 Ayar",
+      },
+      {
+        kalinlik: "Orta",
+        renk: "Yeşil",
+        ayar: "4 Ayar",
+      },
       {
         kalinlik: "Kalın",
         renk: "Hepsi",
@@ -245,6 +260,11 @@ const firinListesi = {
         kalinlik: "Kalın",
         renk: "Hepsi",
         ayar: "Gümüş",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Yeşil",
+        ayar: "14 Ayar",
       },
       {
         kalinlik: "Çok Kalın",

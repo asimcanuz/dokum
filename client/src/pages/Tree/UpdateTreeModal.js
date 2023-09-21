@@ -6,7 +6,6 @@ import ModalFooter from '../../components/Modal/ModalFooter';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import { useFormik } from 'formik';
-import CheckBox from '../../components/Input/CheckBox';
 import Select from 'react-select';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
@@ -81,14 +80,13 @@ function UpdateTreeModal({
       colorId,
       creatorId,
       desc,
-      isImmediate,
-      listNo,
+      //  listNo,
       optionId,
       processId,
       thickId,
       treeNo,
       treeStatusId,
-      waxId,
+      // waxId,
       treeId,
     },
 
@@ -118,9 +116,9 @@ function UpdateTreeModal({
     },
   });
 
-  const waxOpts = waxes.map((wax) => {
-    return { value: wax.waxId, label: wax.waxName };
-  });
+  // const waxOpts = waxes.map((wax) => {
+  //   return { value: wax.waxId, label: wax.waxName };
+  // });
   const colorOpts = colors.map((color) => {
     return { value: color.colorId, label: color.colorName };
   });
@@ -165,11 +163,22 @@ function UpdateTreeModal({
                       let sameNumber = treeIndexes.find(
                         (tree) => tree.treeNo === parseInt(e.target.value),
                       );
-                      if (sameNumber !== undefined || sameNumber !== null) {
-                        setTreeNoError({
-                          show: true,
-                          message: 'İş grubunda aynı ağaç numarası bulunmaktadır.',
-                        });
+                      if (e.target.value !== treeNo.toString()) {
+                        if (
+                          sameNumber !== undefined &&
+                          sameNumber !== null &&
+                          e.target.value !== ''
+                        ) {
+                          setTreeNoError({
+                            show: true,
+                            message: 'İş grubunda aynı ağaç numarası bulunmaktadır.',
+                          });
+                        } else {
+                          setTreeNoError({
+                            show: false,
+                            message: '',
+                          });
+                        }
                       } else {
                         setTreeNoError({
                           show: false,
@@ -183,51 +192,39 @@ function UpdateTreeModal({
                     <div className='text-red-600'>{treeNoError.message}</div>
                   ) : null}
                 </div>
-                <div>
-                  <label htmlFor='listNo'>Liste Numarası</label>
-                  <Input
-                    id='listNo'
-                    name='listNo'
-                    type={'text'}
-                    value={formik.values.listNo}
-                    onChange={(e) => {
-                      formik.setFieldValue('listNo', e.target.value);
+                {/*<div>*/}
+                {/*  <label htmlFor='listNo'>Liste Numarası</label>*/}
+                {/*  <Input*/}
+                {/*    id='listNo'*/}
+                {/*    name='listNo'*/}
+                {/*    type={'text'}*/}
+                {/*    value={formik.values.listNo}*/}
+                {/*    onChange={(e) => {*/}
+                {/*      formik.setFieldValue('listNo', e.target.value);*/}
 
-                      let sameNumber = treeIndexes.find(
-                        (tree) => tree.listNo === parseInt(e.target.value),
-                      );
-                      if (sameNumber !== undefined || sameNumber !== null) {
-                        setListNoError({
-                          show: true,
-                          message: 'İş grubunda aynı liste numarası bulunmaktadır.',
-                        });
-                      } else {
-                        setListNoError({
-                          show: false,
-                          message: '',
-                        });
-                      }
-                    }}
-                  />
-                  {listNoError.show ? (
-                    <div className='text-red-600'>{listNoError.message}</div>
-                  ) : null}
-                </div>
-                <div className='flex  justify-center items-center'>
-                  <CheckBox
-                    id={'isImmediate'}
-                    name={'isImmediate'}
-                    label={'Acil Mi?'}
-                    onChange={(e) => {
-                      formik.setFieldValue('isImmediate', e.target.checked);
-                    }}
-                    checked={formik.values.isImmediate}
-                    // checked
-                  />
-                </div>
+                {/*      let sameNumber = treeIndexes.find(*/}
+                {/*        (tree) => tree.listNo === parseInt(e.target.value),*/}
+                {/*      );*/}
+                {/*      if (sameNumber !== undefined || sameNumber !== null) {*/}
+                {/*        setListNoError({*/}
+                {/*          show: true,*/}
+                {/*          message: 'İş grubunda aynı liste numarası bulunmaktadır.',*/}
+                {/*        });*/}
+                {/*      } else {*/}
+                {/*        setListNoError({*/}
+                {/*          show: false,*/}
+                {/*          message: '',*/}
+                {/*        });*/}
+                {/*      }*/}
+                {/*    }}*/}
+                {/*  />*/}
+                {/*  {listNoError.show ? (*/}
+                {/*    <div className='text-red-600'>{listNoError.message}</div>*/}
+                {/*  ) : null}*/}
+                {/*</div>*/}
               </div>
               <div className='flex flex-row justify-between space-x-4'>
-                <div className='w-full'>
+                {/* <div className='w-full'>
                   <label htmlFor='waxId'>Mum Türü</label>
                   <Select
                     type='select'
@@ -248,7 +245,7 @@ function UpdateTreeModal({
                       formik.setFieldValue('waxId', e.value);
                     }}
                   />
-                </div>
+                </div> */}
                 <div className='w-full'>
                   <label htmlFor='thickId'>Kalınlık</label>
                   <Select

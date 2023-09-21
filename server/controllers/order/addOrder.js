@@ -6,13 +6,13 @@ const addOrder = async (req, res) => {
     treeId,
     customerId,
     quantity,
-    descriptionId,
+    // descriptionId,
     createdBy,
     isImmediate,
   } = req.body;
   await Order.create({
     customerId,
-    descriptionId,
+    // descriptionId,
     quantity,
     treeId,
     treeTreeId: treeId,

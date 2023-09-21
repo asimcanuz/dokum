@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import Alert from '../../components/Alert/Alert';
 import Button from '../../components/Button';
 import { BiLabel } from 'react-icons/bi';
-import CreateLabel from './CreateLabel';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
 import CalculatedMineralWeight from '../../utils/calculateMineralWeight';
 import calculateMineralWeight from '../../utils/calculateMineralWeight';
-import { DataGrid, Lookup, SelectBox } from 'devextreme-react';
+import { DataGrid, SelectBox, Lookup } from 'devextreme-react';
 import {
   Column,
   Editing,
   Export,
+  FilterRow,
+  HeaderFilter,
   MasterDetail,
   Scrolling,
   Selection,
@@ -21,20 +22,21 @@ import { exportDataGrid } from 'devextreme/excel_exporter';
 import { saveAs } from 'file-saver';
 import { statusColorStyle } from '../../utils/StatusColor';
 import { axiosPrivate } from '../../api/axios';
+import CreateLabelNew from './CreateLabelNew';
 
 function TreeTable({
   setClickTree,
   todayTrees,
-  descriptions,
   setUpdateClick,
   setTodayTrees,
   jobGroups,
   selectedJobGroup,
   treeStatuses,
+  newTreeId,
+  setNewTreeId,
 }) {
   const axiosPrivate = useAxiosPrivate();
   const [createLabel, setCreateLabel] = useState(false);
-
   const handleSaveMineralWeight = (data) => {
     let todayTree = data;
     let calculatedMineralWeight = Number(
@@ -59,8 +61,8 @@ function TreeTable({
   };
 
   function selectionChanged(e) {
-    e.component.collapseAll(-1);
-    e.component.expandRow(e.currentSelectedRowKeys[0]);
+    // e.component.collapseAll(-1);
+    // e.component.expandRow(e.currentSelectedRowKeys[0]);
 
     let clickedTree = e.selectedRowsData[0];
     let customerIds = [];
@@ -73,7 +75,7 @@ function TreeTable({
     setClickTree({
       agacId: clickedTree.treeId,
       agacNo: clickedTree.treeNo,
-      listeNo: clickedTree.listNo,
+      //  listeNo: clickedTree.listNo,
       siparisSayisi: clickedTree.orders.length,
       renk: clickedTree.color.colorName,
       ayar: clickedTree.option.optionText,
@@ -90,13 +92,13 @@ function TreeTable({
       colorId,
       creatorId,
       isImmediate,
-      listNo,
+      //  listNo,
       optionId,
       processId,
       thickId,
       treeNo,
       treeStatusId,
-      waxId,
+      // waxId,
       treeId,
       desc,
     } = data;
@@ -108,13 +110,13 @@ function TreeTable({
       creatorId,
       desc,
       isImmediate,
-      listNo,
+      //  listNo,
       optionId,
       processId,
       thickId,
       treeNo,
       treeStatusId,
-      waxId,
+      // waxId,
     });
   }
 
@@ -153,6 +155,37 @@ function TreeTable({
     e.cancel = true;
   }
 
+  function onFocusedRowChanging(e) {
+    const rowsCount = e.component.getVisibleRows().length;
+    const pageCount = e.component.pageCount();
+    const pageIndex = e.component.pageIndex();
+    const key = e.event && e.event.key;
+
+    if (key && e.prevRowIndex === e.newRowIndex) {
+      if (e.newRowIndex === rowsCount - 1 && pageIndex < pageCount - 1) {
+        e.component.pageIndex(pageIndex + 1).done(() => {
+          e.component.option('focusedRowIndex', 0);
+        });
+      } else if (e.newRowIndex === 0 && pageIndex > 0) {
+        e.component.pageIndex(pageIndex - 1).done(() => {
+          e.component.option('focusedRowIndex', rowsCount - 1);
+        });
+      }
+    }
+  }
+  async function onFocusedRowChanged(e) {
+    await setNewTreeId(e.component.option('focusedRowKey'));
+  }
+
+  function onRowClick(e) {
+    e.component.collapseAll(-1);
+    if (e.isExpanded) {
+      e.component.collapseRow(e.component.option('focusedRowKey'));
+    } else {
+      e.component.expandRow(e.key);
+    }
+  }
+
   return (
     <div className='space-y-4'>
       <div className='flex flex-row justify-between items-center'>
@@ -183,6 +216,7 @@ function TreeTable({
 
       {todayTrees.length > 0 ? (
         <DataGrid
+          focusedRowEnabled={true}
           id={'grid-container'}
           dataSource={todayTrees}
           showBorders={true}
@@ -191,10 +225,15 @@ function TreeTable({
           height={700}
           hoverStateEnabled={true}
           onSelectionChanged={selectionChanged}
-          onRowDblClick={rowDblClick}
           onRowRemoving={onRowRemoving}
           onRowUpdated={onRowUpdate}
           onExporting={onExporting}
+          onRowDblClick={rowDblClick}
+          onRowClick={onRowClick}
+          autoNavigateToFocusedRow={true}
+          focusedRowKey={newTreeId}
+          onFocusedRowChanging={onFocusedRowChanging}
+          onFocusedRowChanged={onFocusedRowChanged}
           onRowPrepared={function (e) {
             if (e.rowType === 'data') {
               const bgColor = statusColorStyle(e.data.treeStatus.treeStatusName);
@@ -212,6 +251,8 @@ function TreeTable({
           />
           <Scrolling mode='virtual' />
           <Selection mode={'single'} />
+          <FilterRow visible={true} applyFilter={'auto'} />
+          <HeaderFilter visible={true} />
           <Column
             dataField={'treeNo'}
             caption={'Ağaç No'}
@@ -221,7 +262,7 @@ function TreeTable({
             defaultSortOrder={'asc'}
             // cellRender={({ value }) => parseInt(value)}
           />
-          <Column dataField={'listNo'} caption={'Liste No'} width={'70px'} allowEditing={false} />
+          {/*<Column dataField={'listNo'} caption={'Liste No'} width={'70px'} allowEditing={false}/>*/}
           <Column
             dataField={'isImmediate'}
             caption={'Acil Mi'}
@@ -280,7 +321,7 @@ function TreeTable({
             }}
             allowEditing={false}
           />
-          <Column caption={'Mum Türü'} dataField={'wax.waxName'} allowEditing={false} />
+          {/*      <Column caption={'Mum Türü'} dataField={'wax.waxName'} allowEditing={false}/>*/}
           <Column caption={'Ayar'} dataField={'option.optionText'} allowEditing={false} />
           <Column caption={'Kalınlık'} dataField={'thick.thickName'} allowEditing={false} />
           <Column caption={'Renk'} dataField={'color.colorName'} allowEditing={false} />
@@ -306,6 +347,7 @@ function TreeTable({
             />
           </Column>
           <Column caption={'Hazırlayan'} dataField={'creator.creatorName'} allowEditing={false} />
+          <Column caption={'Açıklama'} dataField={'desc'} allowEditing={false} />
           <Column
             caption={'Maden Ağırlık'}
             dataField={'mineralWeight'}
@@ -325,13 +367,7 @@ function TreeTable({
           <Column caption={'Mum Ağırlık'} dataField={'waxWeight'} />
           <MasterDetail
             render={(e) => {
-              return treeMasterDetail(
-                e.data,
-                axiosPrivate,
-                descriptions,
-                selectedJobGroup,
-                setTodayTrees,
-              );
+              return treeMasterDetail(e.data, axiosPrivate, selectedJobGroup, setTodayTrees);
             }}
           />
         </DataGrid>
@@ -339,7 +375,7 @@ function TreeTable({
         <Alert apperance={'danger'}>Veri bulunamadı!</Alert>
       )}
       {createLabel ? (
-        <CreateLabel
+        <CreateLabelNew
           open={createLabel}
           jobGroupId={selectedJobGroup}
           toggle={async () => {
@@ -351,7 +387,7 @@ function TreeTable({
   );
 }
 
-function treeMasterDetail(data, axiosPrivate, descriptions, selectedJobGroup, setTodayTrees) {
+function treeMasterDetail(data, axiosPrivate, selectedJobGroup, setTodayTrees) {
   let orders = data.orders;
 
   async function onRowRemoving({ data }) {
@@ -417,7 +453,7 @@ function treeMasterDetail(data, axiosPrivate, descriptions, selectedJobGroup, se
           }
           allowEditing={false}
         />
-        <Column
+        {/* <Column
           dataField={'descriptionId'}
           caption={'Açıklama'}
           allowEditing={false}
@@ -425,7 +461,7 @@ function treeMasterDetail(data, axiosPrivate, descriptions, selectedJobGroup, se
             return descriptions?.find((desc) => desc.descriptionId === data.descriptionId)
               ?.descriptionText;
           }}
-        />
+        /> */}
       </DataGrid>
     </div>
   );
@@ -441,7 +477,6 @@ function StatusUpdateDropdown({ data, setTodayTrees, treeStatuses, todayTrees })
       displayExpr={'treeStatusName'}
       defaultValue={rowData.treeStatus.treeStatusId}
       onValueChanged={async (e) => {
-        console.log('aaa');
         let newStatusId = e.value;
         let status = treeStatuses.find((status) => status.treeStatusId === e.value);
         let trees = todayTrees.map((tree) => {
@@ -456,7 +491,7 @@ function StatusUpdateDropdown({ data, setTodayTrees, treeStatuses, todayTrees })
           treeStatusId: newStatusId,
           treeId: rowData.treeId,
         });
-        console.log(trees);
+
         setTodayTrees(trees);
       }}
     />

@@ -28,6 +28,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN,
       defaultValue: true,
     },
+    isDeleted:{
+      type:Sequelize.BOOLEAN,
+      defaultValue:false
+    }
   });
   return Customer;
 };

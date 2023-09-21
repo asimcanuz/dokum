@@ -5,12 +5,12 @@ const moment = require("moment/moment");
 const addTree = (req, res) => {
   const {
     optionId,
-    waxId,
+  //  waxId,
     creatorId,
     thickId,
     colorId,
     date,
-    listNo,
+  //  listNo,
     treeNo,
     treeStatusId,
     active,
@@ -20,12 +20,12 @@ const addTree = (req, res) => {
 
   Tree.create({
     optionId,
-    waxId,
+   // waxId,
     creatorId,
     thickId,
     colorId,
     date,
-    listNo,
+  //  listNo,
     treeNo,
     treeStatusId,
     active,

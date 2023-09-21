@@ -5,10 +5,10 @@ import ScrollToTop from './ScrollToTop';
 import Navbar from './Navbar';
 
 function Layout() {
-  const [sidebarCollapse, setSidebarCollapse] = useState(false);
-
+  const [sidebarCollapse, setSidebarCollapse] = useState(Boolean(localStorage.getItem('collapse')));
   const handleSidebar = () => {
     setSidebarCollapse(!sidebarCollapse);
+    localStorage.setItem('collapse', !sidebarCollapse);
   };
 
   return (
@@ -16,8 +16,7 @@ function Layout() {
       <ScrollToTop />
       <div className='flex flex-col md:flex-row '>
         <Sidebar collapse={sidebarCollapse} handleSidebar={handleSidebar} />
-        <div className='absolute bottom-4 left-4'>v1.3</div>
-        <div className='flex-1 px-4 py-4 '>
+        <div className={`flex-1 px-4 py-4 ml-24 ${sidebarCollapse ? 'md:ml-72' : 'ml-24'}`}>
           <Navbar />
           <Outlet />
         </div>

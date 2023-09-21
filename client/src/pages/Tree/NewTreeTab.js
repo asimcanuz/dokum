@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Button from '../../components/Button';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
@@ -20,13 +20,15 @@ function NewTreeTab({
   jobGroups,
   selectedJobGroup,
   setSelectedJobGroup,
+  setNewTreeId,
 }) {
   const initialState = {
     newTree: {
-      treeNo: 1,
-      listeNo: 1,
-      agacAuto: false,
-      listeAuto: false,
+      treeNo: Number(sessionStorage.getItem('treeNo')) || 1,
+      agacAuto: Boolean(sessionStorage.getItem('agacAuto')) || false,
+
+      //   listeNo: Number(sessionStorage.getItem("listeNo"))||1,
+      //listeAuto: Boolean(sessionStorage.getItem("listeAuto"))||false,
       renkId: Number(sessionStorage.getItem('renkId')) || '',
       ayarId: Number(sessionStorage.getItem('ayarId')) || '',
       kalınlıkId: Number(sessionStorage.getItem('kalınlıkId')) || '',
@@ -56,40 +58,22 @@ function NewTreeTab({
   });
   const axiosPrivate = useAxiosPrivate();
 
-  useEffect(() => {
-    if (loading === true) {
-      if (newTree.agacAuto) {
-        setNewTree({
-          ...newTree,
-          treeNo: newTree.treeNo + 1,
-          listeNo: newTree.listeNo + 1,
-          renkId: '',
-          ayarId: '',
-          kalınlıkId: '',
-          hazırlayanId: '',
-          mumTurId: '',
-          desc: '',
-        });
-      }
-    }
-  }, [loading]);
-
   const onFormSubmit = async (e) => {
     const controller = new AbortController();
 
     setLoading(true);
     e.preventDefault();
 
-    let _agacNo = newTree?.treeNo;
-    let _listeNo = newTree?.listeNo;
+    let _agacNo = await newTree?.treeNo;
+    //  let _listeNo = newTree?.listeNo;
     try {
       if (!newTree.jobGroupId) {
         throw new Error('İş grubu seçilmedi!');
       }
-      todayTrees.forEach((tree) => {
-        if (tree['listNo'] === Number(newTree.listeNo) && tree['jobGroupId'] === selectedJobGroup) {
-          throw new Error(`Tekrar eden bir Liste numarası girdiniz!`);
-        }
+      await todayTrees.forEach((tree) => {
+        //if (tree['listNo'] === Number(newTree.listeNo) && tree['jobGroupId'] === selectedJobGroup) {
+        //  throw new Error(`Tekrar eden bir Liste numarası girdiniz!`);
+        //}
         if (tree['treeNo'] === Number(newTree.treeNo) && tree['jobGroupId'] === selectedJobGroup) {
           throw new Error(`Tekrar eden bir Agaç numarası girdiniz!`);
         }
@@ -98,9 +82,9 @@ function NewTreeTab({
       if (newTree.agacNo === '' && newTree.agacAuto === false) {
         throw new Error('Agaç Numarası Girilmedi!');
       }
-      if (newTree.listeNo === '' && newTree.listeAuto === false) {
-        throw new Error('Liste Numarası Girilmedi!');
-      }
+      //if (newTree.listeNo === '' && newTree.listeAuto === false) {
+      //  throw new Error('Liste Numarası Girilmedi!');
+      //}
       if (newTree.renkId === '') {
         throw new Error('Renk Seçilmedi!');
       }
@@ -113,11 +97,12 @@ function NewTreeTab({
       if (newTree.hazırlayanId === '') {
         throw new Error('Hazırlayan Seçilmedi!');
       }
-      if (newTree.mumTurId === '') {
-        throw new Error('Mum Turu Seçilmedi');
-      }
+      //if (newTree.mumTurId === '') {
+      //  throw new Error('Mum Turu Seçilmedi');
+      //}
 
-      const treeDate = jobGroups.filter((jobGroup) => jobGroup.id === newTree.jobGroupId)[0].date;
+      const treeDate = await jobGroups.filter((jobGroup) => jobGroup.id === newTree.jobGroupId)[0]
+        .date;
 
       var treeBody = {
         optionId: newTree.ayarId,
@@ -126,7 +111,7 @@ function NewTreeTab({
         thickId: newTree.kalınlıkId,
         colorId: newTree.renkId,
         date: treeDate,
-        listNo: _listeNo,
+        //listNo: _listeNo,
         treeNo: _agacNo,
         treeStatusId: 1,
         active: true,
@@ -135,34 +120,36 @@ function NewTreeTab({
       };
 
       if (newTree.agacAuto) {
-        _agacNo = parseInt(_agacNo) + 1;
+        _agacNo = await (parseInt(_agacNo) + 1);
+      } else {
+        _agacNo = '';
       }
-      if (newTree.listeAuto) {
-        _listeNo = parseInt(_listeNo) + 1;
-      }
+      //if (newTree.listeAuto) {
+      //  _listeNo = parseInt(_listeNo) + 1;
+      //}
 
       let insertTreeReq = await axiosPrivate.post(Endpoints.TREE.MAIN, treeBody, {
         signal: controller.signal,
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
       });
+      console.log(insertTreeReq);
       if (insertTreeReq.status === 200) {
-        setTimeout(() => {
-          setNewTree({
-            listeNo: _listeNo,
-            renkId: '',
-            ayarId: '',
-            kalınlıkId: '',
-            hazırlayanId: '',
-            mumTurId: '',
-            desc: '',
-            treeNo: _agacNo,
-            agacAuto: newTree.agacAuto,
-            date: newTree.date,
-            jobGroupId: newTree.jobGroupId,
-            listeAuto: newTree.listeAuto,
-          });
-        }, 300);
+        setNewTreeId(insertTreeReq.data.treeId);
+        await setNewTree({
+          //listeNo: _listeNo,
+          renkId: '',
+          ayarId: '',
+          kalınlıkId: '',
+          hazırlayanId: '',
+          mumTurId: '',
+          desc: '',
+          treeNo: _agacNo,
+          agacAuto: newTree.agacAuto,
+          date: newTree.date,
+          jobGroupId: newTree.jobGroupId,
+          // listeAuto: newTree.listeAuto,
+        });
       }
 
       const res = await axiosPrivate.get(Endpoints.TREE.TODAY, {
@@ -179,6 +166,10 @@ function NewTreeTab({
       sessionStorage.removeItem('renkId');
       sessionStorage.removeItem('ayarId');
       sessionStorage.removeItem('kalınlıkId');
+      sessionStorage.removeItem('treeNo');
+      // sessionStorage.removeItem("listeNo");
+      //  sessionStorage.removeItem("listeAuto");
+      sessionStorage.removeItem('agacAuto');
       controller.abort();
     } catch (err) {
       setLoading(false);
@@ -223,49 +214,72 @@ function NewTreeTab({
         </div>
         <div className='flex items-center w-full'>
           <TextBox
-            className={'text-sm w-full'}
             label={'Açıklama'}
+            name={'description'}
+            id={'desc'}
             labelMode={'floating'}
-            mode={'text'}
-            value={newTree?.desc}
-            onValueChanged={(e) => setNewTree({ ...newTree, desc: e.value })}
+            value={newTree.desc}
+            className={'text-sm w-full'}
+            valueChangeEvent='input'
+            onValueChanged={(e) => {
+              if (e.event !== undefined) {
+                setNewTree({ ...newTree, desc: e.value });
+              }
+            }}
           />
         </div>
-        <div className='flex flex-row items-center justify-between'>
+        <div className='grid grid-cols-2 flex flex-row items-center justify-between'>
           <NumberBox
             label={'Agaç No'}
             name={'treeNo'}
             id={'treeNo'}
             labelMode={'floating'}
             value={newTree?.treeNo}
-            min='1'
-            onValueChanged={(e) => setNewTree({ ...newTree, treeNo: e.value })}
+            className={'text-sm w-full'}
+            min={'1'}
+            valueChangeEvent='input'
+            onValueChanged={(e) => {
+              if (e.event !== undefined) {
+                sessionStorage.setItem('treeNo', e.value);
+                setNewTree({ ...newTree, treeNo: e.value });
+              }
+            }}
           />
           <CheckBox
+            className='mx-5'
             id={'treeNoAuto'}
             name={'treeNoAuto'}
             text={'Otomatik Artır'}
             value={newTree.agacAuto}
-            onValueChanged={(e) => setNewTree({ ...newTree, agacAuto: !newTree.agacAuto })}
+            onValueChanged={(e) => {
+              sessionStorage.setItem('agacAuto', !Boolean(newTree.agacAuto));
+              setNewTree({ ...newTree, agacAuto: !newTree.agacAuto });
+            }}
           />
         </div>
-        <div className='flex flex-row items-center justify-between '>
-          <NumberBox
-            label={'Liste No'}
-            labelMode={'floating'}
-            value={newTree?.listeNo}
-            min='1'
-            onValueChanged={(e) => setNewTree({ ...newTree, listeNo: e.value })}
-          />
-          <CheckBox
-            id={'listeNoAuto'}
-            text={'Otomatik Artır'}
-            defaultValue={newTree.listeAuto}
-            onValueChanged={(e) => setNewTree({ ...newTree, listeAuto: !newTree.listeAuto })}
-          />
-        </div>
+        {/*<div className='flex flex-row items-center justify-between '>*/}
+        {/*  <NumberBox*/}
+        {/*    label={'Liste No'}*/}
+        {/*    labelMode={'floating'}*/}
+        {/*    value={newTree?.listeNo}*/}
+        {/*    min='1'*/}
+        {/*    onValueChanged={(e) => {*/}
+        {/*      sessionStorage.setItem("listeNo",e.value);*/}
+        {/*      setNewTree({...newTree, listeNo: e.value})*/}
+        {/*    }}*/}
+        {/*  />*/}
+        {/*  <CheckBox*/}
+        {/*    id={'listeNoAuto'}*/}
+        {/*    text={'Otomatik Artır'}*/}
+        {/*    defaultValue={newTree.listeAuto}*/}
+        {/*    onValueChanged={(e) => {*/}
+        {/*      sessionStorage.setItem("listeAuto",!newTree.listeAuto);*/}
+        {/*      setNewTree({...newTree, listeAuto: !newTree.listeAuto})*/}
+        {/*    }}*/}
+        {/*  />*/}
+        {/*</div>*/}
 
-        <div className='grid grid-cols-3 grid-rows-2 '>
+        <div className='grid grid-cols-2 grid-rows-2 '>
           <div className='border border-slate-400'>
             <div className='font-bold flex flex-row items-center justify-around border-b border-slate-400'>
               Renk
@@ -341,7 +355,7 @@ function NewTreeTab({
             </ul>
           </div>
 
-          <div className='border border-l-0 border-slate-400'>
+          <div className='border border-slate-400'>
             <div className=' font-bold flex flex-row items-center justify-around border-b border-slate-400 '>
               Kalınlık
             </div>
@@ -399,32 +413,32 @@ function NewTreeTab({
               })}
             </ul>
           </div>
-          <div className='border-r border-b border-slate-400 col-span-2 md:col-span-1'>
-            <div className=' font-bold flex flex-row items-center justify-around border-b border-slate-400 '>
-              Mum Türü
-            </div>
-            <ul
-              className={`mt-1 max-h-44  ${
-                waxes.length > 7 && 'overflow-y-scroll'
-              } scroll-m-1 scroll-smooth`}
-            >
-              {waxes.map((wax) => {
-                return (
-                  <li
-                    key={wax.waxId}
-                    className={`${
-                      newTree.mumTurId === wax.waxId ? 'bg-gray-300 dark:bg-slate-800' : ''
-                    } p-1 hover:cursor-pointer`}
-                    onClick={() => {
-                      setNewTree({ ...newTree, mumTurId: wax.waxId });
-                    }}
-                  >
-                    {Capitalize(wax.waxName)}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+          {/*<div className='border-r border-b border-slate-400 col-span-2 md:col-span-1'>*/}
+          {/*  <div className=' font-bold flex flex-row items-center justify-around border-b border-slate-400 '>*/}
+          {/*    Mum Türü*/}
+          {/*  </div>*/}
+          {/*  <ul*/}
+          {/*    className={`mt-1 max-h-44  ${*/}
+          {/*      waxes.length > 7 && 'overflow-y-scroll'*/}
+          {/*    } scroll-m-1 scroll-smooth`}*/}
+          {/*  >*/}
+          {/*    {waxes.map((wax) => {*/}
+          {/*      return (*/}
+          {/*        <li*/}
+          {/*          key={wax.waxId}*/}
+          {/*          className={`${*/}
+          {/*            newTree.mumTurId === wax.waxId ? 'bg-gray-300 dark:bg-slate-800' : ''*/}
+          {/*          } p-1 hover:cursor-pointer`}*/}
+          {/*          onClick={() => {*/}
+          {/*            setNewTree({ ...newTree, mumTurId: wax.waxId });*/}
+          {/*          }}*/}
+          {/*        >*/}
+          {/*          {Capitalize(wax.waxName)}*/}
+          {/*        </li>*/}
+          {/*      );*/}
+          {/*    })}*/}
+          {/*  </ul>*/}
+          {/*</div>*/}
         </div>
         <div className='flex justify-end items-end'>
           <Button type='submit' appearance={'primary'} disabled={loading}>

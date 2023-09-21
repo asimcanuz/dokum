@@ -22,3 +22,15 @@ body,
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   appearance: none;
 }
+.dx-texteditor-input {
+  border-radius: 0;
+}
+.myclass[role=gridcell] {
+  padding: 0 !important;
+}
+
+.react-tooltip{
+  z-index: 9999;
+}
+
+

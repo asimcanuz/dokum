@@ -22,10 +22,15 @@ export const statusColorStyle = (treeStatusName) => {
     case "Döküldü":
       return "#dbeafe";
     case "Kesimde":
-      return "#f3e8ff";
+       return "#f3e8ff";
     default:
       return "#ffffff";
   }
 };
+
+
+
+
+
 
 export default statusColor;

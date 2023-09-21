@@ -13,4 +13,16 @@ module.exports = {
     acquire: 30000,
     idle: 10000,
   },
+  dialectOptions: {
+    useUTC: false, //for reading from database
+    dateStrings: true,
+    typeCast: function (field, next) { // for reading from database
+      if (field.type === 'DATETIME') {
+        return field.string()
+      }
+      return next()
+    },
+  },
+
+  timezone: '+03:00', // for writing to data
 };

@@ -3,12 +3,13 @@ const { Sequelize, where, sequelize } = require("sequelize");
 
 const Tree = db.tree;
 async function getWallboards(req, res) {
-  //  const { jobGroupId } = req.query;
+   const { jobGroupId } = req.query;
 
   let trees = await Tree.findAll({
     where: {
       active: true,
       finished: false,
+      jobGroupId: jobGroupId,
     },
 
     include: [
@@ -30,6 +31,7 @@ async function getWallboards(req, res) {
     trees[index]["treeStatuses"] = treeStatuses[0];
     treeStatusDate.push(treeStatuses[0]);
   }
+  
 
   if (!trees) res.status(401).send({ message: "Trees Not Found!" });
   res.status(200).send({ trees, treeStatusDate });

@@ -56,9 +56,9 @@ function NewJobGroup({ jobGroups, setJobGroups, setSelectedJobGroup }) {
 
   return (
     <>
-      <form className='space-y-4' onSubmit={formSubmit}>
+      <form className='space-y-4 max-w-[80%]' onSubmit={formSubmit} >
         <p className='col-span-12 md:col-span-1'>Tarih</p>
-        <div className='col-span-12 md:col-span-4'>
+        <div className='col-span-12 md:col-span-1 '>
           <Calendar
             min={new Date()}
             value={newJobGroup.date}
