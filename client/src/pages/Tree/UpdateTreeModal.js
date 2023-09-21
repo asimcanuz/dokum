@@ -6,7 +6,6 @@ import ModalFooter from '../../components/Modal/ModalFooter';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import { useFormik } from 'formik';
-import CheckBox from '../../components/Input/CheckBox';
 import Select from 'react-select';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
@@ -81,30 +80,19 @@ function UpdateTreeModal({
       colorId,
       creatorId,
       desc,
-    //  listNo,
+      //  listNo,
       optionId,
       processId,
       thickId,
       treeNo,
       treeStatusId,
-      waxId,
+      // waxId,
       treeId,
     },
 
     onSubmit: async (values) => {
       // setTodayTrees([...todayTrees]);
       try {
-
-        todayTrees.forEach((tree) => {
-          //if (tree['listNo'] === Number(values.listNo) && tree['jobGroupId'] === selectedJobGroup) {
-          //  throw new Error(`Tekrar eden bir Liste numarası girdiniz!`);
-          //}
-          if (tree['treeNo'] === Number(values.treeNo) && tree['jobGroupId'] === selectedJobGroup) {
-            throw new Error(`Tekrar eden bir Agaç numarası girdiniz!`);
-          }
-        });
-
-
         await axiosPrivate.put(Endpoints.TREE.MAIN, values);
 
         try {
@@ -128,9 +116,9 @@ function UpdateTreeModal({
     },
   });
 
-  const waxOpts = waxes.map((wax) => {
-    return { value: wax.waxId, label: wax.waxName };
-  });
+  // const waxOpts = waxes.map((wax) => {
+  //   return { value: wax.waxId, label: wax.waxName };
+  // });
   const colorOpts = colors.map((color) => {
     return { value: color.colorId, label: color.colorName };
   });
@@ -175,11 +163,22 @@ function UpdateTreeModal({
                       let sameNumber = treeIndexes.find(
                         (tree) => tree.treeNo === parseInt(e.target.value),
                       );
-                      if (sameNumber !== undefined || sameNumber !== null) {
-                        setTreeNoError({
-                          show: true,
-                          message: 'İş grubunda aynı ağaç numarası bulunmaktadır.',
-                        });
+                      if (e.target.value !== treeNo.toString()) {
+                        if (
+                          sameNumber !== undefined &&
+                          sameNumber !== null &&
+                          e.target.value !== ''
+                        ) {
+                          setTreeNoError({
+                            show: true,
+                            message: 'İş grubunda aynı ağaç numarası bulunmaktadır.',
+                          });
+                        } else {
+                          setTreeNoError({
+                            show: false,
+                            message: '',
+                          });
+                        }
                       } else {
                         setTreeNoError({
                           show: false,
@@ -223,10 +222,9 @@ function UpdateTreeModal({
                 {/*    <div className='text-red-600'>{listNoError.message}</div>*/}
                 {/*  ) : null}*/}
                 {/*</div>*/}
-               
               </div>
               <div className='flex flex-row justify-between space-x-4'>
-                <div className='w-full'>
+                {/* <div className='w-full'>
                   <label htmlFor='waxId'>Mum Türü</label>
                   <Select
                     type='select'
@@ -247,7 +245,7 @@ function UpdateTreeModal({
                       formik.setFieldValue('waxId', e.value);
                     }}
                   />
-                </div>
+                </div> */}
                 <div className='w-full'>
                   <label htmlFor='thickId'>Kalınlık</label>
                   <Select

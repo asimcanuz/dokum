@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Button from '../../components/Button';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
@@ -20,6 +20,7 @@ function NewTreeTab({
   jobGroups,
   selectedJobGroup,
   setSelectedJobGroup,
+  setNewTreeId,
 }) {
   const initialState = {
     newTree: {
@@ -132,7 +133,9 @@ function NewTreeTab({
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
       });
+      console.log(insertTreeReq);
       if (insertTreeReq.status === 200) {
+        setNewTreeId(insertTreeReq.data.treeId);
         await setNewTree({
           //listeNo: _listeNo,
           renkId: '',
@@ -185,8 +188,6 @@ function NewTreeTab({
     };
   });
 
-  console.log(newTree);
-
   return (
     <>
       <form className='space-y-1 border-r border-gray-700 px-4 text-sm' onSubmit={onFormSubmit}>
@@ -221,8 +222,6 @@ function NewTreeTab({
             className={'text-sm w-full'}
             valueChangeEvent='input'
             onValueChanged={(e) => {
-              console.log('aaa');
-              console.log(e);
               if (e.event !== undefined) {
                 setNewTree({ ...newTree, desc: e.value });
               }

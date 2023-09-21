@@ -7,12 +7,11 @@ import Alert from '../../components/Alert/Alert';
 
 // import PdfTable from "./PdfTable";
 
-function MusteriAdetSiraliMadenAyarlamaRaporu(
-  {
-    selectedJobGroup,
-    setSelectedJobGroup,
-    jobGroups,
-  }) {
+function MusteriAdetSiraliMadenAyarlamaRaporu({
+  selectedJobGroup,
+  setSelectedJobGroup,
+  jobGroups,
+}) {
   const axiosPrivate = useAxiosPrivate();
   const [trees, setTrees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -121,7 +120,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: '32px',
-
   },
   tableCol: {
     height: '32px',
@@ -177,7 +175,6 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
     // option.optionText'e göre grupla
 
     trees.forEach((tree, index) => {
-
       const key = tree['option.optionText'];
 
       if (mineralWaxTotalWeights[key] === undefined) {
@@ -187,14 +184,10 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
         };
       } else {
         mineralWaxTotalWeights[key] = {
-          totalMineralWeight:
-            mineralWaxTotalWeights[key].totalMineralWeight +
-            tree.mineralWeight,
-          totalWaxWeight:
-            mineralWaxTotalWeights[key].totalWaxWeight + tree.waxWeight,
+          totalMineralWeight: mineralWaxTotalWeights[key].totalMineralWeight + tree.mineralWeight,
+          totalWaxWeight: mineralWaxTotalWeights[key].totalWaxWeight + tree.waxWeight,
         };
       }
-
 
       if (!groupedTrees[key]) {
         // Grup henüz oluşturulmamışsa, yeni bir dizi oluşturun
@@ -202,20 +195,18 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
       }
       // Ağacı ilgili gruba ekleyin
       groupedTrees[key].push(tree);
-
     });
 
     groupedTrees = Object.keys(groupedTrees).map((key) => ({
       optionText: key,
       trees: groupedTrees[key],
-    }))
+    }));
 
     const eightAyarTrees = [];
     const gumusTrees = [];
     const bronzTrees = [];
     const otherTrees = [];
     // Her ağacı optionText'e göre ilgili diziye ekleyin
-
 
     groupedTrees.forEach((group) => {
       switch (group.optionText.toLowerCase()) {
@@ -237,20 +228,20 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
     if (eightAyarTrees.length > 0) {
       revisedGroupedTreesArray.push({
         optionText: '8 Ayar',
-        trees: eightAyarTrees
+        trees: eightAyarTrees,
       });
     }
     if (gumusTrees.length > 0) {
       revisedGroupedTreesArray.push({
         optionText: 'Gümüş',
-        trees: gumusTrees
+        trees: gumusTrees,
       });
     }
     if (bronzTrees.length > 0) {
       revisedGroupedTreesArray.push({
         optionText: 'Bronz',
-        trees: bronzTrees
-      })
+        trees: bronzTrees,
+      });
     }
 
     revisedGroupedTreesArray.forEach((group) => {
@@ -263,185 +254,183 @@ const MadenAyarlamaRaporuPDF = ({ trees, jobGroup }) => {
         }
         return 0;
       });
-    })
-
+    });
 
     return revisedGroupedTreesArray;
   };
 
   const groupedTree = groupTrees();
-  var styler = ((groupedTree.optionText !== 'Gümüş' && groupedTree.optionText !== 'Bronz') ? 'marginTop:\'100px\'' : '');
-  console.log(styler);
+  var styler =
+    groupedTree.optionText !== 'Gümüş' && groupedTree.optionText !== 'Bronz'
+      ? "marginTop:'100px'"
+      : '';
   return (
     <Document>
       <Page size='A4' style={styles.page} wrap>
-
-        {groupedTree.length > 0 ? groupedTree?.map((groupedTree, index) => {
-
-          const breakLine = index > 0 && (groupedTree.optionText !== 'Gümüş' && groupedTree.optionText !== 'Bronz');
-          return (
-
-
-
-            <View key={index} wrap={true} break={breakLine}>
-              <View
-
-                style={styler, {
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginTop: '10px'
-
-
-                }}
-                wrap={true}
-
-              >
-                <View fixed>
-                  <Text style={{ fontSize: 12, fontWeight: 'bold' }}>{jobGroup.label} - (Maden Ayarlama)</Text>
-                </View>
-                <View fixed>
-                  <Text style={{ fontSize: 12, fontWeight: 'bold' }}>
-                    {groupedTree['optionText']}
-                  </Text>
-                </View>
-                <View fixed style={{ display: 'flex', flexDirection: 'row' }}>
-                  <Text style={{ fontSize: 12, fontWeight: 'bold' }}>
-                    Mum Ağırlık :
-                    {mineralWaxTotalWeights[groupedTree['optionText']]?.totalWaxWeight}
-                  </Text>
-                  <Text
+        {groupedTree.length > 0
+          ? groupedTree?.map((groupedTree, index) => {
+              const breakLine =
+                index > 0 &&
+                groupedTree.optionText !== 'Gümüş' &&
+                groupedTree.optionText !== 'Bronz';
+              return (
+                <View key={index} wrap={true} break={breakLine}>
+                  <View
                     style={{
-                      fontSize: 12,
-                      fontWeight: 'bold',
-                      marginLeft: '12px',
+                      styler,
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      marginTop: '10px',
                     }}
+                    wrap={true}
                   >
-                    Maden Ağırlık :
-                    {
-                      mineralWaxTotalWeights[groupedTree['optionText']]?.totalMineralWeight
-                    }
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.table} >
-                <View style={styles.tableRow} fixed>
-                  <View style={[styles.tableColHeader, { width: 20 }]}>
-                    <Text style={styles.tableCellHeader}>Ağaç No</Text>
-                  </View>
-                  <View style={[styles.tableColHeader, { width: 117 }]}>
-                    <Text style={styles.tableCellHeader}>Ağaç Tipi</Text>
-                  </View>
-                  <View style={[styles.tableColHeader, { width: 30 }]}>
-                    <Text style={styles.tableCellHeader}>Müş. Adet</Text>
-                  </View>
-                  <View style={[styles.tableColHeader, { width: 35 }]}>
-                    <Text style={styles.tableCellHeader}>Ayar</Text>
-                  </View>
-                  <View style={[styles.tableColHeader, { width: 40 }]}>
-                    <Text style={styles.tableCellHeader}>Kalınlık</Text>
-                  </View>
-                  <View style={[styles.tableColHeader, { width: 30 }]}>
-                    <Text style={styles.tableCellHeader}>Renk</Text>
-                  </View>
-                  <View style={[styles.tableColHeader, { width: 40 }]}>
-                    <Text style={styles.tableCellHeader}>Mum Ağırlık</Text>
-                  </View>
-                  <View style={[styles.tableColHeader, { width: 40 }]}>
-                    <Text style={styles.tableCellHeader}>Maden Ağırlık</Text>
-                  </View>
-                  <View style={[styles.tableColHeader, { width: 105 }]}>
-                    <Text style={[styles.tableCellHeader]}></Text>
-                  </View>
-
-                  <View style={[styles.tableColHeader, { width: 105 }]}>
-                    <Text style={styles.tableCellHeader}></Text>
-                  </View>
-                </View>
-                {groupedTree.trees.map((row, index) => {
-                  return (
-                    <View style={styles.tableRow} key={index} wrap={false}>
-                      <View style={[styles.tableCol, { width: 20 }]} wrap={false}>
-                        <Text wrap={false}>{row['treeNo']}</Text>
-                      </View>
-
-                      <View
-                        style={[
-                          styles.tableCol,
-                          {
-                            width: 117,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-                          },
-                        ]}
+                    <View fixed>
+                      <Text style={{ fontSize: 12, fontWeight: 'bold' }}>
+                        {jobGroup.label} - (Maden Ayarlama)
+                      </Text>
+                    </View>
+                    <View fixed>
+                      <Text style={{ fontSize: 12, fontWeight: 'bold' }}>
+                        {groupedTree['optionText']}
+                      </Text>
+                    </View>
+                    <View fixed style={{ display: 'flex', flexDirection: 'row' }}>
+                      <Text style={{ fontSize: 12, fontWeight: 'bold' }}>
+                        Mum Ağırlık :
+                        {mineralWaxTotalWeights[groupedTree['optionText']]?.totalWaxWeight}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 'bold',
+                          marginLeft: '12px',
+                        }}
                       >
-                        <View
-                          style={[
-                            {
-                              display: 'flex',
-                              flexDirection: 'row',
-                            },
-                          ]}
-                        >
-                          {row['isImmediate'] ? (
-                            <Text wrap style={{ color: 'red' }}>
-                              (A)
-                            </Text>
-                          ) : null}
+                        Maden Ağırlık :
+                        {mineralWaxTotalWeights[groupedTree['optionText']]?.totalMineralWeight}
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={styles.table}>
+                    <View style={styles.tableRow} fixed>
+                      <View style={[styles.tableColHeader, { width: 20 }]}>
+                        <Text style={styles.tableCellHeader}>Ağaç No</Text>
+                      </View>
+                      <View style={[styles.tableColHeader, { width: 117 }]}>
+                        <Text style={styles.tableCellHeader}>Ağaç Tipi</Text>
+                      </View>
+                      <View style={[styles.tableColHeader, { width: 30 }]}>
+                        <Text style={styles.tableCellHeader}>Müş. Adet</Text>
+                      </View>
+                      <View style={[styles.tableColHeader, { width: 35 }]}>
+                        <Text style={styles.tableCellHeader}>Ayar</Text>
+                      </View>
+                      <View style={[styles.tableColHeader, { width: 40 }]}>
+                        <Text style={styles.tableCellHeader}>Kalınlık</Text>
+                      </View>
+                      <View style={[styles.tableColHeader, { width: 30 }]}>
+                        <Text style={styles.tableCellHeader}>Renk</Text>
+                      </View>
+                      <View style={[styles.tableColHeader, { width: 40 }]}>
+                        <Text style={styles.tableCellHeader}>Mum Ağırlık</Text>
+                      </View>
+                      <View style={[styles.tableColHeader, { width: 40 }]}>
+                        <Text style={styles.tableCellHeader}>Maden Ağırlık</Text>
+                      </View>
+                      <View style={[styles.tableColHeader, { width: 105 }]}>
+                        <Text style={[styles.tableCellHeader]}></Text>
+                      </View>
 
-                          {row['isOld'] ? (
-                            <Text wrap style={{ color: 'red' }}>
-                              (E)
-                            </Text>
-                          ) : null}
-                          <Text wrap>{row['treeType']}</Text>
-                        </View>
-
-                        <View style={{ overflow: 'hidden' }}>
-                          <Text
-                            style={{
-                              color: 'blue',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                            }}
-                          >
-                            {row['desc'] !== null ? row['desc'].slice(0, 65) : ''}
-                          </Text>
-                        </View>
-                      </View>
-                      <View style={[styles.tableCol, { width: 30 }]} wrap={false}>
-                        <Text wrap={false}>{row['customerQuantity']}</Text>
-                      </View>
-                      <View style={[styles.tableCol, { width: 35 }]} wrap={false}>
-                        <Text wrap={false}>{row['option.optionText']}</Text>
-                      </View>
-                      <View style={[styles.tableCol, { width: 40 }]} wrap={false}>
-                        <Text wrap={false}>{row['thick.thickName']}</Text>
-                      </View>
-                      <View style={[styles.tableCol, { width: 30 }]} wrap={false}>
-                        <Text wrap={false}>{row['color.colorName']}</Text>
-                      </View>
-                      <View style={[styles.tableCol, { width: 40 }]} wrap={false}>
-                        <Text wrap={false}>{row['waxWeight']}</Text>
-                      </View>
-                      <View style={[styles.tableCol, { width: 40 }]} wrap={false}>
-                        <Text wrap={false}>{row['mineralWeight']}</Text>
-                      </View>
-                      <View style={[styles.tableCol, { width: 105 }]} wrap={false}>
-                        <Text wrap={false}>{''}</Text>
-                      </View>
-                      <View style={[styles.tableCol, { width: 105 }]} key={index} wrap={false}>
-                        <Text wrap={false}>{''}</Text>
+                      <View style={[styles.tableColHeader, { width: 105 }]}>
+                        <Text style={styles.tableCellHeader}></Text>
                       </View>
                     </View>
-                  );
-                })}
-              </View>
-            </View>
-          );
-        }) : null}
+                    {groupedTree.trees.map((row, index) => {
+                      return (
+                        <View style={styles.tableRow} key={index} wrap={false}>
+                          <View style={[styles.tableCol, { width: 20 }]} wrap={false}>
+                            <Text wrap={false}>{row['treeNo']}</Text>
+                          </View>
+
+                          <View
+                            style={[
+                              styles.tableCol,
+                              {
+                                width: 117,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'flex-start',
+                              },
+                            ]}
+                          >
+                            <View
+                              style={[
+                                {
+                                  display: 'flex',
+                                  flexDirection: 'row',
+                                },
+                              ]}
+                            >
+                              {row['isImmediate'] ? (
+                                <Text wrap style={{ color: 'red' }}>
+                                  (A)
+                                </Text>
+                              ) : null}
+
+                              {row['isOld'] ? (
+                                <Text wrap style={{ color: 'red' }}>
+                                  (E)
+                                </Text>
+                              ) : null}
+                              <Text wrap>{row['treeType']}</Text>
+                            </View>
+
+                            <View style={{ overflow: 'hidden' }}>
+                              <Text
+                                style={{
+                                  color: 'blue',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                }}
+                              >
+                                {row['desc'] !== null ? row['desc'].slice(0, 65) : ''}
+                              </Text>
+                            </View>
+                          </View>
+                          <View style={[styles.tableCol, { width: 30 }]} wrap={false}>
+                            <Text wrap={false}>{row['customerQuantity']}</Text>
+                          </View>
+                          <View style={[styles.tableCol, { width: 35 }]} wrap={false}>
+                            <Text wrap={false}>{row['option.optionText']}</Text>
+                          </View>
+                          <View style={[styles.tableCol, { width: 40 }]} wrap={false}>
+                            <Text wrap={false}>{row['thick.thickName']}</Text>
+                          </View>
+                          <View style={[styles.tableCol, { width: 30 }]} wrap={false}>
+                            <Text wrap={false}>{row['color.colorName']}</Text>
+                          </View>
+                          <View style={[styles.tableCol, { width: 40 }]} wrap={false}>
+                            <Text wrap={false}>{row['waxWeight']}</Text>
+                          </View>
+                          <View style={[styles.tableCol, { width: 40 }]} wrap={false}>
+                            <Text wrap={false}>{row['mineralWeight']}</Text>
+                          </View>
+                          <View style={[styles.tableCol, { width: 105 }]} wrap={false}>
+                            <Text wrap={false}>{''}</Text>
+                          </View>
+                          <View style={[styles.tableCol, { width: 105 }]} key={index} wrap={false}>
+                            <Text wrap={false}>{''}</Text>
+                          </View>
+                        </View>
+                      );
+                    })}
+                  </View>
+                </View>
+              );
+            })
+          : null}
         <Text
           style={styles.pageNumber}
           render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}

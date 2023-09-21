@@ -1,22 +1,14 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Button from '../../components/Button';
-import { AiOutlinePlus } from 'react-icons/ai';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
 import useAuth from '../../hooks/useAuth';
-import { CheckBox, NumberBox, SelectBox } from 'devextreme-react';
+import { CheckBox, NumberBox } from 'devextreme-react';
 import ErrorModal from '../../components/ErrorModal';
-import AddNewDescriptionModal from './AddNewDescriptionModal';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ReactSelect from 'react-select';
 
-function NewOrderTab({
-  clickTree: tree,
-  descriptions,
-  setTodayTrees,
-  selectedJobGroup,
-  setDescriptions,
-}) {
+function NewOrderTab({ clickTree: tree, setTodayTrees, selectedJobGroup }) {
   const auth = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -32,7 +24,7 @@ function NewOrderTab({
   const [order, setOrder] = React.useState({
     treeId: tree.agacId,
     customerId: '',
-    descriptionId: null,
+    // descriptionId: null,
     quantity: '',
     createdBy: auth.auth.id,
     isImmediate: false,
@@ -91,13 +83,12 @@ function NewOrderTab({
     value: customer.customerId,
     label: customer.customerName,
   }));
-  customerOptions?.unshift({ value: null, label: 'Müşteri Seçiniz' });
 
-  const descriptionOptions = descriptions.map((description) => ({
-    value: description.descriptionId,
-    label: description.descriptionText,
-  }));
-  descriptionOptions.unshift({ value: null, label: 'Açıklama Yok' });
+  // const descriptionOptions = descriptions.map((description) => ({
+  //   value: description.descriptionId,
+  //   label: description.descriptionText,
+  // }));
+  // descriptionOptions.unshift({ value: null, label: 'Açıklama Yok' });
 
   async function addOrder() {
     const controller = new AbortController();
@@ -109,12 +100,12 @@ function NewOrderTab({
       if (order.customerId === '' || order.customerId === null) {
         throw new Error('Lütfen müşteri seçiniz.');
       }
-      if ( order.quantity === '' || order.quantity === null ) {
+      if (order.quantity === '' || order.quantity === null) {
         throw new Error('Lütfen sipariş adeti giriniz');
       }
-      if ( order.desc === null || order.descriptionId === '') {
-        throw new Error('Lütfen açıklama seçiniz');
-      }
+      // if (order.desc === null || order.descriptionId === '') {
+      //   throw new Error('Lütfen açıklama seçiniz');
+      // }
 
       await axiosPrivate.post(Endpoints.ORDER, order, {
         headers: { 'Content-Type': 'application/json' },
@@ -133,14 +124,13 @@ function NewOrderTab({
           ...order,
           quantity: '',
           customerId: null,
-          descriptionId: '',
+          // descriptionId: '',
           isImmediate: false,
         });
       }
       setTodayTrees(response.data.trees);
       selectInputRef.current.focus();
-   //   selectInputRef.current.select()
-
+      //   selectInputRef.current.select()
     } catch (error) {
       setLoading(true);
 
@@ -193,7 +183,6 @@ function NewOrderTab({
               onChange={(e) => {
                 setOrder({ ...order, customerId: e.value });
               }}
-
               value={
                 order.customerId !== null
                   ? customerOptions?.find((option) => option.value === order.customerId)
@@ -201,7 +190,6 @@ function NewOrderTab({
               }
               isSearchable={true}
               filterOption={customFilter}
-
             />
           </div>
           <div className='flex flex-col'>
@@ -220,7 +208,7 @@ function NewOrderTab({
               }}
             />
           </div>
-          <div className='flex flex-col space-y-4'>
+          {/* <div className='flex flex-col space-y-4'>
             <div className='flex flex-row justify-end'>
               <p
                 onClick={() => {
@@ -248,7 +236,7 @@ function NewOrderTab({
                 }
               }}
             />
-          </div>
+          </div> */}
         </div>
         <div className='flex justify-between flex-row items-end'>
           <CheckBox
@@ -288,14 +276,14 @@ function NewOrderTab({
           <p>{errorModal.message}</p>
         </ErrorModal>
       )}
-      {modalOpen && (
+      {/* {modalOpen && (
         <AddNewDescriptionModal
           visible={modalOpen}
           onVisibleHandler={() => setModalOpen(false)}
           setDescriptions={setDescriptions}
           descriptions={descriptions}
         />
-      )}
+      )} */}
     </Fragment>
   );
 }

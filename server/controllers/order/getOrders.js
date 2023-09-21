@@ -30,9 +30,6 @@ const getOrders = async (req, res) => {
       {
         model: db.customer,
       },
-      {
-        model: db.description,
-      },
     ],
   });
 

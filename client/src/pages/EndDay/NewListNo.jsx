@@ -15,7 +15,6 @@ function NewListNo({ open, toggle, replaceJobGroup, replacedTree, getTrees }) {
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(replacedTree)
   useEffect(() => {
     const controller = new AbortController();
 

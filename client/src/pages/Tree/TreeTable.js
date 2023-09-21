@@ -1,67 +1,42 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import Alert from '../../components/Alert/Alert';
 import Button from '../../components/Button';
 import { BiLabel } from 'react-icons/bi';
-import CreateLabel from './CreateLabel';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
 import CalculatedMineralWeight from '../../utils/calculateMineralWeight';
 import calculateMineralWeight from '../../utils/calculateMineralWeight';
 import { DataGrid, SelectBox, Lookup } from 'devextreme-react';
 import {
-  Row,
   Column,
   Editing,
-  Paging,
   Export,
   FilterRow,
   HeaderFilter,
   MasterDetail,
   Scrolling,
   Selection,
-  Item,
 } from 'devextreme-react/data-grid';
 import { Workbook } from 'exceljs';
 import { exportDataGrid } from 'devextreme/excel_exporter';
 import { saveAs } from 'file-saver';
 import { statusColorStyle } from '../../utils/StatusColor';
 import { axiosPrivate } from '../../api/axios';
-import { Link } from 'react-router-dom';
 import CreateLabelNew from './CreateLabelNew';
-
-function onFocusedRowChanged(e) {
-  console.log('row cchanged' + e.row);
-}
-
-function onRowInserted(e) {
-  console.log('row added');
-}
-
-function onRowClick(e) {
-  e.component.collapseAll(-1);
-
-  if (e.isExpanded) {
-    e.component.collapseRow(e.component.option('focusedRowKey'));
-
-    console.log(e.isExpanded);
-  } else {
-    e.component.expandRow(e.key);
-  }
-}
 
 function TreeTable({
   setClickTree,
   todayTrees,
-  descriptions,
   setUpdateClick,
   setTodayTrees,
   jobGroups,
   selectedJobGroup,
   treeStatuses,
+  newTreeId,
+  setNewTreeId,
 }) {
   const axiosPrivate = useAxiosPrivate();
   const [createLabel, setCreateLabel] = useState(false);
-
   const handleSaveMineralWeight = (data) => {
     let todayTree = data;
     let calculatedMineralWeight = Number(
@@ -180,6 +155,37 @@ function TreeTable({
     e.cancel = true;
   }
 
+  function onFocusedRowChanging(e) {
+    const rowsCount = e.component.getVisibleRows().length;
+    const pageCount = e.component.pageCount();
+    const pageIndex = e.component.pageIndex();
+    const key = e.event && e.event.key;
+
+    if (key && e.prevRowIndex === e.newRowIndex) {
+      if (e.newRowIndex === rowsCount - 1 && pageIndex < pageCount - 1) {
+        e.component.pageIndex(pageIndex + 1).done(() => {
+          e.component.option('focusedRowIndex', 0);
+        });
+      } else if (e.newRowIndex === 0 && pageIndex > 0) {
+        e.component.pageIndex(pageIndex - 1).done(() => {
+          e.component.option('focusedRowIndex', rowsCount - 1);
+        });
+      }
+    }
+  }
+  async function onFocusedRowChanged(e) {
+    await setNewTreeId(e.component.option('focusedRowKey'));
+  }
+
+  function onRowClick(e) {
+    e.component.collapseAll(-1);
+    if (e.isExpanded) {
+      e.component.collapseRow(e.component.option('focusedRowKey'));
+    } else {
+      e.component.expandRow(e.key);
+    }
+  }
+
   return (
     <div className='space-y-4'>
       <div className='flex flex-row justify-between items-center'>
@@ -225,7 +231,8 @@ function TreeTable({
           onRowDblClick={rowDblClick}
           onRowClick={onRowClick}
           autoNavigateToFocusedRow={true}
-          onRowInserted={onRowInserted}
+          focusedRowKey={newTreeId}
+          onFocusedRowChanging={onFocusedRowChanging}
           onFocusedRowChanged={onFocusedRowChanged}
           onRowPrepared={function (e) {
             if (e.rowType === 'data') {
@@ -242,10 +249,8 @@ function TreeTable({
             allowUpdating={true}
             allowDeleting={true}
           />
-
           <Scrolling mode='virtual' />
           <Selection mode={'single'} />
-
           <FilterRow visible={true} applyFilter={'auto'} />
           <HeaderFilter visible={true} />
           <Column
@@ -342,6 +347,7 @@ function TreeTable({
             />
           </Column>
           <Column caption={'Hazırlayan'} dataField={'creator.creatorName'} allowEditing={false} />
+          <Column caption={'Açıklama'} dataField={'desc'} allowEditing={false} />
           <Column
             caption={'Maden Ağırlık'}
             dataField={'mineralWeight'}
@@ -359,16 +365,9 @@ function TreeTable({
             }}
           />
           <Column caption={'Mum Ağırlık'} dataField={'waxWeight'} />
-
           <MasterDetail
             render={(e) => {
-              return treeMasterDetail(
-                e.data,
-                axiosPrivate,
-                descriptions,
-                selectedJobGroup,
-                setTodayTrees,
-              );
+              return treeMasterDetail(e.data, axiosPrivate, selectedJobGroup, setTodayTrees);
             }}
           />
         </DataGrid>
@@ -388,7 +387,7 @@ function TreeTable({
   );
 }
 
-function treeMasterDetail(data, axiosPrivate, descriptions, selectedJobGroup, setTodayTrees) {
+function treeMasterDetail(data, axiosPrivate, selectedJobGroup, setTodayTrees) {
   let orders = data.orders;
 
   async function onRowRemoving({ data }) {
@@ -454,7 +453,7 @@ function treeMasterDetail(data, axiosPrivate, descriptions, selectedJobGroup, se
           }
           allowEditing={false}
         />
-        <Column
+        {/* <Column
           dataField={'descriptionId'}
           caption={'Açıklama'}
           allowEditing={false}
@@ -462,7 +461,7 @@ function treeMasterDetail(data, axiosPrivate, descriptions, selectedJobGroup, se
             return descriptions?.find((desc) => desc.descriptionId === data.descriptionId)
               ?.descriptionText;
           }}
-        />
+        /> */}
       </DataGrid>
     </div>
   );

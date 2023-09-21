@@ -65,8 +65,8 @@ function TreePage() {
   const [colors, setColors] = useState([]);
   const [todayTrees, setTodayTrees] = useState([]);
   const [customers, setCustomers] = useState([]);
-  const [descriptions, setDescriptions] = useState([]);
   const [jobGroups, setJobGroups] = useState([]);
+  const [newTreeId, setNewTreeId] = useState(null);
 
   const [selectedJobGroup, setSelectedJobGroup] = useState(
     Number(sessionStorage.getItem('jobGroup')) || null,
@@ -194,22 +194,22 @@ function TreePage() {
         });
       }
     };
-    const getDescriptions = async () => {
-      try {
-        const response = await axiosPrivate.get(Endpoints.DESCRIPTION, {
-          signal: controller.signal,
-        });
-        if (isMounted) {
-          setDescriptions(response.data.descriptions);
-        }
-      } catch (error) {
-        console.error(error);
-        navigate('/login', {
-          state: { from: location },
-          replace: true,
-        });
-      }
-    };
+    // const getDescriptions = async () => {
+    //   try {
+    //     const response = await axiosPrivate.get(Endpoints.DESCRIPTION, {
+    //       signal: controller.signal,
+    //     });
+    //     if (isMounted) {
+    //       setDescriptions(response.data.descriptions);
+    //     }
+    //   } catch (error) {
+    //     console.error(error);
+    //     navigate('/login', {
+    //       state: { from: location },
+    //       replace: true,
+    //     });
+    //   }
+    // };
     const getCustomers = async () => {
       try {
         const response = await axiosPrivate.get(Endpoints.CUSTOMERS.GET_ALL, {
@@ -234,7 +234,7 @@ function TreePage() {
     };
 
     getJobGroups();
-    getDescriptions();
+    // getDescriptions();
     // getTreeStatus();
     getOptions();
     getCreator();
@@ -268,7 +268,7 @@ function TreePage() {
         <Header title={'Ağaç Girişi'} description={'Döküme girecek ağaç girişleri'} />
         <div className='grid grid-cols-12 mt-4 gap-x-4 gap-y-4  '>
           <div className='col-span-12 lg:col-span-3 max-w-lg md:w-full hover:cursor-pointer  '>
-            <Tabs tabsList={tabList} setSelected={setSelectedTab} selectedTab={selectedTab}  />
+            <Tabs tabsList={tabList} setSelected={setSelectedTab} selectedTab={selectedTab} />
             <div className='px-0 py-4 '>
               {selectedTab === tabs.agac ? (
                 <NewTreeTab
@@ -280,20 +280,18 @@ function TreePage() {
                   todayTrees={todayTrees}
                   setTodayTrees={setTodayTrees}
                   customers={customers}
-                  descriptions={descriptions}
                   jobGroups={jobGroups}
                   selectedJobGroup={selectedJobGroup}
                   setSelectedJobGroup={setSelectedJobGroup}
                   treeStatuses={treeStatuses}
+                  setNewTreeId={setNewTreeId}
                 />
               ) : selectedTab === tabs.siparis ? (
                 <NewOrderTab
                   clickTree={clickTree}
                   customers={customers}
-                  descriptions={descriptions}
                   setTodayTrees={setTodayTrees}
                   selectedJobGroup={selectedJobGroup}
-                  setDescriptions={setDescriptions}
                 />
               ) : (
                 <NewJobGroup
@@ -310,7 +308,6 @@ function TreePage() {
               setClickTree={setClickTree}
               todayTrees={todayTrees}
               customers={customers}
-              descriptions={descriptions}
               treeStatuses={treeStatuses}
               creators={creators}
               setUpdateClick={setUpdateClick}
@@ -320,6 +317,8 @@ function TreePage() {
               selectedJobGroup={selectedJobGroup}
               setSelectedJobGroup={setSelectedJobGroup}
               treeTableRef={treeTableRef}
+              newTreeId={newTreeId}
+              setNewTreeId={setNewTreeId}
             />
           </div>
         </div>
@@ -338,7 +337,6 @@ function TreePage() {
           colors={colors}
           todayTrees={todayTrees}
           customers={customers}
-          descriptions={descriptions}
           selectedJobGroup={selectedJobGroup}
           toggle={() => {
             setUpdateClick(initUpdateClick);
