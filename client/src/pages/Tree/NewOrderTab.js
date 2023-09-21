@@ -106,8 +106,14 @@ function NewOrderTab({
         throw new Error('Lütfen ağaç seçiniz!');
       }
       setLoading(false);
-      if (order.customerId === '' || order.quantity === '' || order.customerId === null) {
-        throw new Error('Lütfen müşteri ve/veya adet alanlarını doldurunuz.');
+      if (order.customerId === '' || order.customerId === null) {
+        throw new Error('Lütfen müşteri seçiniz.');
+      }
+      if ( order.quantity === '' || order.quantity === null ) {
+        throw new Error('Lütfen sipariş adeti giriniz');
+      }
+      if ( order.desc === null || order.descriptionId === '') {
+        throw new Error('Lütfen açıklama seçiniz');
       }
 
       await axiosPrivate.post(Endpoints.ORDER, order, {
@@ -132,6 +138,9 @@ function NewOrderTab({
         });
       }
       setTodayTrees(response.data.trees);
+      selectInputRef.current.focus();
+   //   selectInputRef.current.select()
+
     } catch (error) {
       setLoading(true);
 
@@ -184,6 +193,7 @@ function NewOrderTab({
               onChange={(e) => {
                 setOrder({ ...order, customerId: e.value });
               }}
+
               value={
                 order.customerId !== null
                   ? customerOptions?.find((option) => option.value === order.customerId)
@@ -191,6 +201,7 @@ function NewOrderTab({
               }
               isSearchable={true}
               filterOption={customFilter}
+
             />
           </div>
           <div className='flex flex-col'>
