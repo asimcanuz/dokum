@@ -209,7 +209,26 @@ const firinListesi = {
         renk: "Yeşil",
         ayar: "14 Ayar",
       },
-
+      {
+        kalinlik: "Orta",
+        renk: "Yeşil",
+        ayar: "10 Ayar",
+      },
+      {
+        kalinlik: "Orta",
+        renk: "Yeşil",
+        ayar: "9 Ayar",
+      },
+      {
+        kalinlik: "Orta",
+        renk: "Yeşil",
+        ayar: "8 Ayar",
+      },
+      {
+        kalinlik: "Orta",
+        renk: "Yeşil",
+        ayar: "4 Ayar",
+      },
       {
         kalinlik: "Kalın",
         renk: "Hepsi",
