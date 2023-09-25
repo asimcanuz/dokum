@@ -10,6 +10,10 @@ const finishDayDateUpdate = async (req, res) => {
   // gelen treeId'ye ait tarihi update et
   const _tree = await Tree.update(
     {
+      erkenFirinGrubunaEklendiMi: false,
+      yerlestigiFirin: null,
+      yerlesmesiGerekenFirin: null,
+      fırınId: null,
       jobGroupId: jobGroupId,
       isOld: true,
       treeNo: parseInt(treeNo),
@@ -20,7 +24,7 @@ const finishDayDateUpdate = async (req, res) => {
       },
     }
   );
-
+  
   if (!_tree) res.status(401).send({ message: "Tarih güncellenemedi." });
   res.status(200).send({ message: "Tarih güncellendi." });
 };
