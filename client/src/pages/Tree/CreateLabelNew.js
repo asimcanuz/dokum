@@ -10,8 +10,10 @@ import ModalBody from '../../components/Modal/ModalBody';
 import ModalFooter from '../../components/Modal/ModalFooter';
 
 // Herma 5051 etiket boyutları (mm cinsinden)
-const labelWidth = 50.0;
-const labelHeight = 26.2;
+//const labelWidth = 50.0;
+//const labelHeight = 26.2;
+const labelWidth = 48.5;
+const labelHeight = 25.4;
 
 // Sayfa boyutları (A4)
 const pageWidth = 210; // Sağ ve sol kenarlarda 8.48mm boşluk bırakılıyor
@@ -30,9 +32,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width: `${pageWidth}mm`,
     height: `${pageHeight}mm`,
-    marginLeft: '5mm', // Sol kenar boşluğu
+    marginLeft: '8mm', // Sol kenar boşluğu
   //  marginRight: '8mm', // Sağ kenar boşluğu
-   marginTop: '4mm', // Üst kenar boşluğu
+   marginTop: '8.8mm', // Üst kenar boşluğu
   }, section: {
 
    // flexGrow: 1,

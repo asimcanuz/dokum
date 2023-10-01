@@ -35,9 +35,9 @@ const CalculateMineralWeight = (mineralWeight, ayar, renk) => {
     } else {
       return mineralWeight * 11.5 + 10;
     }
-  } else if (_ayar === "Gümüş") {
+  } else if (_ayar === "gümüş") {
     return mineralWeight * 11;
-  } else if (_ayar === "Bronz") {
+  } else if (_ayar === "bronz") {
     return mineralWeight * 10;
   } else {
     return "Formül Yok";

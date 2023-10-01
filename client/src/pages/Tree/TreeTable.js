@@ -311,7 +311,7 @@ function TreeTable({
                   }
                 });
                 if (shuffle) {
-                  return 'Karışık';
+                  return 'Karma';
                 } else {
                   return name;
                 }
