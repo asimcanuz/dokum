@@ -1,11 +1,22 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import Header from '../../components/Header';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
-import { useGlobalFilter, usePagination, useTable, useFilters } from 'react-table';
 import Alert from '../../components/Alert/Alert';
-import ReactSelect from 'react-select';
 import { matchSorter } from 'match-sorter';
+import { DataGrid } from 'devextreme-react';
+import {
+  Column,
+  Export,
+  FilterPanel,
+  FilterRow,
+  HeaderFilter,
+  Scrolling,
+} from 'devextreme-react/data-grid';
+import { statusColorStyle } from '../../utils/StatusColor';
+import { Workbook } from 'exceljs';
+import { exportDataGrid } from 'devextreme/excel_exporter';
+import { saveAs } from 'file-saver';
 
 function SelectColumnFilter({ column: { filterValue, setFilter, preFilteredRows, id } }) {
   // Calculate the options for filtering
@@ -45,170 +56,11 @@ function SelectColumnFilter({ column: { filterValue, setFilter, preFilteredRows,
   );
 }
 
-function BooleanFilter({ column: { filterValue, setFilter } }) {
-  // Calculate the options for filtering
-  // using the preFilteredRows
-
-  let selectOptions = [{ value: '', label: 'Hepsi' }];
-
-  return (
-    <select
-      className='block w-full px-1 py-0.5 text-xs text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-      value={filterValue}
-      onChange={(e) => {
-        setFilter(e.target.value || undefined);
-      }}
-    >
-      <option value=''>Hepsi</option>
-      <option value='true'>Evet</option>
-      <option value='false'>Hayır</option>
-    </select>
-  );
-}
-
-function fuzzyTextFilterFn(rows, id, filterValue) {
-  return matchSorter(rows, filterValue, { keys: [(row) => row.values[id]] });
-}
-
-// Let the table remove the filter if the string is empty
-fuzzyTextFilterFn.autoRemove = (val) => !val;
-
 function OrderMain() {
   const axiosPrivate = useAxiosPrivate();
 
-  const [orders, setOrders] = useState([]);
+  const [newOrders, setNewOrders] = useState([]);
 
-  const tableColumns = React.useMemo(
-    () => [
-      {
-        Header: 'Sipariş ID',
-        accessor: 'orderId',
-        filterable: false,
-      },
-      {
-        Header: 'Agac No',
-        accessor: 'treeId',
-        filterable: true,
-        Filter: SelectColumnFilter,
-      },
-      {
-        Header: 'Liste No',
-        accessor: 'tree.listNo',
-        filterable: false,
-      },
-      {
-        Header: 'Hesap No',
-        accessor: 'customer.accountNumber',
-        filterable: false,
-      },
-      {
-        Header: 'Müşteri Adı',
-        accessor: 'customer.customerName',
-        Filter: SelectColumnFilter,
-        filterable: true,
-      },
-      {
-        Header: 'Ayar',
-        accessor: 'tree.option.optionText',
-        filterable: true,
-        Filter: SelectColumnFilter,
-      },
-      {
-        Header: 'Renk',
-        accessor: 'tree.color.colorName',
-        filterable: true,
-        Filter: SelectColumnFilter,
-      },
-      {
-        Header: 'Kalınlık',
-        accessor: 'tree.thick.thickName',
-        filterable: true,
-        Filter: SelectColumnFilter,
-      },
-      {
-        Header: 'Açıklama',
-        accessor: 'description.descriptionText',
-        filterable: false,
-      },
-      {
-        Header: 'Döküm Tarihi',
-        accessor: 'tree.date',
-        filterable: true,
-        Filter: SelectColumnFilter,
-      },
-      {
-        Header: 'Adet',
-        accessor: 'quantity',
-      },
-      {
-        Header: 'İşlem Durumu',
-        accessor: 'tree.treeStatus.treeStatusName',
-        Cell: (row) => {
-          const rowBackgroundColor = () => {
-            switch (row.value) {
-              case 'Hazırlanıyor':
-                return 'bg-yellow-200';
-              case 'Dökümde':
-                return 'bg-green-200';
-              case 'Döküldü':
-                return 'bg-blue-200';
-              case 'Kesimde':
-                return 'bg-purple-200';
-              default:
-                return 'bg-white';
-            }
-          };
-          const cn =
-            rowBackgroundColor() + ' text-center text-sm font-semibold p-1 rounded w-32 mx-auto';
-          return <div className={cn}>{row.value}</div>;
-        },
-        filterable: true,
-        Filter: SelectColumnFilter,
-      },
-
-      {
-        Header: 'Aktif-Pasif',
-        accessor: 'tree.active',
-        Cell: (row) => {
-          let cn = row.value ? 'bg-green-700' : 'bg-red-500';
-          cn += ' text-white p-1 rounded text-sm font-semibold text-center w-16 mx-auto ';
-          return <div className={cn}>{row.value ? 'Aktif' : 'Pasif'}</div>;
-        },
-        filterable: true,
-        Filter: BooleanFilter,
-      },
-      {
-        Header: 'Gün Sonu',
-        accessor: 'tree.finished',
-        Cell: (row) => {
-          let cn = row.value ? 'bg-green-700' : 'bg-red-500';
-          cn += ' text-white p-1 rounded text-sm font-semibold text-center w-16 ';
-          return <div className={cn}>{row.value ? 'Evet' : 'Hayır'}</div>;
-        },
-        filterable: true,
-        Filter: BooleanFilter,
-      },
-      {
-        Header: 'Acil Mi',
-        accessor: 'isImmediate',
-        Cell: (row) => {
-          let cn = row.value ? 'bg-green-700' : 'bg-red-500';
-          cn += ' text-white p-1 rounded text-sm font-semibold text-center w-16 mx-auto ';
-          return <div className={cn}>{row.value ? 'Evet' : 'Hayır'}</div>;
-        },
-        filterable: true,
-        Filter: BooleanFilter,
-      },
-      {
-        Header: 'Hazırlayan',
-        accessor: 'tree.creator.creatorName',
-        filterable: true,
-        Filter: SelectColumnFilter,
-      },
-    ],
-
-    [orders],
-  );
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -220,7 +72,28 @@ function OrderMain() {
         });
 
         if (isMounted) {
-          setOrders(response.data.orders.rows);
+          var _orders = [];
+          response.data.orders.rows.forEach((orderData) => {
+            const orderRow = {
+              orderId: orderData.orderId,
+              treeNo: orderData.tree.treeNo,
+              customerName: orderData.customer.customerName,
+              customerAccountNumber: orderData.customer.accountNumber,
+              ayar: orderData.tree.option.optionText,
+              renk: orderData.tree.color.colorName,
+              kalinlik: orderData.tree.thick.thickName,
+              createdAt: orderData.createdAt,
+              quantity: orderData.quantity,
+              situation: orderData.tree.treeStatus.treeStatusName,
+              active: orderData.tree.active,
+              finished: orderData.tree.finished,
+              isImmediate: orderData.tree.isImmediate ? true : false,
+              creator: orderData.tree.creator.creatorName,
+              jobGroupNo: orderData.tree.jobGroup.number,
+            };
+            _orders.push(orderRow);
+          });
+          setNewOrders(_orders);
           // setTotalPage(response.data.orders.count);
         }
       } catch (error) {
@@ -235,30 +108,20 @@ function OrderMain() {
     };
   }, []);
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    state,
-    page,
+  const onExcelExporting = useCallback((e) => {
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet('Main sheet');
 
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    gotoPage,
-    nextPage,
-    previousPage,
-    
-  } = useTable(
-    {
-      columns: tableColumns,
-      data: orders,
-    },
-    useFilters,
-    useGlobalFilter,
-    usePagination,
-  );
+    exportDataGrid({
+      component: e.component,
+      worksheet,
+      autoFilterEnabled: true,
+    }).then(() => {
+      workbook.xlsx.writeBuffer().then((buffer) => {
+        saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'DataGrid.xlsx');
+      });
+    });
+  });
 
   return (
     <div className='overflow-x-scroll text-xs'>
@@ -267,155 +130,99 @@ function OrderMain() {
       </section>
 
       <div className='mt-4'>
-        {orders.length > 0 ? (
-          <div>
-            <table {...getTableProps()} className='min-w-full text-left text-sm font-light'>
-              <thead className='border-b font-medium dark:border-neutral-500 bg-gray-50'>
-                {headerGroups.map((headerGroup, i) => (
-                  <tr {...headerGroup.getHeaderGroupProps()} key={i}>
-                    {headerGroup.headers.map((column) => (
-                      <th scope='col' className='px-6 py-4' {...column.getHeaderProps()}>
-                        {column.render('Header')}
-                        <div>{column.filterable ? column.render('Filter') : null}</div>
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody {...getTableBodyProps()}>
-                {page.map((row, i) => {
-                  prepareRow(row);
+        {newOrders.length > 0 ? (
+          <Fragment>
+            <DataGrid
+              height={700}
+              id='grid-container'
+              dataSource={newOrders}
+              showBorders={true}
+              showRowLines={true}
+              showColumnLines={true}
+              allowColumnResizing={true}
+              columnResizingMode={'nextColumn'}
+              onExporting={onExcelExporting}
+              remoteOperations={true}
+              wordWrapEnabled={true}
+              onRowPrepared={function (e) {
+                if (e.rowType === 'data') {
+                  const bgColor = statusColorStyle(e.data.situation);
+                  e.rowElement.style.backgroundColor = bgColor;
+                }
+              }}
+            >
+              <FilterRow visible={true} applyFilter={'auto'} />
+              <FilterPanel visible={true} />
+              <HeaderFilter visible={true} />
+              <Export enabled={true} allowExportSelectedData={true} />
+              <Scrolling rowRenderingMode='virtual'></Scrolling>
 
-                  const rowBackgroundColor = () => {
-                    switch (row.original.tree.treeStatus.treeStatusName) {
-                      case 'Hazırlanıyor':
-                        return 'bg-yellow-100';
-                      case 'Dökümde':
-                        return 'bg-green-100';
-                      case 'Döküldü':
-                        return 'bg-blue-100';
-                      case 'Kesimde':
-                        return 'bg-purple-100';
-                      default:
-                        return 'bg-white';
-                    }
-                  };
-                  return (
-                    // <Fragment key={i} {...row.getRowProps()}>
-                    <Fragment key={i}>
-                      <tr
-                        align='center'
-                        className={` text-left hover:mouse-pointer text-black hover:bg-neutral-200 select-none border-b  ${rowBackgroundColor()}`}
-                      >
-                        {row.cells.map((cell) => {
-                          return (
-                            <td className='whitespace-nowrap px-6 py-4' {...cell.getCellProps()}>
-                              {cell.render('Cell')}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    </Fragment>
-                  );
-                })}
-              </tbody>
-            </table>
+              <Column
+                width={70}
+                caption={'Sipariş Id'}
+                cssClass={'textCenter'}
+                dataField={'orderId'}
+              />
+              <Column caption={'İş grubu'} dataField={'jobGroupNo'} />
+              <Column width={70} caption={'A. No'} cssClass={'textCenter'} dataField={'treeNo'} />
+              <Column width={200} caption={'Müşteri'} dataField={'customerName'} />
+              <Column width={80} caption={'M. No'} dataField={'customerAccountNumber'} />
+              <Column caption={'Ayar'} dataField={'ayar'} />
+              <Column caption={'Renk'} dataField={'renk'} />
+              <Column caption={'Kalınlık'} dataField={'kalinlik'} />
+              <Column caption={'İşlem durumu'} dataField={'situation'} />
+              <Column
+                width={90}
+                caption={'Aktif-Pasif'}
+                dataField={'active'}
+                cellRender={({ value }) =>
+                  value ? (
+                    <div className='bg-red-100 rounded-lg text-base text-red-700' role='alert'>
+                      Evet
+                    </div>
+                  ) : (
+                    <div className='bg-blue-100 rounded-lg text-base text-blue-700' role='alert'>
+                      Hayır
+                    </div>
+                  )
+                }
+              />
 
-            <div className='flex items-center justify-center py-10 lg:px-0 sm:px-6 px-4'>
-              <div className='w-full  flex items-center justify-between border-t border-gray-200'>
-                <div
-                  className='flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer'
-                  onClick={() => previousPage()}
-                  disabled={!canPreviousPage}
-                >
-                  <svg
-                    width='14'
-                    height='8'
-                    viewBox='0 0 14 8'
-                    fill='none'
-                    xmlns='http://www.w3.org/2000/svg'
-                  >
-                    <path
-                      d='M1.1665 4H12.8332'
-                      stroke='currentColor'
-                      strokeWidth='1.25'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <path
-                      d='M1.1665 4L4.49984 7.33333'
-                      stroke='currentColor'
-                      strokeWidth='1.25'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <path
-                      d='M1.1665 4.00002L4.49984 0.666687'
-                      stroke='currentColor'
-                      strokeWidth='1.25'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                  </svg>
-                  <p className='text-sm ml-3 font-medium leading-none '>Önceki</p>
-                </div>
-                <div className='sm:flex hidden'>
-                  {pageOptions.map((page, i) => {
-                    let activePage = null;
-                    if (page === state.pageIndex) {
-                      activePage = 'text-indigo-700 border-indigo-400';
-                    }
-
-                    return (
-                      <p
-                        key={i}
-                        className={`text-sm font-medium leading-none cursor-pointer text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2 ${activePage}`}
-                        onClick={() => gotoPage(page)}
-                      >
-                        {page + 1}
-                      </p>
-                    );
-                  })}
-                </div>
-                <div
-                  className='flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer'
-                  onClick={() => nextPage()}
-                  disabled={!canNextPage}
-                >
-                  <p className='text-sm font-medium leading-none mr-3'>Sonraki</p>
-                  <svg
-                    width='14'
-                    height='8'
-                    viewBox='0 0 14 8'
-                    fill='none'
-                    xmlns='http://www.w3.org/2000/svg'
-                  >
-                    <path
-                      d='M1.1665 4H12.8332'
-                      stroke='currentColor'
-                      strokeWidth='1.25'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <path
-                      d='M9.5 7.33333L12.8333 4'
-                      stroke='currentColor'
-                      strokeWidth='1.25'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <path
-                      d='M9.5 0.666687L12.8333 4.00002'
-                      stroke='currentColor'
-                      strokeWidth='1.25'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
+              <Column
+                width={90}
+                caption={'Gün Sonu'}
+                dataField={'finished'}
+                cellRender={({ value }) =>
+                  value ? (
+                    <div className='bg-red-100 rounded-lg text-base text-red-700' role='alert'>
+                      Evet
+                    </div>
+                  ) : (
+                    <div className='bg-blue-100 rounded-lg text-base text-blue-700' role='alert'>
+                      Hayır
+                    </div>
+                  )
+                }
+              />
+              <Column
+                width={90}
+                caption={'Acil'}
+                dataField={'isImmediate'}
+                cellRender={({ value }) =>
+                  value ? (
+                    <div className='bg-red-100 rounded-lg text-base text-red-700' role='alert'>
+                      Evet
+                    </div>
+                  ) : (
+                    <div className='bg-blue-100 rounded-lg text-base text-blue-700' role='alert'>
+                      Hayır
+                    </div>
+                  )
+                }
+              />
+              <Column width={150} caption={'Hazırlayan'} dataField={'creator'} />
+            </DataGrid>
+          </Fragment>
         ) : (
           <Alert apperance={'danger'}>Veri bulunamadı!</Alert>
         )}

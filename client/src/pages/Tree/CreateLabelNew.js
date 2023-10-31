@@ -1,9 +1,9 @@
-import React, {Fragment, useEffect, useRef, useState} from 'react';
-import {Page, Text, View, Document, StyleSheet, PDFViewer, Font} from '@react-pdf/renderer';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { Page, Text, View, Document, StyleSheet, PDFViewer, Font } from '@react-pdf/renderer';
 import Button from '../../components/Button';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import {useLocation, useNavigate} from 'react-router-dom';
-import {Endpoints} from '../../constants/Endpoints';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Endpoints } from '../../constants/Endpoints';
 import Modal from '../../components/Modal/Modal';
 import ModalHeader from '../../components/Modal/ModalHeader';
 import ModalBody from '../../components/Modal/ModalBody';
@@ -25,7 +25,6 @@ const labelsPerColumn = 11;
 
 const styles = StyleSheet.create({
   page: {
-
     fontFamily: 'Roboto',
     fontSize: '8pt',
     flexDirection: 'row',
@@ -33,175 +32,196 @@ const styles = StyleSheet.create({
     width: `${pageWidth}mm`,
     height: `${pageHeight}mm`,
     marginLeft: '8mm', // Sol kenar boşluğu
-  //  marginRight: '8mm', // Sağ kenar boşluğu
-   marginTop: '8.8mm', // Üst kenar boşluğu
-  }, section: {
-
-   // flexGrow: 1,
+    //  marginRight: '8mm', // Sağ kenar boşluğu
+    marginTop: '8.8mm', // Üst kenar boşluğu
   },
-
-
+  section: {
+    // flexGrow: 1,
+  },
 });
 // Register Font
 Font.register({
-  family: 'Roboto', src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf',
+  family: 'Roboto',
+  fonts: [
+    {
+      src: 'https://cdn.jsdelivr.net/npm/roboto-font@0.1.0/fonts/Roboto/roboto-regular-webfont.ttf',
+    },
+    {
+      src: 'https://cdn.jsdelivr.net/npm/roboto-font@0.1.0/fonts/Roboto/roboto-bold-webfont.ttf',
+      fontWeight: '700',
+    },
+  ],
 });
 
-const Box = ({children}) => {
-  return (<View
-    wrap={false}
-    // debug={true}
-    style={{
-      // sayfanın 4 eşit parçasına bölünmesi için
-      //  border: '1px solid black',
-      width: `${labelWidth}mm`,
-      height: `${labelHeight}mm`,
-    //  padding: '0.3mm',
-     // display: 'flex',
-   //   flexDirection: 'column',
-   //   justifyContent: 'flex-start',
-    //  border: '1px solid black',
-      margin: '0px',
-
-    }}
-  >
-    {children}
-  </View>);
+const Box = ({ children }) => {
+  return (
+    <View
+      wrap={false}
+      // debug={true}
+      style={{
+        // sayfanın 4 eşit parçasına bölünmesi için
+        //  border: '1px solid black',
+        width: `${labelWidth}mm`,
+        height: `${labelHeight}mm`,
+        //  padding: '0.3mm',
+        // display: 'flex',
+        //   flexDirection: 'column',
+        //   justifyContent: 'flex-start',
+        //  border: '1px solid black',
+        margin: '0px',
+      }}
+    >
+      {children}
+    </View>
+  );
 };
 
-const MyDocument = ({data}) => {
-  return (<Document>
-    <Page size='A4' style={styles.page}>
-      ´{Object.keys(data).map((key, index1) => {
-      return Object.keys(data[key]).map((key2, index) => {
-        return <Box>
-          <Text style={{
-            textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid black', fontSize: '10pt'
-          }}>
-            {key
-              .slice(0, key.indexOf('#') === -1 ? key.length : key.indexOf('#'))
-              .slice(0, 17)}
-          </Text>
-          <Text style={{
-            fontSize: '9pt',
-            textAlign: 'center',
-            fontWeight: 'bold',
-            padding: 0,
-            margin: 0,
-            borderBottom: '1px solid black',
-
-          }}>
-            {key2}
-          </Text>
-          <View
-            style={{
-              display: 'flex', flexDirection: 'row', flexGrow: 1
-            }}
-          >
-            <View
-              style={{
-                width: '100%', display: 'flex', flexDirection: 'column',
-              }}
-            >
-              <View
-                style={{
-                  borderBottom: '1px solid black', textAlign: 'center',
-
-                }}
-              >
-                <Text>B</Text>
-              </View>
-              <View style={{textAlign: 'center'}}>
-                <Text>
-
-                  {data[key][key2]['Beyaz'] !== undefined
-                    ? data[key][key2]['Beyaz'].map((item, index) => {
-                      if (index > 19) {
-                        return '';
-                      }
-                      return index === data[key][key2]['Beyaz']?.length - 1
-                        ? item
-                        : index === 19
-                          ? item
-                          : item + ',';
-                    })
-                    : ''}
+const MyDocument = ({ data }) => {
+  return (
+    <Document>
+      <Page size='A4' style={styles.page}>
+        ´
+        {Object.keys(data).map((key, index1) => {
+          return Object.keys(data[key]).map((key2, index) => {
+            return (
+              <Box>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    borderBottom: '1px solid black',
+                    fontSize: '10pt',
+                  }}
+                >
+                  {key
+                    .slice(0, key.indexOf('#') === -1 ? key.length : key.indexOf('#'))
+                    .slice(0, 17)}
                 </Text>
-              </View>
-            </View>
-            <View
-              style={{
-                width: '100%', borderRight: '1px solid black', borderLeft: '1px solid black',
-
-              }}
-            >
-              <View
-                style={{
-                  borderBottom: '1px solid black', textAlign: 'center',
-                }}
-              >
-                <Text>K</Text>
-              </View>
-              <View
-                style={{
-                  textAlign: 'center', overflow: 'hidden',
-                }}
-              >
-                <Text>
-                  {data[key][key2]['Kırmızı'] !== undefined
-                    ? data[key][key2]['Kırmızı'].map((item, index) => {
-                      if (index > 19) {
-                        return '';
-                      }
-                      return index === data[key][key2]['Kırmızı']?.length - 1
-                        ? item
-                        : index === 19
-                          ? item
-                          : item + ',';
-                    })
-                    : ''}
+                <Text
+                  style={{
+                    fontSize: '9pt',
+                    textAlign: 'center',
+                    padding: 0,
+                    margin: 0,
+                    borderBottom: '1px solid black',
+                  }}
+                >
+                  {key2}
                 </Text>
-              </View>
-            </View>
-            <View style={{width: '100%'}}>
-              <View
-                style={{
-                  borderBottom: '1px solid black', textAlign: 'center',
-                }}
-              >
-                <Text>Y</Text>
-              </View>
-              <View style={{textAlign: 'center', flexGrow: 0}}>
-                <Text>
-                  {data[key][key2]['Yeşil'] !== undefined
-                    ? data[key][key2]['Yeşil'].map((item, index) => {
-                      if (index > 19) {
-                        return '';
-                      }
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexGrow: 1,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                    }}
+                  >
+                    <View
+                      style={{
+                        borderBottom: '1px solid black',
+                        textAlign: 'center',
+                      }}
+                    >
+                      <Text>B</Text>
+                    </View>
+                    <View style={{ textAlign: 'center' }}>
+                      <Text>
+                        {data[key][key2]['Beyaz'] !== undefined
+                          ? data[key][key2]['Beyaz'].map((item, index) => {
+                              if (index > 19) {
+                                return '';
+                              }
+                              return index === data[key][key2]['Beyaz']?.length - 1
+                                ? item
+                                : index === 19
+                                ? item
+                                : item + ',';
+                            })
+                          : ''}
+                      </Text>
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      width: '100%',
+                      borderRight: '1px solid black',
+                      borderLeft: '1px solid black',
+                    }}
+                  >
+                    <View
+                      style={{
+                        borderBottom: '1px solid black',
+                        textAlign: 'center',
+                      }}
+                    >
+                      <Text>K</Text>
+                    </View>
+                    <View
+                      style={{
+                        textAlign: 'center',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <Text>
+                        {data[key][key2]['Kırmızı'] !== undefined
+                          ? data[key][key2]['Kırmızı'].map((item, index) => {
+                              if (index > 19) {
+                                return '';
+                              }
+                              return index === data[key][key2]['Kırmızı']?.length - 1
+                                ? item
+                                : index === 19
+                                ? item
+                                : item + ',';
+                            })
+                          : ''}
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={{ width: '100%' }}>
+                    <View
+                      style={{
+                        borderBottom: '1px solid black',
+                        textAlign: 'center',
+                      }}
+                    >
+                      <Text>Y</Text>
+                    </View>
+                    <View style={{ textAlign: 'center', flexGrow: 0 }}>
+                      <Text>
+                        {data[key][key2]['Yeşil'] !== undefined
+                          ? data[key][key2]['Yeşil'].map((item, index) => {
+                              if (index > 19) {
+                                return '';
+                              }
 
-                      return index === data[key][key2]['Yeşil']?.length - 1
-                        ? item
-                        : index === 19
-                          ? item
-                          : item + ',';
-                    })
-                    : ''}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </Box>
-      });
-    })
-
-    }
-
-
-    </Page>
-  </Document>);
+                              return index === data[key][key2]['Yeşil']?.length - 1
+                                ? item
+                                : index === 19
+                                ? item
+                                : item + ',';
+                            })
+                          : ''}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </Box>
+            );
+          });
+        })}
+      </Page>
+    </Document>
+  );
 };
 
-export default function CreateLabelNew({open, toggle, jobGroupId}) {
+export default function CreateLabelNew({ open, toggle, jobGroupId }) {
   const [data, setData] = useState([]);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -216,7 +236,8 @@ export default function CreateLabelNew({open, toggle, jobGroupId}) {
         const res = await axiosPrivate.get(Endpoints.CREATELABEL, {
           params: {
             jobGroupId: jobGroupId,
-          }, signal: controller.signal,
+          },
+          signal: controller.signal,
         });
         // data'yı sırala
         var ordered = {};
@@ -247,7 +268,7 @@ export default function CreateLabelNew({open, toggle, jobGroupId}) {
         setData(sortedObj);
       } catch (error) {
         console.error(error);
-        navigate('/login', {state: {from: location}, replace: true});
+        navigate('/login', { state: { from: location }, replace: true });
       }
     };
 
@@ -255,19 +276,23 @@ export default function CreateLabelNew({open, toggle, jobGroupId}) {
     return () => controller.abort();
   }, [jobGroupId]);
 
-  return (<Modal open={open} size={'normal'}>
-    <ModalHeader title={'Etiket Oluştur'} toogle={toggle}/>
-    <ModalBody>
-      {Object.keys(data).length > 0 && (<Fragment>
-        <PDFViewer style={{width: '720px', height: '720px'}}>
-          <MyDocument data={data}/>
-        </PDFViewer>
-      </Fragment>)}
-    </ModalBody>
-    <ModalFooter>
-      <Button appearance={'danger'} onClick={toggle}>
-        Kapat
-      </Button>
-    </ModalFooter>
-  </Modal>);
+  return (
+    <Modal open={open} size={'normal'}>
+      <ModalHeader title={'Etiket Oluştur'} toogle={toggle} />
+      <ModalBody>
+        {Object.keys(data).length > 0 && (
+          <Fragment>
+            <PDFViewer style={{ width: '720px', height: '720px' }}>
+              <MyDocument data={data} />
+            </PDFViewer>
+          </Fragment>
+        )}
+      </ModalBody>
+      <ModalFooter>
+        <Button appearance={'danger'} onClick={toggle}>
+          Kapat
+        </Button>
+      </ModalFooter>
+    </Modal>
+  );
 }

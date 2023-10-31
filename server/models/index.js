@@ -9,9 +9,9 @@ const sequelize = new Sequelize(
     host: dbConfig.HOST,
     dialect: dbConfig.dialect,
     operatorsAliases: false,
-    pool: dbConfig.timezone,
+    pool: dbConfig.pool,
     dialectOptions: dbConfig.dialectOptions,
-    timezone: dbConfig.timezone
+    timezone: dbConfig.timezone,
   }
 );
 

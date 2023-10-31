@@ -25,6 +25,7 @@ const getOrders = async (req, res) => {
           { model: db.thick },
           { model: db.color },
           { model: db.treeStatus },
+          { model: db.jobGroup },
         ],
       },
       {

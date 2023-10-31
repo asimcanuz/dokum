@@ -323,8 +323,9 @@ function TreeTable({
           />
           {/*      <Column caption={'Mum Türü'} dataField={'wax.waxName'} allowEditing={false}/>*/}
           <Column caption={'Ayar'} dataField={'option.optionText'} allowEditing={false} />
-          <Column caption={'Kalınlık'} dataField={'thick.thickName'} allowEditing={false} />
           <Column caption={'Renk'} dataField={'color.colorName'} allowEditing={false} />
+
+          <Column caption={'Kalınlık'} dataField={'thick.thickName'} allowEditing={false} />
           <Column caption={'Tarih'} dataField={'date'} allowEditing={false} />
           <Column
             caption={'Durum'}
