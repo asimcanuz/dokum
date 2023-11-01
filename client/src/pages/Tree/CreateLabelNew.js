@@ -90,7 +90,7 @@ const MyDocument = ({ data }) => {
                     textAlign: 'center',
                     fontWeight: 'bold',
                     borderBottom: '1px solid black',
-                    fontSize: '10pt',
+                    fontSize: '13pt',
                   }}
                 >
                   {key
@@ -99,7 +99,7 @@ const MyDocument = ({ data }) => {
                 </Text>
                 <Text
                   style={{
-                    fontSize: '9pt',
+                    fontSize: '10pt',
                     textAlign: 'center',
                     padding: 0,
                     margin: 0,

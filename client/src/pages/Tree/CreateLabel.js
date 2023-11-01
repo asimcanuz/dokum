@@ -76,6 +76,7 @@ const MyDocument = ({data}) => {
             flexDirection: 'row',
             flexWrap: 'wrap',
             width: '100%',
+  
 
           }}
         >
