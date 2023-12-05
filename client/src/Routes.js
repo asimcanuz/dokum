@@ -16,7 +16,8 @@ import OrderMain from './pages/Orders';
 import ReportsPage from './pages/Reports';
 import OvenMainPage from './pages/Oven';
 import Wallboard from './pages/Wallboard';
-import CustomerTrackingPage from "./pages/CustomerTracking/CustomerTracking";
+import CustomerTrackingPage from './pages/CustomerTracking/CustomerTracking';
+import TreeHistory from './pages/TreeHistory';
 
 function Routers() {
   return (
@@ -90,6 +91,9 @@ function Routers() {
           {/* TREE PAGE */}
           <Route element={<RequireAuth allowedRoles={rolesDesc.allOf} />}>
             <Route path='tree' element={<TreePage />} />
+          </Route>
+          <Route element={<RequireAuth allowedRoles={rolesDesc.allOf} />}>
+            <Route path='treehistory' element={<TreeHistory />} />
           </Route>
         </Route>
 

@@ -10,6 +10,8 @@ import {
   AiOutlineShoppingCart,
   AiOutlineUser,
 } from 'react-icons/ai';
+import { GiLightningBranches } from 'react-icons/gi';
+
 import { HiOutlineDocumentReport } from 'react-icons/hi';
 import { BsPersonSquare } from 'react-icons/bs';
 import { MdOutlineAccountTree, MdOutlinePeopleAlt } from 'react-icons/md';
@@ -52,6 +54,13 @@ const Menus = [
     to: '/orders',
     roles: rolesDesc.allOf,
     icon: AiOutlineShoppingCart,
+  },
+  {
+    title: 'Ağaç Listesi',
+    src: 'TreeHistory',
+    to: '/treehistory',
+    roles: rolesDesc.allOf,
+    icon: GiLightningBranches,
   },
   {
     title: 'Wallboard',
@@ -145,12 +154,14 @@ function Sidebar({ collapse, handleSidebar }) {
                   data-tooltip-id={Menu.title}
                   data-tooltip-content={Menu.title}
                 >
-                  <div>{React.createElement(Menu?.icon, { size: 20})}</div>
+                  <div>{React.createElement(Menu?.icon, { size: 20 })}</div>
                   <span className={`${!collapse && 'hidden'} text-sm origin-left duration-200`}>
                     {Menu.title}
                   </span>
                 </li>
-                {!collapse && <Tooltip id={Menu.title} place='right' style={{ zIndex: 999999999 }} />}
+                {!collapse && (
+                  <Tooltip id={Menu.title} place='right' style={{ zIndex: 999999999 }} />
+                )}
               </Link>
             ),
         )}
@@ -171,7 +182,6 @@ function Sidebar({ collapse, handleSidebar }) {
           <span className={`${!collapse && 'hidden'} origin-left duration-200`}>Logout</span>
         </li>
         <p>v1.4</p>
-
       </ul>
     </aside>
   );

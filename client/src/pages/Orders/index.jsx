@@ -3,7 +3,6 @@ import Header from '../../components/Header';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { Endpoints } from '../../constants/Endpoints';
 import Alert from '../../components/Alert/Alert';
-import { matchSorter } from 'match-sorter';
 import { DataGrid } from 'devextreme-react';
 import {
   Column,
@@ -118,7 +117,7 @@ function OrderMain() {
       autoFilterEnabled: true,
     }).then(() => {
       workbook.xlsx.writeBuffer().then((buffer) => {
-        saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'DataGrid.xlsx');
+        saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'SiparişListesi.xlsx');
       });
     });
   });

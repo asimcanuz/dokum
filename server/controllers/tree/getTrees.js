@@ -11,7 +11,11 @@ const getTrees = async (req, res) => {
       { model: db.thick },
       { model: db.color },
       { model: db.treeStatus },
-      { model: db.order },
+      { model: db.jobGroup },
+      {
+        model: db.order,
+        include: [{ model: db.customer }, { model: db.description }],
+      },
     ],
   });
   if (!trees) res.status(401).send({ message: "Trees Not Found!" });
