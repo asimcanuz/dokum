@@ -58,11 +58,72 @@ const firinListesi = {
         renk: "Beyaz",
         ayar: "Hepsi",
       },
+      //
+      //{
+      //  kalinlik: "Kalın",
+      //  renk: "Beyaz",
+      //  ayar: "Hepsi",
+      //},
+      //
+      //alttakiler eklendi
+
       {
         kalinlik: "Kalın",
         renk: "Beyaz",
-        ayar: "Hepsi",
+        ayar: "24 Ayar",
       },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "22 Ayar",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "21 Ayar",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "18 Ayar",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "14 Ayar",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "10 Ayar",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "9 Ayar",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "8 Ayar",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "4 Ayar",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "Alloy",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "Bronz",
+      },
+
+      /////////////////////////////////
       {
         kalinlik: "İnce",
         renk: "Kırmızı",
@@ -332,11 +393,75 @@ const firinListesi = {
         renk: "Beyaz",
         ayar: "Hepsi",
       },
+      //
+      //{
+      //  kalinlik: "Kalın",
+      //  renk: "Beyaz",
+      //  ayar: "Hepsi",
+      //},
+      //
+      
       {
         kalinlik: "Kalın",
         renk: "Beyaz",
-        ayar: "Hepsi",
+        ayar: "24 Ayar ",
       },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "22 Ayar ",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "21 Ayar ",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "18 Ayar ",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "14 Ayar ",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "10 Ayar ",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "9 Ayar ",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "8 Ayar ",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "4 Ayar ",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "Alloy",
+      },
+      {
+        kalinlik: "Kalın",
+        renk: "Beyaz",
+        ayar: "Bronz",
+      },
+
+      /////////////////////////////////
+
+
+
+
       {
         kalinlik: "İnce",
         renk: "Kırmızı",
