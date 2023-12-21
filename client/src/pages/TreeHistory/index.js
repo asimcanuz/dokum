@@ -54,7 +54,7 @@ function TreeHistory() {
               aktif: tree.active,
               renk: tree.color.colorName,
               olusturmaTarihi: tree.date,
-              olusturanKisi: tree.creator.creatorName,
+              hazirlayan: tree.creator.creatorName,
               musteriAdet: tree.customerQuantity,
               firinlandiMi: tree.yerlestigiFirin !== null,
               firinId: tree.yerlestigiFirin,
@@ -67,6 +67,7 @@ function TreeHistory() {
               mumAgirligi: tree.waxWeight,
               gunSonuYapildiMi: tree.isFinished,
               durum: tree.treeStatus.treeStatusName,
+      
               agacTipi,
             };
           });
@@ -151,9 +152,9 @@ function TreeHistory() {
                 dataField={'olusturmaTarihi'}
               />
               <Column
-                caption={'Oluşturan Kişi'}
+                caption={'Hazırlayan'}
                 cssClass={'textCenter'}
-                dataField={'olusturanKisi'}
+                dataField={'hazirlayan'}
               />
               <Column caption={'Musteri Adet'} cssClass={'textCenter'} dataField={'musteriAdet'} />
               <Column caption={'Agac Tipi'} cssClass={'textCenter'} dataField={'agacTipi'} />
@@ -174,6 +175,7 @@ function TreeHistory() {
                 }
               />
               <Column caption={'Fırın numarası'} dataField={'firinId'} />
+
               <Column
                 caption={'Aktif Mi?'}
                 dataField={'aktif'}

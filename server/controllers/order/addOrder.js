@@ -54,7 +54,7 @@ const addOrder = async (req, res) => {
       if (customers.length > 1) {
         await db.tree.update(
           {
-            treeType: "Karışık",
+            treeType: "Karma",
             customerQuantity: customers.length,
           },
           {

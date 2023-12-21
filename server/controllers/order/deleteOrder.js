@@ -65,7 +65,7 @@ const deleteOrder = async (req, res) => {
       } else if (customers.length > 1) {
         await db.tree.update(
           {
-            treeType: "Karışık",
+            treeType: "Karma",
             customerQuantity: customers.length,
           },
           {
